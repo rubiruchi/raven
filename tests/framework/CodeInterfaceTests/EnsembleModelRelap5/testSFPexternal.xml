@@ -1,0 +1,222 @@
+<Simulation verbosity="debug">
+  
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>MCRun</Sequence>
+    <batchSize>1</batchSize>
+  </RunInfo>
+
+  <Distributions>
+    <Uniform name="LOCAtiming">
+      <lowerBound>0.0</lowerBound>
+      <upperBound>1000.0</upperBound>
+    </Uniform>
+    <Uniform name="failurePump1">
+      <lowerBound>0.0</lowerBound>
+      <upperBound>1000.0</upperBound>
+    </Uniform>
+    <Uniform name="failurePump2">
+      <lowerBound>0.0</lowerBound>
+      <upperBound>1000.0</upperBound>
+    </Uniform>
+    <Uniform name="breakArea">
+      <lowerBound>0.00350</lowerBound>
+      <upperBound>0.0560</upperBound>
+    </Uniform>
+    <Uniform name="timingOperator">
+      <lowerBound>0.0</lowerBound>
+      <upperBound>3600.0</upperBound>
+    </Uniform>
+  </Distributions>
+  
+  <Samplers>
+    <MonteCarlo name="MC">
+      <samplerInit>
+        <limit>1</limit>
+        <initialSeed>1</initialSeed>
+      </samplerInit>
+      <!-- sampling params for SFP1-->
+      <variable name="LOCAtiming_1">           <!-- LOCAtiming -->
+        <distribution>LOCAtiming</distribution>
+      </variable>
+      <variable name="failurePump1_1">         <!-- failurePump1 -->
+        <distribution>failurePump1</distribution>
+      </variable>
+      <variable name="failurePump2_1">         <!-- failurePump2 -->
+        <distribution>failurePump2</distribution>
+      </variable>
+      <variable name="timingOperator_1">       <!-- Operator action -->
+        <distribution>timingOperator</distribution>
+      </variable>
+      <variable name="breakArea_1">            <!-- breakArea -->
+        <distribution>breakArea</distribution>
+      </variable>
+      <!-- sampling params for SFP3-->
+      <variable name="LOCAtiming_3">           <!-- LOCAtiming -->
+        <distribution>LOCAtiming</distribution>
+      </variable>
+      <variable name="failurePump1_3">         <!-- failurePump1 -->
+        <distribution>failurePump1</distribution>
+      </variable>
+      <variable name="failurePump2_3">         <!-- failurePump2 -->
+        <distribution>failurePump2</distribution>
+      </variable>
+      <variable name="timingOperator_3">       <!-- Operator action -->
+        <distribution>timingOperator</distribution>
+      </variable>
+      <variable name="breakArea_3">            <!-- breakArea -->
+        <distribution>breakArea</distribution>
+      </variable>
+    </MonteCarlo>
+  </Samplers>
+	
+  <Files>
+    <Input name="inputFile1"    type=""   >Fuel_Pool_1_v7_tr.i</Input>
+    <Input name="inputFile2"    type=""   >Fuel_Pool_2_v7_tr.i</Input>
+    <Input name="inputFile3"    type=""   >Fuel_Pool_3_v7_tr.i</Input>
+    <Input name="inputFile4"    type=""   >Fuel_Pool_4_v7_tr.i</Input>
+    <Input name="tpfh2o"        type=""   >tpfh2o</Input>
+    <Input name="license"       type=""   >rellic.bin</Input>
+    <Input name="restartFile1"  type=""   >restrt1.r</Input>
+    <Input name="restartFile3"  type=""   >restrt3.r</Input>
+  </Files>
+	
+  <Steps>
+    <MultiRun name='MCRun' pauseAtEnd='True'>
+      <Input     class="Files"         type=""               >inputFile1</Input>
+      <Input     class="Files"         type=""               >inputFile2</Input>
+      <Input     class="Files"         type=""               >inputFile3</Input>
+      <Input     class="Files"         type=""               >inputFile4</Input>
+      <Input     class="Files"         type=""               >restartFile1</Input>
+      <Input     class="Files"         type=""               >restartFile3</Input>
+      <Input     class="Files"         type=""               >tpfh2o</Input>
+      <Input     class="Files"         type=""               >license</Input>
+      <Model     class="Models"        type="EnsembleModel"  >multiUnit</Model>
+      <Sampler   class="Samplers"      type="MonteCarlo"     >MC</Sampler>
+      <Output    class="DataObjects"   type="PointSet"       >dataPS</Output>
+    </MultiRun>
+  </Steps>
+
+  <DataObjects>
+    <PointSet name="outPS1">
+      <Input>LOCAtiming_1,failurePump1_1,failurePump2_1,timingOperator_1,breakArea_1</Input>
+      <Output>time1,temp1</Output>
+    </PointSet>
+    <PointSet name="outPS2">
+      <Input>LOCAtiming_1,failurePump1_1,failurePump2_1,timingOperator_1,breakArea_1_updated</Input>
+      <Output>time2,temp2</Output>
+    </PointSet>
+    <PointSet name="outPS3">
+      <Input>LOCAtiming_3,failurePump1_3,failurePump2_3,timingOperator_3,breakArea_3</Input>
+      <Output>time3,temp3</Output>
+    </PointSet>
+    <PointSet name="outPS4">
+      <Input>LOCAtiming_3,failurePump1_3,failurePump2_3,timingOperator_3,breakArea_3_updated</Input>
+      <Output>time4,temp4</Output>
+    </PointSet>
+    <PointSet name="outPSnode">
+      <Input>breakArea_1,breakArea_3,temp1,temp3</Input>
+      <Output>breakArea_1_updated,breakArea_3_updated</Output>
+    </PointSet>
+    <PointSet name="inputHolder">
+      <Input>InputPlaceOlder</Input>
+      <Output>breakArea_1_updated,breakArea_3_updated</Output>
+    </PointSet>
+    <PointSet name="dataPS">
+      <Input>LOCAtiming_1,failurePump1_1,failurePump2_1,timingOperator_1,breakArea_1,
+             LOCAtiming_3,failurePump1_3,failurePump2_3,timingOperator_3,breakArea_3</Input>
+      <Output>temp2,temp4,breakArea_1_updated,breakArea_3_updated</Output>
+    </PointSet>
+  </DataObjects>
+	
+  <Models>
+    <Code name="SFP1" subType="Relap5">
+      <executable>./relap5.x</executable>
+      <clargs type="text" arg=" -r restrt1.r"/>
+      <alias variable="LOCAtiming_1"      type="input"  >20600700:6</alias>
+      <alias variable="failurePump1_1"    type="input"  >20600560:6</alias>
+      <alias variable="failurePump2_1"    type="input"  >20600570:6</alias>
+      <alias variable="timingOperator_1"  type="input"  >20600610:6</alias>
+      <alias variable="breakArea_1"       type="input"  >1000101:3</alias>
+      <alias variable="time1"             type="output" >time</alias>
+      <alias variable="temp1"             type="output" >httemp_60008_12</alias>
+    </Code>
+    <Code name="SFP2" subType="Relap5">
+      <executable>./relap5.x</executable>
+      <clargs type="text" arg=" -r restrt1.r"/>
+      <alias variable="LOCAtiming_1"      type="input"  >20600700:6</alias>
+      <alias variable="failurePump1_1"    type="input"  >20600560:6</alias>
+      <alias variable="failurePump2_1"    type="input"  >20600570:6</alias>
+      <alias variable="timingOperator_1"  type="input"  >20600610:6</alias>
+      <alias variable="breakArea_1"       type="input"  >1000101:3</alias>
+      <alias variable="time2"             type="output" >time</alias>
+      <alias variable="temp2"             type="output" >httemp_60008_12</alias>
+    </Code>
+    <Code name="SFP3" subType="Relap5">
+      <executable>./relap5.x</executable>
+      <clargs type="text" arg=" -r restrt3.r"/>
+      <alias variable="LOCAtiming_3"      type="input"  >20600700:6</alias>
+      <alias variable="failurePump1_3"    type="input"  >20600560:6</alias>
+      <alias variable="failurePump2_3"    type="input"  >20600570:6</alias>
+      <alias variable="timingOperator_3"  type="input"  >20600610:6</alias>
+      <alias variable="breakArea_3"       type="input"  >1000101:3</alias>
+      <alias variable="time3"             type="output" >time</alias>
+      <alias variable="temp3"             type="output" >httemp_60008_12</alias>
+    </Code>
+    <Code name="SFP4" subType="Relap5">
+      <executable>./relap5.x</executable>
+      <clargs type="text" arg=" -r restrt3.r"/>
+      <alias variable="LOCAtiming_3"      type="input"  >20600700:6</alias>
+      <alias variable="failurePump1_3"    type="input"  >20600560:6</alias>
+      <alias variable="failurePump2_3"    type="input"  >20600570:6</alias>
+      <alias variable="timingOperator_3"  type="input"  >20600610:6</alias>
+      <alias variable="breakArea_3"       type="input"  >1000101:3</alias>
+      <alias variable="time4"             type="output" >time</alias>
+      <alias variable="temp4"             type="output" >httemp_60008_12</alias>
+    </Code>
+    <ExternalModel name='node' subType='' ModuleToLoad='node'>
+        <variables>breakArea_1,breakArea_3,breakArea_1_updated,breakArea_3_updated</variables>
+    </ExternalModel>
+    <EnsembleModel name="multiUnit" subType="">
+      <Model class="Models" type="Code"> 
+        SFP1 
+        <Input              class="Files"        type=""            >inputFile1</Input>
+        <Input              class="Files"        type=""            >tpfh2o</Input>
+        <Input              class="Files"        type=""            >restartFile1</Input>
+        <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS1</TargetEvaluation>
+      </Model>
+      <Model class="Models" type="Code">
+        SFP2
+        <Input              class="Files"        type=""            >inputFile2</Input>
+        <Input              class="Files"        type=""            >tpfh2o</Input>
+        <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS2</TargetEvaluation>
+        <metadataToTransfer source="SFP1"        alias="sourceID"   >prefix</metadataToTransfer>
+      </Model>
+      <Model class="Models" type="Code"> 
+        SFP3 
+        <Input              class="Files"        type=""            >inputFile3</Input>
+        <Input              class="Files"        type=""            >tpfh2o</Input>
+        <Input              class="Files"        type=""            >restartFile3</Input>
+        <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS3</TargetEvaluation>
+      </Model>
+      <Model class="Models" type="Code"> 
+        SFP4 
+        <Input              class="Files"        type=""            >inputFile4</Input>
+        <Input              class="Files"        type=""            >tpfh2o</Input>
+        <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS4</TargetEvaluation>
+        <metadataToTransfer source="SFP3"        alias="sourceID"   >prefix</metadataToTransfer>
+      </Model>
+      <Model class="Models" type="ExternalModel"> 
+        node 
+        <Input              class="DataObjects"  type="PointSet"    >inputHolder</Input>
+        <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPSnode</TargetEvaluation>
+      </Model>
+      
+      
+      
+      
+      
+    </EnsembleModel>
+  </Models>
+  
+</Simulation>
