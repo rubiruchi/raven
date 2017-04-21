@@ -178,10 +178,10 @@
         <variables>breakArea_1,breakArea_3,breakArea_1_updated,breakArea_3_updated</variables>
     </ExternalModel>
     <EnsembleModel name="multiUnit" subType="">
-      <>
-      </B>
-      
-      
+      <expansionGrid variable="checkPointTime" alias="203">
+          <grid construction="equal" steps="4" >600 3600</grid>
+          <models>SFP1,SFP2,SFP3,SFP4,node</models>
+      </expansionGrid>
       
       <Model class="Models" type="Code"> 
         SFP1 
@@ -216,11 +216,46 @@
         <Input              class="DataObjects"  type="PointSet"    >inputHolder</Input>
         <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPSnode</TargetEvaluation>
       </Model>
-      
-      
-      
-      
-      
+    </EnsembleModel>
+    <EnsembleModel name="multiUnit_custom_grid" subType="">
+        <expansionGrid variable="checkPointTime" alias="203">
+            <grid construction="equal" steps="1" >600 1200 1800 2400 3000 3600</grid>
+            <models>SFP1,SFP2,SFP3,SFP4,node</models>
+        </expansionGrid>
+        
+        <Model class="Models" type="Code">
+            SFP1
+            <Input              class="Files"        type=""            >inputFile1</Input>
+            <Input              class="Files"        type=""            >tpfh2o</Input>
+            <Input              class="Files"        type=""            >restartFile1</Input>
+            <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS1</TargetEvaluation>
+        </Model>
+        <Model class="Models" type="Code">
+            SFP2
+            <Input              class="Files"        type=""            >inputFile2</Input>
+            <Input              class="Files"        type=""            >tpfh2o</Input>
+            <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS2</TargetEvaluation>
+            <metadataToTransfer source="SFP1"        alias="sourceID"   >prefix</metadataToTransfer>
+        </Model>
+        <Model class="Models" type="Code">
+            SFP3
+            <Input              class="Files"        type=""            >inputFile3</Input>
+            <Input              class="Files"        type=""            >tpfh2o</Input>
+            <Input              class="Files"        type=""            >restartFile3</Input>
+            <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS3</TargetEvaluation>
+        </Model>
+        <Model class="Models" type="Code">
+            SFP4
+            <Input              class="Files"        type=""            >inputFile4</Input>
+            <Input              class="Files"        type=""            >tpfh2o</Input>
+            <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPS4</TargetEvaluation>
+            <metadataToTransfer source="SFP3"        alias="sourceID"   >prefix</metadataToTransfer>
+        </Model>
+        <Model class="Models" type="ExternalModel">
+            node
+            <Input              class="DataObjects"  type="PointSet"    >inputHolder</Input>
+            <TargetEvaluation   class="DataObjects"  type="PointSet"    >outPSnode</TargetEvaluation>
+        </Model>
     </EnsembleModel>
   </Models>
   
