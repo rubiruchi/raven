@@ -178,11 +178,12 @@
         <variables>breakArea_1,breakArea_3,breakArea_1_updated,breakArea_3_updated</variables>
     </ExternalModel>
     <EnsembleModel name="multiUnit" subType="">
-      <expansionGrid variable="checkPointTime" alias="203">
+      <settings>
+        <expansionGrid variable="checkPointTime">
           <grid construction="equal" steps="4" >600 3600</grid>
           <models>SFP1,SFP2,SFP3,SFP4,node</models>
-      </expansionGrid>
-      
+        </expansionGrid>
+      </settings>
       <Model class="Models" type="Code"> 
         SFP1 
         <Input              class="Files"        type=""            >inputFile1</Input>
@@ -218,11 +219,12 @@
       </Model>
     </EnsembleModel>
     <EnsembleModel name="multiUnit_custom_grid" subType="">
+      <settings>
         <expansionGrid variable="checkPointTime" alias="203">
-            <grid construction="equal" steps="1" >600 1200 1800 2400 3000 3600</grid>
-            <models>SFP1,SFP2,SFP3,SFP4,node</models>
+          <grid construction="equal" steps="1" >600 1200 1800 2400 3000 3600</grid>
+          <models>SFP1,SFP2,SFP3,SFP4,node</models>
         </expansionGrid>
-        
+      </settings>
         <Model class="Models" type="Code">
             SFP1
             <Input              class="Files"        type=""            >inputFile1</Input>

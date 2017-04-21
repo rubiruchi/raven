@@ -1810,6 +1810,7 @@ class EnsembleModel(Dummy, Assembler):
     self.convergenceTol        = 1.e-3    # tolerance of the iteration scheme (if activated) => L2 norm
     self.initialConditions     = {}       # dictionary of initial conditions in case non-linear system is detected
     self.ensembleModelGraph    = None     # graph object (graphStructure.graphObject)
+    self.expansionGrid         = None     # expansion grids (these will expand a certain number of basic models in a multiple of a certain monotonic variable)
     self.printTag = 'EnsembleModel MODEL' # print tag
     # assembler objects to be requested
     self.addAssemblerObject('Model','n',True)
@@ -1858,6 +1859,7 @@ class EnsembleModel(Dummy, Assembler):
           self.createWorkingDir = True
       if child.tag == 'settings':
         self.__readSettings(child)
+        
     if len(self.modelsDictionary.keys()) < 2:
       self.raiseAnError(IOError, "The EnsembleModel needs at least 2 models to be constructed!")
 
@@ -1870,18 +1872,63 @@ class EnsembleModel(Dummy, Assembler):
     for child in xmlNode:
       if child.tag == 'maxIterations':
         self.maxIterations  = int(child.text)
-      if child.tag == 'tolerance':
+      elif child.tag == 'tolerance':
         self.convergenceTol = float(child.text)
-      if child.tag == 'initialConditions':
+      elif child.tag == 'initialConditions':
         for var in child:
           if "repeat" in var.attrib.keys():
             self.initialConditions[var.tag] = np.repeat([float(var.text.split()[0])], int(var.attrib['repeat'])) #np.array([float(var.text.split()[0]) for _ in range(int(var.attrib['repeat']))])
           else:
             try:
               values = var.text.split()
-              self.initialConditions[var.tag] = float(values[0]) if len(values) == 1 else np.asarray([float(varValue) for varValue in values])
-            except:
+              values = float(values[0]) if len(values) == 1 else np.asarray([float(varValue) for varValue in values]) 
+            except (ValueError,TypeError):
               self.raiseAnError(IOError,"unable to read text from XML node "+var.tag)
+            self.initialConditions[var.tag] = values
+      elif child.tag == 'expansionGrid':
+        expansionGridInfo = {}
+        if self.expansionGrid is None: 
+          self.expansionGrid = []
+        attributes = child.attrib
+        try:
+          variableName = attributes.pop("variable")
+        except KeyError:
+          self.raiseAnError(IOError,child.tag+' must have the attribute "variable"!')
+        if len(attributes) > 0: 
+          self.raiseAnError(IOError,child.tag+": unknown attributes: "+','.join(attributes.keys()))
+        for var in child:
+          if var.tag == 'grid':
+            try:
+              lower, upper = var.text.split()
+            except ValueError:
+              
+            except TypeError:
+            
+            attributes = child.attrib
+            try:
+              construction = attributes.pop("construction")
+            except KeyError:
+              self.raiseAnError(KeyError,var.tag+' must have the attribute "construction"!')
+            if construction not in ['equal','custom']:
+              self.raiseAnError(IOError,var.tag+": construction attribute must be either custom or equal. Got: "+construction)
+            if construction == 'equal':
+              try:
+                steps = attributes.pop("steps")
+              except KeyError:
+                self.raiseAnError(KeyError,var.tag+' if "construction" == "equal", the attribute "steps" need to be inputted!')  
+              except ValueError:
+                self.raiseAnError(ValueError,var.tag+' the attribute "steps" must be an interger!!!!') 
+            if len(attributes) > 0: 
+              self.raiseAnError(IOError,var.tag+": unknown attributes: "+','.join(attributes.keys()))
+            expansionGridInfo['grid'] 
+            
+            
+          elif var.tag == 'models':
+          
+          else:
+            self.raiseAnError(IOError,child.tag+": unknown XML sub node: "+var.tag)  
+        
+        
 
   def __findMatchingModel(self,what,subWhat):
     """

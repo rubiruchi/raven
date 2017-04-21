@@ -186,8 +186,6 @@ def findPathEllipsesParents(root,path,docLevel=0):
   curNode.append(foundNode)
   return newRoot
 
-
-
 def loadToTree(filename):
   """
     loads a file into an XML tree
@@ -239,8 +237,7 @@ def fixXmlTag(msg):
     msg = re.sub(notTagChars,'.',msg)
     print('XML UTILS: Replacing illegal tag characters in "'+pre+'":',msg)
   #  2. Start with a letter or underscore
-  if not bool(re.match(letters+u'|([_])',msg[0])) or bool(re.match(u'([xX][mM][lL])',msg[:
-    3])):
+  if not bool(re.match(letters+u'|([_])',msg[0])) or bool(re.match(u'([xX][mM][lL])',msg[:3])):
     print('XML UTILS: Prepending "_" to illegal tag "'+msg+'"')
     msg = '_' + msg
   return msg
