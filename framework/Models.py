@@ -1859,7 +1859,7 @@ class EnsembleModel(Dummy, Assembler):
           self.createWorkingDir = True
       if child.tag == 'settings':
         self.__readSettings(child)
-        
+
     if len(self.modelsDictionary.keys()) < 2:
       self.raiseAnError(IOError, "The EnsembleModel needs at least 2 models to be constructed!")
 
@@ -1881,54 +1881,63 @@ class EnsembleModel(Dummy, Assembler):
           else:
             try:
               values = var.text.split()
-              values = float(values[0]) if len(values) == 1 else np.asarray([float(varValue) for varValue in values]) 
+              values = float(values[0]) if len(values) == 1 else np.asarray([float(varValue) for varValue in values])
             except (ValueError,TypeError):
               self.raiseAnError(IOError,"unable to read text from XML node "+var.tag)
             self.initialConditions[var.tag] = values
       elif child.tag == 'expansionGrid':
         expansionGridInfo = {}
-        if self.expansionGrid is None: 
-          self.expansionGrid = []
+        #if self.expansionGrid is None:
+        #  self.expansionGrid = []
+        # for now we accept only one grid
+        if self.expansionGrid is not None:
+          self.raiseAnError(IOError,"Only one expansionGrid is currently supported!")
         attributes = child.attrib
         try:
           variableName = attributes.pop("variable")
         except KeyError:
           self.raiseAnError(IOError,child.tag+' must have the attribute "variable"!')
-        if len(attributes) > 0: 
+        if len(attributes) > 0:
           self.raiseAnError(IOError,child.tag+": unknown attributes: "+','.join(attributes.keys()))
+        expansionGridInfo['variable'] = variableName
         for var in child:
           if var.tag == 'grid':
-            try:
-              lower, upper = var.text.split()
-            except ValueError:
-              
-            except TypeError:
-            
-            attributes = child.attrib
+            attributes = var.attrib
             try:
               construction = attributes.pop("construction")
             except KeyError:
               self.raiseAnError(KeyError,var.tag+' must have the attribute "construction"!')
             if construction not in ['equal','custom']:
               self.raiseAnError(IOError,var.tag+": construction attribute must be either custom or equal. Got: "+construction)
-            if construction == 'equal':
+            try:
+              bounds = [float(element) for element in var.text.split()]
+            except (ValueError,TypeError,AttributeError) as e:
+              if construction == "equal":
+                self.raiseAnError(IOError,"expansionGrid for variable "+variableName+" and construction "+construction+": Error:"+str(e)+". The grid XML body must contain two floats (lower and upper bounds).")
+              else:
+                self.raiseAnError(IOError,"expansionGrid for variable "+variableName+" and construction "+construction+": Error:"+str(e)+". The grid XML body must contain a list of floats.")
+            bounds.sort()
+            lower, upper = min(bounds), max(bounds)
+            if construction == "equal":
+              if len(bounds) != 2:
+                self.raiseAnError(IOError,"expansionGrid for variable "+variableName+": Error:"+str(e)+". The grid XML body must contain two floats (lower and upper bounds).")
               try:
-                steps = attributes.pop("steps")
+                steps = int(attributes.pop("steps"))
               except KeyError:
-                self.raiseAnError(KeyError,var.tag+' if "construction" == "equal", the attribute "steps" need to be inputted!')  
+                self.raiseAnError(KeyError,var.tag+' if "construction" == "equal", the attribute "steps" need to be inputted!')
               except ValueError:
-                self.raiseAnError(ValueError,var.tag+' the attribute "steps" must be an interger!!!!') 
-            if len(attributes) > 0: 
+                self.raiseAnError(ValueError,var.tag+' the attribute "steps" must be an interger!!!!')
+              points = np.linspace(lower,upper,steps+1)
+            else:
+              points = bounds
+            if len(attributes) > 0:
               self.raiseAnError(IOError,var.tag+": unknown attributes: "+','.join(attributes.keys()))
-            expansionGridInfo['grid'] 
-            
-            
+            expansionGridInfo['grid'] = points
           elif var.tag == 'models':
-          
+            expansionGridInfo['models'] = [model.strip() for model in var.text.split(",")]
           else:
-            self.raiseAnError(IOError,child.tag+": unknown XML sub node: "+var.tag)  
-        
-        
+            self.raiseAnError(IOError,child.tag+": unknown XML sub node: "+var.tag)
+        self.expansionGrid = expansionGridInfo
 
   def __findMatchingModel(self,what,subWhat):
     """
