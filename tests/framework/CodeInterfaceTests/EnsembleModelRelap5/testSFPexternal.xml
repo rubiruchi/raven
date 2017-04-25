@@ -220,8 +220,8 @@
     </EnsembleModel>
     <EnsembleModel name="multiUnit_custom_grid" subType="">
       <settings>
-        <expansionGrid variable="checkPointTime" alias="203">
-          <grid construction="equal" steps="1" >600 1200 1800 2400 3000 3600</grid>
+        <expansionGrid variable="checkPointTime">
+          <grid construction="custom">600 1200 1800 2400 3000 3600</grid>
           <models>SFP1,SFP2,SFP3,SFP4,node</models>
         </expansionGrid>
       </settings>
