@@ -32,7 +32,7 @@ import inspect
 #import atexit
 import time
 import threading
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 #External Modules End--------------------------------------------------------------------------------
 
 #Internal Modules------------------------------------------------------------------------------------
@@ -1979,7 +1979,7 @@ class EnsembleModel(Dummy, Assembler):
 #        executionCounter+=1
 #        executionList[executionCounter] = [node]
 #      else:
-#        previousNodesInPath = []
+#        prezviousNodesInPath = []
 #        for path in allPath:
 #          if path.count(node) > 0: previousNodesInPath.append(path[path.index(node)-1])
 #        for previousNode in previousNodesInPath:
@@ -1989,6 +1989,17 @@ class EnsembleModel(Dummy, Assembler):
 #        executionList[executionCounter].append(node)
 #    return executionList
 #######################################################################################
+  
+  
+  def __createSampleVariableMode(self):
+    """
+      This method is aimed to instanciate a model of type Dummy
+      that represents the 
+      @ In, 
+      
+      
+    """
+  
 
   def initialize(self,runInfo,inputs,initDict=None):
     """
@@ -2009,7 +2020,7 @@ class EnsembleModel(Dummy, Assembler):
         if mm not in self.mods:
           self.mods.append(mm)
       self.modelsDictionary[modelIn[2]]['TargetEvaluation'] = self.retrieveObjectFromAssemblerDict('TargetEvaluation',self.modelsDictionary[modelIn[2]]['TargetEvaluation'])
-      self.tempTargetEvaluations[modelIn[2]]                 = copy.deepcopy(self.modelsDictionary[modelIn[2]]['TargetEvaluation'])
+      self.tempTargetEvaluations[modelIn[2]]                = copy.deepcopy(self.modelsDictionary[modelIn[2]]['TargetEvaluation'])
       self.modelsDictionary[modelIn[2]]['Input' ] = self.modelsDictionary[modelIn[2]]['TargetEvaluation'].getParaKeys("inputs")
       self.modelsDictionary[modelIn[2]]['Output'] = self.modelsDictionary[modelIn[2]]['TargetEvaluation'].getParaKeys("outputs")
     # construct chain connections
@@ -2022,6 +2033,17 @@ class EnsembleModel(Dummy, Assembler):
         outputMatch.extend(match if match is not None else [])
       outputMatch = list(set(outputMatch))
       modelsToOutputModels[modelIn] = outputMatch
+    # check if the expansion grid has been defined. In case expand the modelsToOutputModels dictionary of lists
+    aaaa = copy.deepcopy(modelsToOutputModels)
+    bbbb = graphStructure.graphObject(modelsToOutputModels)
+    if not bbbb.isConnectedNet():
+      isolatedModels = bbbb.findIsolatedVertices()
+    allPathxx = bbbb.findAllUniquePaths()  
+    cccc = bbbb.createSingleListOfVertices(allPathxx)  
+    if self.expansionGrid is not None:
+      self.__expandModelWithExpansionGrid(modelsToOutputModels)
+    
+    
     # construct the ensemble model directed graph
     self.ensembleModelGraph = graphStructure.graphObject(modelsToOutputModels)
     # make some checks
@@ -2067,7 +2089,30 @@ class EnsembleModel(Dummy, Assembler):
     self.raiseAMessage("Graph Degree Sequence is    : "+str(self.ensembleModelGraph.degreeSequence()))
     self.raiseAMessage("Graph Minimum/Maximum degree: "+str( (self.ensembleModelGraph.minDelta(), self.ensembleModelGraph.maxDelta())))
     self.raiseAMessage("Graph density/diameter      : "+str( (self.ensembleModelGraph.density(),  self.ensembleModelGraph.diameter())))
-
+  
+  def __expandModelWithExpansionGrid(self,modelsToOutputModels):
+    """
+      This method is aimed to expand the model list (and relative connections) 
+      when a expansionGrid is defined by the user.
+      @ In, modelsToOutputModels, dict, dictionary of list of models 
+      @ Out, None
+    """
+    modelsToOut = copy.deepcopy(modelsToOutputModels)
+    modelsSplitted = {} 
+    for split in self.expansionGrid['grid']:
+      for model in self.expansionGrid['models']:
+        modelsSplitted[model+"("+str(split)+")"] = modelsToOut[model]
+        for index, connectedModel in enumerate(modelsToOut[model]):
+          if connectedModel in self.expansionGrid['models']:
+            modelsSplitted[model+"("+str(split)+")"][index] = connectedModel+"("+str(split)+")"
+        if model in modelsToOutputModels:
+          modelsToOutputModels.pop(model)
+    modelsToOutputModels.update(modelsSplitted)     
+    
+    print(modelsToOut) 
+    print(modelsToOutputModels) 
+    
+    
   def getInitParams(self):
     """
       Method used to export to the printer in the base class the additional PERMANENT your local class have
