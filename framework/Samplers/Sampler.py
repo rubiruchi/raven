@@ -322,14 +322,18 @@ class Sampler(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
         self.initSeed = Distributions.randomIntegers(0,2**31,self)
         for childChild in child:
           if childChild.tag == "limit":
-            self.limit = childChild.text
-          elif childChild.tag == "initialSeed":
-            self.initSeed = int(childChild.text)
+            try:
+              self.limit = int(childChild.text)
+            except ValueError:
+              self.raiseAnError(IOError,'reading the attribute for the sampler '+self.name+' it was not possible to perform the conversion to integer for the attribute limit with value ' + str(childChild.text))
+          if childChild.tag == "initialSeed":
+            try:
+              self.initSeed = int(childChild.text)
+            except ValueError:
+              self.raiseAnError(IOError,'reading the attribute for the sampler '+self.name+' it was not possible to perform the conversion to integer for the attribute initialSeed with value ' + str(childChild.text))
           elif childChild.tag == "reseedEachIteration":
             if childChild.text.lower() in utils.stringsThatMeanTrue():
               self.reseedAtEachIteration = True
-          elif childChild.tag == "samplingType":
-            self.samplingType = childChild.text
           elif childChild.tag == "distInit":
             for childChildChild in childChild:
               NDdistData = {}
@@ -341,8 +345,6 @@ class Sampler(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
                 else:
                   self.raiseAnError(IOError,'Unknown tag '+childChildChildChild.tag+' .Available are: initialGridDisc and tolerance!')
               self.NDSamplingParams[childChildChild.attrib['name']] = NDdistData
-          else:
-            self.raiseAnError(IOError,'Unknown tag '+child.tag+' .Available are: limit, initialSeed, samplingType, reseedEachIteration and distInit!')
 
   def endJobRunnable(self):
     """
@@ -600,14 +602,14 @@ class Sampler(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
           self.pcaTransform(var,dist)
         else:
           self.raiseAnError(NotImplementedError,'transformation method is not yet implemented for ' + self.transformationMethod[dist] + ' method')
+    ##### CONSTANT VALUES ######
+    self._constantVariables()
     ##### REDUNDANT FUNCTIONALS #####
     # generate the function variable values
     for var in self.dependentSample.keys():
       test=self.funcDict[var].evaluate("evaluate",self.values)
       for corrVar in var.split(","):
         self.values[corrVar.strip()] = test
-    ##### CONSTANT VALUES ######
-    self._constantVariables()
     ##### RESTART #####
     #check if point already exists
     if self.restartData is not None:
@@ -617,7 +619,15 @@ class Sampler(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
     #if not found or not restarting, we have a new point!
     if inExisting is None:
       self.raiseADebug('Found new point to sample:',self.values)
-      return 0,model.createNewInput(oldInput,self.type,**self.inputInfo)
+      ## The new info for the perturbed run will be stored in the sampler's
+      ## inputInfo (I don't particularly like this, I think it should be
+      ## returned here, but let's get this working and then we can decide how
+      ## to best pass this information around. My reasoning is that returning
+      ## it here means the sampler does not need to store it, and we can return
+      ## a copy of the information, otherwise we have to be careful to create a
+      ## deep copy of this information when we submit it to a job).
+      ## -- DPM 4/18/17
+      return 0,oldInput
     #otherwise, return the restart point
     else:
       self.raiseADebug('Point found in restart:',inExisting['inputs'])
@@ -725,13 +735,17 @@ class Sampler(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
     if len(failedRuns)>0:
       self.raiseAWarning('There were %i failed runs!  Run with verbosity = debug for more details.' %(len(failedRuns)))
       for run in failedRuns:
-        metadata = run.getMetadata()
-        self.raiseADebug('  Run number %s FAILED:' %run.identifier,run.command)
+        ## FIXME: run.command no longer exists, so I am removing the printing
+        ## of it and the metadata for the time being, please let me know if this
+        ## information is critical, as it is debug info, I cannot imagine it is
+        ## important to keep.
+        self.raiseADebug('  Run number %s FAILED:' %run.identifier)
         self.raiseADebug('      return code :',run.getReturnCode())
-        if metadata is not None:
-          self.raiseADebug('      sampled vars:')
-          for v,k in metadata['SampledVars'].items():
-            self.raiseADebug('         ',v,':',k)
+        # metadata = run.getMetadata()
+        # if metadata is not None:
+        #   self.raiseADebug('      sampled vars:')
+        #   for v,k in metadata['SampledVars'].items():
+        #     self.raiseADebug('         ',v,':',k)
     else:
       self.raiseADebug('All runs completed without returning errors.')
     self._localHandleFailedRuns(failedRuns)
