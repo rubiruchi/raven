@@ -1,0 +1,66 @@
+<Simulation color="true" verbosity="debug">
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>sample,stats</Sequence>
+  </RunInfo>
+
+  <Steps>
+    <!-- TODO: sample an ensemble and generate some statistics -->
+  </Steps>
+
+  <DataObjects>
+    <PointSet name="placeholder_range">
+      <Input>v0,th0,g</Input>
+    </PointSet>
+    <PointSet name="placeholder_impact">
+      <Input>m,vf</Input>
+    </PointSet>
+    <PointSet name="range_data">
+      <Input>v0,th0,g</Input>
+      <Output>R,vf</Output>
+    </PointSet>
+    <PointSet name="impact_data">
+      <Input>vf,m</Input>
+      <Output>I</Output>
+    </PointSet>
+    <PointSet name="results">
+      <Input>v0,th0,g</Input>
+      <Output>R,I</Output>
+    </PointSet>
+  </DataObjects>
+
+  <Files>
+    <Input name="results">results.csv</Input>
+  </Files>
+
+  <Models>
+    <PostProcessor name="stats" subType="BasicStatistics">
+      <expectedValue>R,I</expectedValue>
+      <sigma>R,I</sigma>
+      <maximum>R,I</maximum>
+      <minimum>R,I</minimum>
+      <sensitivity>
+        <targets>v0,th0,g</targets>
+        <features>R,I</features>
+      </sensitivity>
+    </PostProcessor>
+
+    <ExternalModel>
+      <!-- TODO: specify rangefinder -->
+    </ExternalModel>
+
+    <ExternalModel>
+      <!-- TODO: specify impact -->
+    </ExternalModel>
+
+    <EnsembleModel>
+      <!-- TODO: combine rangefinder & impact into an ensemble -->
+    </EnsembleModel>
+  </Models>
+  <Samplers>
+    <!-- TODO: specify sampling strategy for the input spaces -->
+  </Samplers>
+  <Distributions>
+    <!-- TODO: specify sampling distributions for each variable -->
+  </Distributions>
+</Simulation>
