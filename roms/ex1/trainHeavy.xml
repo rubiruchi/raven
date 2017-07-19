@@ -35,7 +35,10 @@
   <RunInfo>
     <WorkingDir>.</WorkingDir>
     <Sequence>
-      readData,buildModel,sampleModel,plotData
+      readData,
+      buildModel,
+      sampleModel,
+      plotData
     </Sequence>
   </RunInfo>
 
