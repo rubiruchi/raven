@@ -1,0 +1,109 @@
+<!--##################### Example 3a ####################-->
+<Simulation verbosity='quiet'>
+
+  <RunInfo>
+    <WorkingDir>results</WorkingDir>
+    <Sequence>
+      extractData,
+      trainROM,
+      resampleROM,
+      plotData
+    </Sequence>
+  </RunInfo>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <!-- Hide this stuff because it is not important -->
+  <ExternalXML node="Distributions"
+               xmlToLoad="../auxiliary/Distributions.xml"/>
+  <ExternalXML node="Samplers"
+               xmlToLoad="../auxiliary/Samplers.xml"/>
+  <ExternalXML node="Models"
+               xmlToLoad="../auxiliary/Models.xml"/>
+  <ExternalXML node="OutStreams"
+               xmlToLoad="../auxiliary/OutStreams.xml"/>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+    
+  <Steps>
+    <!-- Necessary Evil -->
+    <IOStep name="extractData">
+      <Input  class="Databases" type="HDF5">
+        trainingDB
+      </Input>
+      <Output class="DataObjects" type="PointSet">
+        trainingObject
+      </Output>
+    </IOStep>
+
+
+
+    <RomTrainer name="trainROM">
+
+    </RomTrainer>
+    
+
+
+    <MultiRun name="resampleROM">
+
+    </MultiRun>
+
+
+
+    <IOStep name="plotData" pauseAtEnd="True">
+      <Input class="DataObjects"  type="PointSet">
+        sampledData
+      </Input>
+
+      <Input class="DataObjects" type="PointSet">
+        trainingObject
+      </Input>
+
+      <Output class="OutStreams" type="Plot">
+        plotROM4
+      </Output>
+
+      <Output class="OutStreams" type="Plot">
+        plotTraining4
+      </Output>
+    </IOStep>
+  </Steps>
+    
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <Databases>
+      <HDF5 name="trainingDB"
+            filename="trainingDB.h5"
+            readMode='read'/>
+  </Databases>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+  
+  <DataObjects>
+      <!-- Necessary Evil -->
+      <PointSet name = "DataTemplate">
+        <Input>x1,x2,x3</Input>
+        <Output>OutputPlaceHolder</Output>
+      </PointSet>
+
+      <PointSet name="trainingObject">
+        <Input>x1,x2,x3</Input>
+        <Output>y4</Output>
+      </PointSet>
+
+      <PointSet name="sampledData">
+        <Input>x1,x2,x3</Input>
+        <Output>y4</Output>
+      </PointSet>
+  </DataObjects>
+
+</Simulation>
+

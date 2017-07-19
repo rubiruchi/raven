@@ -1,0 +1,63 @@
+<!--##################### Example 2 #####################-->
+<Simulation>
+
+  <RunInfo>
+    <WorkingDir>results</WorkingDir>
+    <Sequence>sample</Sequence>
+  </RunInfo>
+  
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <!-- Hide this stuff because it is not important -->
+  <ExternalXML node="Distributions"
+               xmlToLoad="../auxiliary/Distributions.xml"/>
+  <ExternalXML node="Samplers"
+               xmlToLoad="../auxiliary/Samplers.xml"/>
+  <ExternalXML node="Models"
+               xmlToLoad="../auxiliary/Models.xml"/>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <Steps>
+    <MultiRun name="sample" pauseAtEnd="True">
+
+
+    </MultiRun>
+  </Steps>
+
+<!--#####################################################-->
+<!--###################### Outputs ######################-->
+<!--#####################################################-->
+ 
+  <Databases>
+    <HDF5 name="trainingDB" readMode="overwrite"/>
+  </Databases>
+  
+  <OutStreams>
+    <Print name="trainingData">
+      <type>csv</type>
+      <source>trainingObject</source>
+    </Print>
+  </OutStreams>
+  
+  <DataObjects>
+    <PointSet name="trainingObject">
+      <Input>x1,x2,x3</Input>
+      <Output>y1,y2,y3,y4,y5</Output>
+    </PointSet>
+    
+    <!-- Necessary evil -->
+    <PointSet name="dataTemplate">
+      <Input>x1,x2,x3</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+  </DataObjects>
+
+</Simulation>
+
+
+

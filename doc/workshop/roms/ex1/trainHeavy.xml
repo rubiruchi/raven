@@ -1,0 +1,178 @@
+<!--##################### Example 1 #####################-->
+<Simulation verbosity="silent">
+
+<!--#####################################################-->
+<!--##############  ADVANCED RAVEN FEATURE ##############-->
+<!--#####################################################-->
+
+  <!-- Anywhere the name of a VariableGroup appears as
+       the internal text of an xml tag will be replaced
+       with what is inside the Group tag                 -->
+
+  <!-- These allow us to reuse the ROMs in ROM library
+       on different problems                             -->
+  <VariableGroups>
+    <Group name="inputGroup">x</Group>
+    <Group name="targetGroup">f(x)</Group>
+
+  </VariableGroups>
+
+<!--#####################################################-->
+<!--##############  ADVANCED RAVEN FEATURE ##############-->
+<!--#####################################################-->
+
+  <!-- We can point to another file for loading
+       components of our input, enhancing reusability of
+       components you build                              -->
+  <ExternalXML node="Models" xmlToLoad="romLibrary.xml"/>
+  <!-- Hide this stuff because it is not important -->
+  <ExternalXML node="OutStreams" xmlToLoad="plotLibrary.xml"/>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      readData,
+      buildModel,
+      sampleModel,
+      plotData
+    </Sequence>
+  </RunInfo>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <!-- Contains our samples from the heavy model -->
+  <Files>
+    <Input name="input">./heavy.csv</Input>
+  </Files>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <!-- Vanilla Distribution: dist -->
+  <Distributions>
+    <Uniform name="dist">
+      <lowerBound>-15</lowerBound>
+      <upperBound>15</upperBound>
+    </Uniform>
+  </Distributions>
+
+  <!-- Vanilla Grid: grid -->
+  <Samplers>
+    <Grid name="grid">
+      <variable name="x">
+        <distribution>dist</distribution>
+        <grid construction="equal" steps="100" type="value">-11 11</grid>
+      </variable>
+    </Grid>
+  </Samplers>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <DataObjects>
+
+    <!-- This will store the data from our input file -->
+    <PointSet name="trainingData">
+      <Input>inputGroup</Input>
+      <Output>targetGroup</Output>
+    </PointSet>
+
+    <!-- Specifies structure of MultiRun output without
+         holding any data                               -->
+    <PointSet name="templateData">
+      <Input>inputGroup</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+
+    <!-- This will store our new samples off of the ROM -->
+    <PointSet name="romData">
+      <Input>inputGroup</Input>
+      <Output>targetGroup</Output>
+    </PointSet>
+  </DataObjects>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <Steps>
+    <!-- First read in the training data -->
+    <IOStep name="readData">
+      <Input class="Files" type="">input</Input>
+      <Output class="DataObjects" type="PointSet">trainingData</Output>
+    </IOStep>
+
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+
+    <!-- Construct our reduced order model -->
+    <RomTrainer name='buildModel'>
+      <Input class='DataObjects' type='PointSet'>trainingData</Input>
+      <!-- Try out different models here: -->
+
+    </RomTrainer>
+
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+
+    <!-- Generate some new points and plot the output -->
+    <MultiRun name="sampleModel">
+      <Input   class="DataObjects" type="PointSet">
+        templateData
+      </Input>
+
+      <!-- Try out different models here: -->
+
+      <Sampler class="Samplers" type="Grid">grid</Sampler>
+      <Output class="DataObjects" type="PointSet">
+        romData
+      </Output>
+    </MultiRun>
+
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+
+    <!-- Plot the results -->
+    <IOStep name='plotData' pauseAtEnd='True'>
+      <Input class='DataObjects' type='PointSet'>
+        trainingData
+      </Input>
+
+      <Input class="DataObjects" type="PointSet">
+        romData
+      </Input>
+
+      <Output class="OutStreams" type="Plot">
+        plotResponse
+      </Output>
+    </IOStep>
+  </Steps>
+
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+
+  <!-- To do list:
+       [ ] Make this file work
+       [ ] Test 5-10 different models
+       [ ] Look up one of the ROMs in the user manual and
+           try to tweak some of its parameters
+       [ ] Add to the file to be able to train multiple
+           ROMs in one execution
+       [ ] Plot the results of several ROMs on one plot
+           (HINT: each ROM should output to its own
+           PointSet)
+       [ ] Can you find a broken model?                  -->
+
+</Simulation>

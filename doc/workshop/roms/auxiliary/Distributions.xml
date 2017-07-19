@@ -1,0 +1,16 @@
+  <Distributions>
+    <Normal name="normal_trunc">
+      <mean>0.5</mean>
+      <sigma>0.1</sigma>
+      <lowerBound>0</lowerBound>
+      <upperBound>1</upperBound>
+    </Normal>
+    <Normal name="normal">
+      <mean>2</mean>
+      <sigma>0.2</sigma>
+    </Normal>
+    <Uniform name="uniform">
+      <upperBound>4</upperBound>
+      <lowerBound>1</lowerBound>
+    </Uniform>
+  </Distributions>

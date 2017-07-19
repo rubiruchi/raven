@@ -1,0 +1,135 @@
+<!--##################### Example 4 #####################-->
+<Simulation verbosity="quiet">
+    
+  <RunInfo>
+    <WorkingDir>results</WorkingDir>
+    <Sequence>
+      extractData,
+      loadROM,
+      resampleROM,
+      plotData
+    </Sequence>
+  </RunInfo>
+  
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <!-- Hide this stuff because it is not important -->
+  <ExternalXML node="Distributions"
+               xmlToLoad="../auxiliary/Distributions.xml"/>
+  <ExternalXML node="Samplers"
+               xmlToLoad="../auxiliary/Samplers.xml"/>
+  <ExternalXML node="Models"
+               xmlToLoad="../auxiliary/Models.xml"/>
+  <ExternalXML node="OutStreams"
+               xmlToLoad="../auxiliary/OutStreams.xml"/>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <Files>
+      <Input name="romFile" type="">y3LinearFit.pk</Input>
+  </Files>
+  
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+    
+  <Models>
+    <ROM name="y3ROM" subType="pickledROM"/>
+  </Models>
+
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+  
+  <Steps>
+    <IOStep name="extractData">
+      <Input class="Databases" type="HDF5">
+        trainingDB
+      </Input>
+
+      <Output class="DataObjects" type="PointSet">
+        trainingObject
+      </Output>
+    </IOStep>
+
+
+
+    <IOStep name="loadROM">
+      <Input   class="Files"  type=""   >romFile</Input>
+      <Output  class="Models" type="ROM">y3ROM</Output>
+    </IOStep>
+
+
+
+      <MultiRun name="resampleROM">
+          <Input class="DataObjects" type="PointSet">
+            DataTemplate
+          </Input>
+
+          <Model class="Models" type="ROM">y3ROM</Model>
+          
+          <Sampler class="Samplers" type="Grid">
+            fineGrid
+          </Sampler>
+
+          <Output class="DataObjects"  type="PointSet">
+            sampledData
+          </Output>
+      </MultiRun>
+
+
+
+      <IOStep name="plotData" pauseAtEnd="True">
+          <Input  class="DataObjects" type="PointSet">
+            sampledData
+          </Input>
+
+          <Input  class="DataObjects" type="PointSet">
+            trainingObject
+          </Input>
+
+          <Output class="OutStreams"  type="Plot">
+            plotROM3
+          </Output>
+
+          <Output class="OutStreams"  type="Plot">
+            plotTraining3
+          </Output>
+      </IOStep>
+  </Steps>
+  
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+
+  <Databases>
+      <HDF5 name="trainingDB"
+            filename="trainingDB.h5"
+            readMode="read"
+            directory="../../ex3/results/DatabaseStorage/"/>
+  </Databases>
+  
+  <DataObjects>
+      <!-- Necessary Evil -->
+      <PointSet name = "DataTemplate">
+          <Input>x1,x2,x3</Input>
+          <Output>OutputPlaceHolder</Output>
+      </PointSet>
+      <PointSet name="trainingObject">
+          <Input>x1,x2,x3</Input>
+          <Output>y3</Output>
+      </PointSet>
+      <PointSet name="sampledData">
+          <Input>x1,x2,x3</Input>
+          <Output>y3</Output>
+      </PointSet>
+  </DataObjects>
+
+</Simulation>
+
+
+
