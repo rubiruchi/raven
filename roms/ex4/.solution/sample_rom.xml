@@ -38,7 +38,7 @@
 <!--#####################################################-->
     
   <Models>
-
+    <ROM name="y3ROM" subType="pickledROM"/>
   </Models>
 
 <!--#####################################################-->
@@ -59,34 +59,47 @@
 
 
     <IOStep name="loadROM">
-
+      <Input   class="Files"  type=""   >romFile</Input>
+      <Output  class="Models" type="ROM">y3ROM</Output>
     </IOStep>
 
 
 
-    <MultiRun name="resampleROM">
+      <MultiRun name="resampleROM">
+          <Input class="DataObjects" type="PointSet">
+            DataTemplate
+          </Input>
 
-    </MultiRun>
+          <Model class="Models" type="ROM">y3ROM</Model>
+          
+          <Sampler class="Samplers" type="Grid">
+            fineGrid
+          </Sampler>
+
+          <Output class="DataObjects"  type="PointSet">
+            sampledData
+          </Output>
+      </MultiRun>
 
 
 
-    <IOStep name="plotData" pauseAtEnd="True">
-      <Input  class="DataObjects" type="PointSet">
-        sampledData
-      </Input>
+      <IOStep name="plotData" pauseAtEnd="True">
+          <Input  class="DataObjects" type="PointSet">
+            sampledData
+          </Input>
 
-      <Input  class="DataObjects" type="PointSet">
-        trainingObject
-      </Input>
+          <Input  class="DataObjects" type="PointSet">
+            trainingObject
+          </Input>
 
-      <Output class="OutStreams"  type="Plot">
-        plotROM3
-      </Output>
+          <Output class="OutStreams"  type="Plot">
+            plotROM3
+          </Output>
 
-      <Output class="OutStreams"  type="Plot">
-        plotTraining3
-      </Output>
-    </IOStep>
+          <Output class="OutStreams"  type="Plot">
+            plotTraining3
+          </Output>
+      </IOStep>
   </Steps>
   
 <!--#####################################################-->

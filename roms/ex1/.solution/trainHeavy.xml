@@ -118,7 +118,7 @@
     <RomTrainer name='buildModel'>
       <Input class='DataObjects' type='PointSet'>trainingData</Input>
       <!-- Try out different models here: -->
-
+      <Output class='Models' type='ROM'>linear</Output>
     </RomTrainer>
 
     <!--#################################################-->
@@ -132,6 +132,7 @@
       </Input>
 
       <!-- Try out different models here: -->
+      <Model class="Models" type="ROM">linear</Model>
 
       <Sampler class="Samplers" type="Grid">grid</Sampler>
       <Output class="DataObjects" type="PointSet">
@@ -164,8 +165,7 @@
     <!--#################################################-->
 
   <!-- To do list:
-       [ ] Make this file work
-       [ ] Test 5-10 different models
+       [ ] Edit the input to test 5-10 different models
        [ ] Look up one of the ROMs in the user manual and
            try to tweak some of its parameters
        [ ] Add to the file to be able to train multiple

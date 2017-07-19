@@ -43,29 +43,13 @@
 
 
     <RomTrainer name="trainROM">
-      <Input class="DataObjects" type="PointSet">
-        trainingObject
-      </Input>
 
-      <Output class="Models" type="ROM">y4ROM</Output>
     </RomTrainer>
     
 
 
     <MultiRun name="resampleROM">
-      <Input class="DataObjects" type="PointSet">
-        DataTemplate
-      </Input>
 
-      <Model   class="Models" type="ROM">y4ROM</Model>
-
-      <Sampler class="Samplers" type="Grid">
-        fineGrid
-      </Sampler>
-
-      <Output class="DataObjects" type="PointSet">
-        sampledData
-      </Output>
     </MultiRun>
 
 

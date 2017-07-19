@@ -24,7 +24,30 @@
 
   <Steps>
     <MultiRun name="sample" pauseAtEnd="True">
+      <Input   class="DataObjects" type="PointSet">
+        dataTemplate
+      </Input>
 
+      <Model   class="Models" type="ExternalModel">
+        simulation
+      </Model>
+
+      <Sampler class="Samplers" type="Grid">
+        coarseGrid
+      </Sampler>
+
+      <Output  class="Databases" type="HDF5">
+        trainingDB
+      </Output>
+
+      <!-- The DataObject is necessary to get a Print or
+           Plot                                          -->
+      <Output  class="DataObjects" type="PointSet">
+        trainingObject
+      </Output>      
+      <Output  class="OutStreams"  type="Print">
+        trainingData
+      </Output>
 
     </MultiRun>
   </Steps>

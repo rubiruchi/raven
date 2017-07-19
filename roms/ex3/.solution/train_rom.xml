@@ -40,10 +40,12 @@
           <Output  class='DataObjects' type='PointSet'>trainingObject</Output>
       </IOStep>
       <RomTrainer name='trainROM'>
-
+          <Input   class='DataObjects' type='PointSet'>trainingObject</Input>
+          <Output  class='Models'      type='ROM'     >y3ROM</Output>
       </RomTrainer>
       <IOStep name='saveROM'>
-
+          <Input   class='Models' type='ROM'>y3ROM</Input>
+          <Output  class='Files'  type=''   >romFile</Output>
       </IOStep>
   </Steps>
 
