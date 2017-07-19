@@ -1,50 +1,56 @@
-<!--############################### Example 1 ###############################-->
+<!--##################### Example 1 #####################-->
 <Simulation verbosity="silent">
 
-<!--#########################################################################-->
-<!--########################  ADVANCED RAVEN FEATURE ########################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--##############  ADVANCED RAVEN FEATURE ##############-->
+<!--#####################################################-->
 
-  <!-- Anywhere the name of a VariableGroup appears as the internal text of an
-       xml tag will be replaced with what is inside the Group tag -->
-  <!-- These allow us to reuse the ROMs in ROM library on different problems -->
+  <!-- Anywhere the name of a VariableGroup appears as
+       the internal text of an xml tag will be replaced
+       with what is inside the Group tag                 -->
+
+  <!-- These allow us to reuse the ROMs in ROM library
+       on different problems                             -->
   <VariableGroups>
     <Group name="inputGroup">x</Group>
     <Group name="targetGroup">f(x)</Group>
 
   </VariableGroups>
 
-<!--#########################################################################-->
-<!--########################  ADVANCED RAVEN FEATURE ########################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--##############  ADVANCED RAVEN FEATURE ##############-->
+<!--#####################################################-->
 
-  <!-- We can point to another file for loading components of our input
-       enhancing reusability of components you build                    -->
+  <!-- We can point to another file for loading
+       components of our input, enhancing reusability of
+       components you build                              -->
   <ExternalXML node="Models" xmlToLoad="romLibrary.xml"/>
   <!-- Hide this stuff because it is not important -->
   <ExternalXML node="OutStreams" xmlToLoad="plotLibrary.xml"/>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <RunInfo>
     <WorkingDir>.</WorkingDir>
-    <Sequence>readData,buildModel,sampleModel,plotData</Sequence>
+    <Sequence>
+      readData,buildModel,sampleModel,plotData
+    </Sequence>
   </RunInfo>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <!-- Contains our samples from the heavy model -->
   <Files>
     <Input name="input">./heavy.csv</Input>
   </Files>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <!-- Vanilla Distribution: dist -->
   <Distributions>
@@ -64,9 +70,9 @@
     </Grid>
   </Samplers>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <DataObjects>
 
@@ -76,7 +82,8 @@
       <Output>targetGroup</Output>
     </PointSet>
 
-    <!-- Specifies structure of MultiRun output without holding any data -->
+    <!-- Specifies structure of MultiRun output without
+         holding any data                               -->
     <PointSet name="templateData">
       <Input>inputGroup</Input>
       <Output>OutputPlaceHolder</Output>
@@ -89,9 +96,9 @@
     </PointSet>
   </DataObjects>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <Steps>
     <!-- First read in the training data -->
@@ -100,9 +107,9 @@
       <Output class="DataObjects" type="PointSet">trainingData</Output>
     </IOStep>
 
-    <!--#####################################################################-->
-    <!--#####################################################################-->
-    <!--#####################################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
 
     <!-- Construct our reduced order model -->
     <RomTrainer name='buildModel'>
@@ -111,43 +118,58 @@
       <Output class='Models' type='ROM'>linear</Output>
     </RomTrainer>
 
-    <!--#####################################################################-->
-    <!--#####################################################################-->
-    <!--#####################################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
 
     <!-- Generate some new points and plot the output -->
     <MultiRun name="sampleModel">
-      <Input   class="DataObjects" type="PointSet">templateData</Input>
+      <Input   class="DataObjects" type="PointSet">
+        templateData
+      </Input>
+
       <!-- Try out different models here: -->
-      <Model   class="Models"      type="ROM"     >linear</Model>
-      <Sampler class="Samplers"    type="Grid"    >grid</Sampler>
-      <Output  class="DataObjects" type="PointSet">romData</Output>
+      <Model class="Models" type="ROM">linear</Model>
+
+      <Sampler class="Samplers" type="Grid">grid</Sampler>
+      <Output class="DataObjects" type="PointSet">
+        romData
+      </Output>
     </MultiRun>
 
-    <!--#####################################################################-->
-    <!--#####################################################################-->
-    <!--#####################################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
 
     <!-- Plot the results -->
     <IOStep name='plotData' pauseAtEnd='True'>
-      <Input class='DataObjects' type='PointSet'>trainingData</Input>
-      <Input  class="DataObjects" type="PointSet">romData</Input>
-      <Output  class="OutStreams"  type="Plot"    >plotResponse</Output>
+      <Input class='DataObjects' type='PointSet'>
+        trainingData
+      </Input>
+
+      <Input class="DataObjects" type="PointSet">
+        romData
+      </Input>
+
+      <Output class="OutStreams" type="Plot">
+        plotResponse
+      </Output>
     </IOStep>
   </Steps>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
+    <!--#################################################-->
 
   <!-- To do list:
-         [ ] Edit the input to test 5-10 different models
-         [ ] Look up one of the ROMs in the user manual and try to tweak some
-             of parameters
-         [ ] Add to the file to be able to train multiple ROMs in one execution
-         [ ] Plot the results of several ROMs on one plot (HINT: each ROM should
-             output to its own PointSet)
-         [ ] Can you find a broken model?
-    -->
+       [ ] Edit the input to test 5-10 different models
+       [ ] Look up one of the ROMs in the user manual and
+           try to tweak some of its parameters
+       [ ] Add to the file to be able to train multiple
+           ROMs in one execution
+       [ ] Plot the results of several ROMs on one plot
+           (HINT: each ROM should output to its own
+           PointSet)
+       [ ] Can you find a broken model?                  -->
 
 </Simulation>

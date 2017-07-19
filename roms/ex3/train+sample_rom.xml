@@ -1,77 +1,126 @@
-<!--############################### Example 3a ##############################-->
+<!--##################### Example 3a ####################-->
 <Simulation verbosity='quiet'>
 
   <RunInfo>
     <WorkingDir>results</WorkingDir>
-    <Sequence>extractData,trainROM,resampleROM,plotData</Sequence>
+    <Sequence>
+      extractData,
+      trainROM,
+      resampleROM,
+      plotData
+    </Sequence>
   </RunInfo>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <!-- Hide this stuff because it is not important -->
-  <ExternalXML node="Distributions" xmlToLoad="../auxiliary/Distributions.xml"/>
-  <ExternalXML node="Samplers"      xmlToLoad="../auxiliary/Samplers.xml"/>
-  <ExternalXML node="Models"        xmlToLoad="../auxiliary/Models.xml"/>
-  <ExternalXML node="OutStreams"    xmlToLoad="../auxiliary/OutStreams.xml"/>
+  <ExternalXML node="Distributions"
+               xmlToLoad="../auxiliary/Distributions.xml"/>
+  <ExternalXML node="Samplers"
+               xmlToLoad="../auxiliary/Samplers.xml"/>
+  <ExternalXML node="Models"
+               xmlToLoad="../auxiliary/Models.xml"/>
+  <ExternalXML node="OutStreams"
+               xmlToLoad="../auxiliary/OutStreams.xml"/>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
     
   <Steps>
+    <!-- Necessary Evil -->
     <IOStep name="extractData">
-      <Input   class="Databases"    type="HDF5"         >trainingDB</Input>
-      <Output  class="DataObjects"  type="PointSet"     >trainingObject</Output>
+      <Input  class="Databases" type="HDF5">
+        trainingDB
+      </Input>
+      <Output class="DataObjects" type="PointSet">
+        trainingObject
+      </Output>
     </IOStep>
+
+
+
     <RomTrainer name="trainROM">
-      <Input   class="DataObjects"  type="PointSet"     >trainingObject</Input>
-      <Output  class="Models"       type="ROM"          >y4ROM</Output>
+      <Input class="DataObjects" type="PointSet">
+        trainingObject
+      </Input>
+
+      <Output class="Models" type="ROM">y4ROM</Output>
     </RomTrainer>
+    
+
+
     <MultiRun name="resampleROM">
-      <Input   class="DataObjects"  type="PointSet"     >DataTemplate</Input>
-      <Model   class="Models"       type="ROM"          >y4ROM</Model>
-      <Sampler class="Samplers"     type="Grid"         >fineGrid</Sampler>
-      <Output  class="DataObjects"  type="PointSet"     >sampledData</Output>
+      <Input class="DataObjects" type="PointSet">
+        DataTemplate
+      </Input>
+
+      <Model   class="Models" type="ROM">y4ROM</Model>
+
+      <Sampler class="Samplers" type="Grid">
+        fineGrid
+      </Sampler>
+
+      <Output class="DataObjects" type="PointSet">
+        sampledData
+      </Output>
     </MultiRun>
+
+
+
     <IOStep name="plotData" pauseAtEnd="True">
-      <Input   class="DataObjects"  type="PointSet"     >sampledData</Input>
-      <Input   class="DataObjects"  type="PointSet"     >trainingObject</Input>
-      <Output  class="OutStreams"   type="Plot"         >plotROM4</Output>
-      <Output  class="OutStreams"   type="Plot"         >plotTraining4</Output>
+      <Input class="DataObjects"  type="PointSet">
+        sampledData
+      </Input>
+
+      <Input class="DataObjects" type="PointSet">
+        trainingObject
+      </Input>
+
+      <Output class="OutStreams" type="Plot">
+        plotROM4
+      </Output>
+
+      <Output class="OutStreams" type="Plot">
+        plotTraining4
+      </Output>
     </IOStep>
   </Steps>
     
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
 
   <Databases>
-      <HDF5 name="trainingDB" filename="trainingDB.h5" readMode="read" directory="results/DatabaseStorage/"/>
+      <HDF5 name="trainingDB"
+            filename="trainingDB.h5"
+            readMode="read"
+            directory="results/DatabaseStorage/"/>
   </Databases>
 
-<!--#########################################################################-->
-<!--#########################################################################-->
-<!--#########################################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
   
   <DataObjects>
       <!-- Necessary Evil -->
       <PointSet name = "DataTemplate">
-          <Input>x1,x2,x3</Input>
-          <Output>OutputPlaceHolder</Output>
+        <Input>x1,x2,x3</Input>
+        <Output>OutputPlaceHolder</Output>
       </PointSet>
+
       <PointSet name="trainingObject">
-          <Input>x1,x2,x3</Input>
-          <Output>y4</Output>
+        <Input>x1,x2,x3</Input>
+        <Output>y4</Output>
       </PointSet>
+
       <PointSet name="sampledData">
-          <Input>x1,x2,x3</Input>
-          <Output>y4</Output>
+        <Input>x1,x2,x3</Input>
+        <Output>y4</Output>
       </PointSet>
   </DataObjects>
 
 </Simulation>
-
-
 
