@@ -1,0 +1,75 @@
+<Models>
+
+  <!-- Linear Models -->
+
+  <ROM name="linear" subType="SciKitLearn">
+    <SKLtype>linear_model|LinearRegression</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+  </ROM>
+
+  <ROM name="elasticNet" subType="SciKitLearn">
+    <SKLtype>linear_model|ElasticNet</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+  </ROM>
+
+  <ROM name="lasso" subType="SciKitLearn">
+    <SKLtype>linear_model|Lasso</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+  </ROM>
+
+  <!-- Kriging -->
+  <ROM name="gp" subType="SciKitLearn">
+    <SKLtype>GaussianProcess|GaussianProcess</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+  </ROM>
+
+  <!-- Partition-based Models -->
+  <ROM name="dt" subType="SciKitLearn">
+    <SKLtype>tree|DecisionTreeRegressor</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+    <criterion>mse</criterion>
+    <splitter>best</splitter>
+    <min_samples_split>2</min_samples_split>
+    <min_samples_leaf>1</min_samples_leaf>
+  </ROM>
+
+  <ROM name="msr" subType="MSR">
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+    <partitionPredictor>kde</partitionPredictor>
+    <kernel>gaussian</kernel>
+    <smooth/>
+    <bandwidth>0.1</bandwidth>
+    <simplification>0.04</simplification>
+  </ROM>
+
+  <!-- SVM -->
+  <ROM name="svr" subType="SciKitLearn">
+    <SKLtype>svm|SVR</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+    <C>1000</C>
+    <kernel>rbf</kernel>
+    <max_iter>-1</max_iter>
+  </ROM>
+
+  <!-- Geometric Interpolators -->
+  <ROM name="knr" subType="SciKitLearn">
+    <SKLtype>neighbors|KNeighborsRegressor</SKLtype>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+    <n_neighbors>5</n_neighbors>
+  </ROM>
+
+  <ROM name='iw' subType='NDinvDistWeight'>
+    <Features>inputGroup</Features>
+    <Target>targetGroup</Target>
+    <p>2</p>
+  </ROM>
+
+</Models>

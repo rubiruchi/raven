@@ -1,0 +1,42 @@
+<OutStreams>
+   <Plot name="plotResponse">
+    <filename>ROM</filename>
+    <plotSettings>
+      <plot>
+        <type>line</type>
+        <interpPointsX>1000</interpPointsX>
+        <x>romData|Input|x</x>
+        <y>romData|Output|f(x)</y>
+        <kwargs>
+          <c>#999999</c>
+          <linewidth>2</linewidth>
+          <linestyle>dashed</linestyle>
+        </kwargs>
+      </plot>
+      <plot>
+        <type>scatter</type>
+        <x>trainingData|Input|x</x>
+        <y>trainingData|Output|f(x)</y>
+        <c>#377eb8</c>
+        <s>60</s>
+        <kwargs>
+          <edgecolors>None</edgecolors>
+        </kwargs>
+      </plot>
+      <xlabel>x</xlabel>
+      <ylabel>f(x)</ylabel>
+    </plotSettings>
+    <actions>
+      <how>screen,png</how>
+      <title>
+        <text>ROM Training Example</text>
+      </title>
+      <range>
+          <xmin>-15</xmin>
+          <xmax>15</xmax>
+          <ymin>-15</ymin>
+          <ymax>15</ymax>
+      </range>
+    </actions>
+    </Plot>
+  </OutStreams>
