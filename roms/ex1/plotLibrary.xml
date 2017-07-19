@@ -32,7 +32,7 @@
       </legend>
     </plotSettings>
     <actions>
-      <how>screen,png</how>
+      <how>screen</how>
       <title>
         <text>ROM Training Example</text>
       </title>

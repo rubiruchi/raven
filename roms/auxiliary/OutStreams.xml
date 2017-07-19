@@ -12,7 +12,7 @@
       </plot>
     </plotSettings>
     <actions>
-      <how>screen,png</how>
+      <how>screen</how>
       <title>
         <text>Sampled Input Space: ROM4</text>
       </title>
@@ -31,7 +31,7 @@
       </plot>
     </plotSettings>
     <actions>
-      <how>screen,png</how>
+      <how>screen</how>
       <title>
         <text>Sampled Input Space: Function</text>
       </title>
@@ -51,7 +51,7 @@
       </plot>
     </plotSettings>
     <actions>
-      <how>screen,png</how>
+      <how>screen</how>
       <title>
         <text>Sampled Input Space: ROM4</text>
       </title>
@@ -70,7 +70,7 @@
       </plot>
     </plotSettings>
     <actions>
-      <how>screen,png</how>
+      <how>screen</how>
       <title>
         <text>Sampled Input Space: Function</text>
       </title>

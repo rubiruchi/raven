@@ -96,8 +96,7 @@
   <Databases>
       <HDF5 name="trainingDB"
             filename="trainingDB.h5"
-            readMode="read"
-            directory="results/DatabaseStorage/"/>
+            readMode='read'/>
   </Databases>
 
 <!--#####################################################-->
