@@ -1,6 +1,7 @@
+<!--############################## ROM Library ##############################-->
 <Models>
 
-  <!-- Linear Models -->
+  <!--############################ Linear Models ############################-->
 
   <ROM name="linear" subType="SciKitLearn">
     <SKLtype>linear_model|LinearRegression</SKLtype>
@@ -20,14 +21,14 @@
     <Target>targetGroup</Target>
   </ROM>
 
-  <!-- Kriging -->
+  <!--############################### Kriging ###############################-->
   <ROM name="gp" subType="SciKitLearn">
     <SKLtype>GaussianProcess|GaussianProcess</SKLtype>
     <Features>inputGroup</Features>
     <Target>targetGroup</Target>
   </ROM>
 
-  <!-- Partition-based Models -->
+  <!--######################## Partition-based Models #######################-->
   <ROM name="dt" subType="SciKitLearn">
     <SKLtype>tree|DecisionTreeRegressor</SKLtype>
     <Features>inputGroup</Features>
@@ -48,7 +49,7 @@
     <simplification>0.04</simplification>
   </ROM>
 
-  <!-- SVM -->
+  <!--################################# SVM #################################-->
   <ROM name="svr" subType="SciKitLearn">
     <SKLtype>svm|SVR</SKLtype>
     <Features>inputGroup</Features>
@@ -58,7 +59,7 @@
     <max_iter>-1</max_iter>
   </ROM>
 
-  <!-- Geometric Interpolators -->
+  <!--####################### Geometric Interpolators #######################-->
   <ROM name="knr" subType="SciKitLearn">
     <SKLtype>neighbors|KNeighborsRegressor</SKLtype>
     <Features>inputGroup</Features>

@@ -11,6 +11,7 @@
           <c>#999999</c>
           <linewidth>2</linewidth>
           <linestyle>dashed</linestyle>
+          <label>ROM Prediction</label>
         </kwargs>
       </plot>
       <plot>
@@ -21,10 +22,14 @@
         <s>60</s>
         <kwargs>
           <edgecolors>None</edgecolors>
+          <label>Training Data</label>
         </kwargs>
       </plot>
       <xlabel>x</xlabel>
       <ylabel>f(x)</ylabel>
+      <legend>
+        <loc>best</loc>
+      </legend>
     </plotSettings>
     <actions>
       <how>screen,png</how>

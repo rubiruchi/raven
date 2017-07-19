@@ -1,0 +1,76 @@
+<!--############################### Example 3b ##############################-->
+<Simulation>
+    
+  <RunInfo>
+      <WorkingDir>results</WorkingDir>
+      <Sequence>extractData,trainROM,saveROM</Sequence>
+      <batchSize>1</batchSize>
+  </RunInfo>
+  
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
+  <Files>
+      <Input name="romFile" type="">y3LinearFit.pk</Input>
+  </Files>
+  
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
+  <Models>
+    <ROM name='y3ROM' subType='SciKitLearn'>
+      <Features>x1,x2,x3</Features>
+      <Target>y3</Target>
+      <SKLtype>linear_model|LinearRegression</SKLtype>
+      <fit_intercept>True</fit_intercept>
+      <normalize>False</normalize>
+    </ROM>
+  </Models>
+  
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
+  <Steps>
+      <!-- Necessary evil -->
+      <IOStep name='extractData'>
+          <Input   class='Databases'   type='HDF5'    >trainingDB</Input>
+          <Output  class='DataObjects' type='PointSet'>trainingObject</Output>
+      </IOStep>
+      <RomTrainer name='trainROM'>
+          <Input   class='DataObjects' type='PointSet'>trainingObject</Input>
+          <Output  class='Models'      type='ROM'     >y3ROM</Output>
+      </RomTrainer>
+      <IOStep name='saveROM'>
+          <Input   class='Models' type='ROM'>y3ROM</Input>
+          <Output  class='Files'  type=''   >romFile</Output>
+      </IOStep>
+  </Steps>
+
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+  
+  <Databases>
+      <HDF5 name="trainingDB" filename="trainingDB.h5" readMode='read' directory="results/DatabaseStorage/"/>
+  </Databases>
+  
+  <DataObjects>
+      <PointSet name='trainingObject'>
+          <Input>x1,x2,x3</Input>
+          <Output>y3</Output>
+      </PointSet>
+  </DataObjects>
+
+  <!-- To do list:
+         [ ] Train the model on different outputs
+         [ ] Instead of using the HDF5, load the PointSet from file and use it
+             directly
+    -->
+
+</Simulation>
+
+
+

@@ -1,0 +1,79 @@
+<OutStreams>
+  <Plot name="plotROM4" overwrite="False">
+    <filename>y4ROM</filename>
+    <plotSettings>
+      <plot>
+        <type>scatter</type>
+        <x>sampledData|Input|x1</x>
+        <y>sampledData|Input|x3</y>
+        <z>sampledData|Output|y4</z>
+        <colorMap>sampledData|Input|x2</colorMap>
+        <cmap>coolwarm</cmap>
+      </plot>
+    </plotSettings>
+    <actions>
+      <how>screen,png</how>
+      <title>
+        <text>Sampled Input Space: ROM4</text>
+      </title>
+    </actions>
+  </Plot>
+  <Plot name="plotTraining4" overwrite="False">
+    <filename>y4Training</filename>
+    <plotSettings>
+      <plot>
+        <type>scatter</type>
+        <x>trainingObject|Input|x1</x>
+        <y>trainingObject|Input|x3</y>
+        <z>trainingObject|Output|y4</z>
+        <colorMap>trainingObject|Input|x2</colorMap>
+        <cmap>coolwarm</cmap>
+      </plot>
+    </plotSettings>
+    <actions>
+      <how>screen,png</how>
+      <title>
+        <text>Sampled Input Space: Function</text>
+      </title>
+    </actions>
+  </Plot>
+  <!-- Same as above only with y3 -->
+  <Plot name="plotROM3" overwrite="False">
+    <filename>y3ROM</filename>
+    <plotSettings>
+      <plot>
+        <type>scatter</type>
+        <x>sampledData|Input|x1</x>
+        <y>sampledData|Input|x3</y>
+        <z>sampledData|Output|y3</z>
+        <colorMap>sampledData|Input|x2</colorMap>
+        <cmap>coolwarm</cmap>
+      </plot>
+    </plotSettings>
+    <actions>
+      <how>screen,png</how>
+      <title>
+        <text>Sampled Input Space: ROM4</text>
+      </title>
+    </actions>
+  </Plot>
+  <Plot name="plotTraining3" overwrite="False">
+    <filename>y3Training</filename>
+    <plotSettings>
+      <plot>
+        <type>scatter</type>
+        <x>trainingObject|Input|x1</x>
+        <y>trainingObject|Input|x3</y>
+        <z>trainingObject|Output|y3</z>
+        <colorMap>trainingObject|Input|x2</colorMap>
+        <cmap>coolwarm</cmap>
+      </plot>
+    </plotSettings>
+    <actions>
+      <how>screen,png</how>
+      <title>
+        <text>Sampled Input Space: Function</text>
+      </title>
+    </actions>
+  </Plot>
+</OutStreams>

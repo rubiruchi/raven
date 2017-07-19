@@ -1,20 +1,23 @@
-<Simulation>
+<!--############################### Example 1 ###############################-->
+
+<Simulation verbosity="silent">
 
 <!--#########################################################################-->
-<!--######################## ADVANCED RAVEN FEATURES ########################-->
-  
+<!--########################  ADVANCED RAVEN FEATURE ########################-->
+<!--#########################################################################-->
+
+  <!-- Anywhere the name of a VariableGroup appears as the internal text of an
+       xml tag will be replaced with what is inside the Group tag -->
   <!-- These allow us to reuse the ROMs in ROM library on different problems -->
   <VariableGroups>
     <Group name="inputGroup">x</Group>
     <Group name="targetGroup">f(x)</Group>
-    <Group name="activeROM">svr</Group>
-    <!-- <Group name="activeROM">linear</Group> -->
-    <!-- <Group name="activeROM">knr</Group> -->
-    <!-- <Group name="activeROM">iw</Group> -->
-    <!-- <Group name="activeROM">dt</Group> -->
-    <!-- <Group name="activeROM">msr</Group> -->
-    <!-- <Group name="activeROM">gp</Group> -->
+
   </VariableGroups>
+
+<!--#########################################################################-->
+<!--########################  ADVANCED RAVEN FEATURE ########################-->
+<!--#########################################################################-->
 
   <!-- We can point to another file for loading components of our input
        enhancing reusability of components you build                    -->
@@ -23,16 +26,26 @@
   <ExternalXML node="OutStreams" xmlToLoad="plotLibrary.xml"/>
 
 <!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
 
   <RunInfo>
     <WorkingDir>.</WorkingDir>
     <Sequence>readData,buildModel,sampleModel,plotData</Sequence>
   </RunInfo>
 
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
   <!-- Contains our samples from the heavy model -->
   <Files>
     <Input name="input">./heavy.csv</Input>
   </Files>
+
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
 
   <!-- Vanilla Distribution: dist -->
   <Distributions>
@@ -51,6 +64,10 @@
       </variable>
     </Grid>
   </Samplers>
+
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
 
   <DataObjects>
 
@@ -73,31 +90,65 @@
     </PointSet>
   </DataObjects>
 
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
   <Steps>
     <!-- First read in the training data -->
     <IOStep name="readData">
       <Input class="Files" type="">input</Input>
       <Output class="DataObjects" type="PointSet">trainingData</Output>
     </IOStep>
+
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+
     <!-- Construct our reduced order model -->
     <RomTrainer name='buildModel'>
       <Input class='DataObjects' type='PointSet'>trainingData</Input>
       <!-- Try out different models here: -->
-      <Output class='Models' type='ROM'>activeROM</Output>
+      <Output class='Models' type='ROM'>linear</Output>
     </RomTrainer>
+
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+
     <!-- Generate some new points and plot the output -->
     <MultiRun name="sampleModel">
       <Input   class="DataObjects" type="PointSet">templateData</Input>
       <!-- Try out different models here: -->
-      <Model   class="Models"      type="ROM"     >activeROM</Model>
+      <Model   class="Models"      type="ROM"     >linear</Model>
       <Sampler class="Samplers"    type="Grid"    >grid</Sampler>
       <Output  class="DataObjects" type="PointSet">romData</Output>
     </MultiRun>
+
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+    <!--#####################################################################-->
+
+    <!-- Plot the results -->
     <IOStep name='plotData' pauseAtEnd='True'>
       <Input class='DataObjects' type='PointSet'>trainingData</Input>
       <Input  class="DataObjects" type="PointSet">romData</Input>
       <Output  class="OutStreams"  type="Plot"    >plotResponse</Output>
     </IOStep>
   </Steps>
+
+<!--#########################################################################-->
+<!--#########################################################################-->
+<!--#########################################################################-->
+
+  <!-- To do list:
+         [ ] Edit the input to test 5-10 different models
+         [ ] Look up one of the ROMs in the user manual and try to tweak some
+             of parameters
+         [ ] Add to the file to be able to train multiple ROMs in one execution
+         [ ] Plot the results of several ROMs on one plot (HINT: each ROM should
+             output to its own PointSet)
+         [ ] Can you find a broken model?
+    -->
 
 </Simulation>
