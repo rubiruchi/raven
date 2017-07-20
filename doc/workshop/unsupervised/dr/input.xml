@@ -1,0 +1,54 @@
+<Simulation verbosity="debug">
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      loadData,
+      reduce,
+      plotResults
+    </Sequence>
+  </RunInfo>
+
+  <ExternalXML node="Files" xmlToLoad="fileLibrary.xml"/>
+  <ExternalXML node="Models" xmlToLoad="drLibrary.xml"/>
+
+  <Steps>
+    <IOStep name="loadData">
+      <!-- Choose the data you want to read -->
+      <!-- Where do you want to put it? -->
+    </IOStep>
+    <PostProcess name="reduce">
+      <!-- What are you operating on? -->
+      <!-- What technnique do you want -->
+      <!-- Where do you want to put it? -->
+    </PostProcess>
+    <IOStep name="plotResults" pauseAtEnd="true">
+      <!-- Where is the data coming from for the plot? -->
+      <!-- Who specifies the structure of the plot? -->
+    </IOStep>
+  </Steps>
+  
+  <DataObjects>
+    <!-- Speciy a DataObject here -->
+    <PointSet name="">
+      <Input></Input>
+      <Output></Output>
+    </PointSet>
+  </DataObjects>
+
+  <OutStreams>
+    <!-- Add a name -->
+    <Plot  name="">
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <!-- <x>??</x> -->
+          <!-- <y>??</y> -->
+        </plot>
+      </plotSettings>
+      <actions>
+        <how>screen</how>
+      </actions>
+    </Plot>
+  </OutStreams>
+
+</Simulation>

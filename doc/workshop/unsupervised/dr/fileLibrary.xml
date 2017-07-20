@@ -1,0 +1,8 @@
+  <Files>
+    <Input name="iris">data/iris.csv</Input>
+    <Input name="ccpp">data/ccpp.csv</Input>
+    <Input name="swissRoll">data/swissRoll.csv</Input>
+    <Input name="concrete">data/concrete.csv</Input>
+    <Input name="wine">data/wine.csv</Input>
+    <Input name="cancer">data/cancer.csv</Input>
+  </Files>
