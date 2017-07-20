@@ -1,0 +1,141 @@
+<Simulation>
+
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      generateData,
+      pp1,
+      plotAllHists,
+      filter0,
+      filter1
+    </Sequence>
+  </RunInfo>
+
+  <Distributions>
+    <Normal name="distrib">
+      <mean>4</mean>
+      <sigma>1</sigma>
+    </Normal>
+  </Distributions>
+
+  <Samplers>
+    <MonteCarlo name="MC_external">
+      <samplerInit>
+        <limit>1000</limit>
+        <initialSeed>1</initialSeed>
+      </samplerInit>
+      <variable name="x0">
+        <distribution>distrib</distribution>
+      </variable>
+      <variable name="y0">
+        <distribution>distrib</distribution>
+      </variable>
+      <variable name="z0">
+        <distribution>distrib</distribution>
+      </variable>
+    </MonteCarlo>
+  </Samplers>
+
+  <ExternalXML node="OutStreams"
+               xmlToLoad="plotLibrary.xml"/>
+
+  <Steps>
+    <MultiRun name="generateData">
+      <Input    class="DataObjects"   type="PointSet"        >templateData</Input>
+      <Model    class="Models"        type="ExternalModel"   >PythonModule</Model>
+      <Sampler  class="Samplers"      type="MonteCarlo"      >MC_external</Sampler>
+      <Output   class="DataObjects"   type="HistorySet"      >outMC</Output>
+    </MultiRun>
+    <IOStep name="plotAllHists" pauseAtEnd="false">
+      <Input    class="DataObjects"   type="HistorySet"      >outMC</Input>
+      <Output   class="OutStreams"    type="Plot"            >plot1</Output>
+    </IOStep>
+    <PostProcess name="pp1" pauseAtEnd="True">
+      <Input    class="DataObjects"   type="HistorySet"      >outMC</Input>
+      <Model    class="Models"        type="PostProcessor"   >KMeans1</Model>
+      <SolutionExport class="DataObjects" type="HistorySet"  >clusterInfo</SolutionExport>
+      <Output   class="DataObjects"   type="HistorySet"      >outMC</Output>
+      <Output   class="OutStreams"    type="Plot"            >clusterCenters</Output>
+      <Output   class="OutStreams"    type="Plot"            >plot3</Output>
+      <Output   class="OutStreams"    type="Plot"            >Clustered_HS</Output>
+    </PostProcess>
+    <PostProcess name="filter0" pauseAtEnd="True">
+      <Input    class="DataObjects"   type="HistorySet"      >outMC</Input>
+      <Model    class="Models"        type="PostProcessor"   >filter0</Model>
+      <Output   class="DataObjects"   type="HistorySet"      >outMC0</Output>
+      <Output   class="OutStreams"    type="Plot"            >Cluster_0</Output>
+    </PostProcess>
+    <PostProcess name="filter1" pauseAtEnd="True">
+      <Input    class="DataObjects"   type="HistorySet"      >outMC</Input>
+      <Model    class="Models"        type="PostProcessor"   >filter1</Model>
+      <Output   class="DataObjects"   type="HistorySet"      >outMC1</Output>
+      <Output   class="OutStreams"    type="Plot"            >Cluster_1</Output>
+    </PostProcess>
+  </Steps>
+
+  <Models>
+    <PostProcessor name="KMeans1" subType="DataMining">
+      <PreProcessor class="Models" type="PostProcessor">dataPreProc</PreProcessor>
+      <KDD lib="SciKitLearn">
+        <SKLtype>cluster|KMeans</SKLtype>
+        <Features>output</Features>
+        <n_clusters>2</n_clusters>
+        <tol>1E-10</tol>
+        <random_state>1</random_state>
+        <init>k-means++</init>
+        <precompute_distances>True</precompute_distances>
+      </KDD>
+    </PostProcessor>
+    <PostProcessor name="dataPreProc" subType="InterfacedPostProcessor">
+       <method>HS2PS</method>
+       <pivotParameter>time</pivotParameter>
+    </PostProcessor>
+    <ExternalModel ModuleToLoad="lorentzAttractor_disc" name="PythonModule" subType="">
+      <variables>sigma,rho,beta,x,y,z,time,x0,y0,z0</variables>
+    </ExternalModel>
+    <PostProcessor name="filter0" subType="InterfacedPostProcessor">
+      <method>dataObjectLabelFilter</method>
+      <dataType>HistorySet</dataType>
+      <label>KMeans1Labels</label>
+      <clusterIDs>0</clusterIDs>
+    </PostProcessor>
+    <PostProcessor name="filter1" subType="InterfacedPostProcessor">
+      <method>dataObjectLabelFilter</method>
+      <dataType>HistorySet</dataType>
+      <label>KMeans1Labels</label>
+      <clusterIDs>1</clusterIDs>
+    </PostProcessor>
+  </Models>
+
+  <DataObjects>
+    <PointSet name="template">
+      <Input>x0,y0,z0</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+    <HistorySet name="outMC">
+      <Input>x0,y0,z0</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+    <HistorySet name="outMC0">
+      <Input>x0,y0,z0</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+    <HistorySet name="outMC1">
+      <Input>x0,y0,z0</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+    <HistorySet name="outMC2">
+      <Input>x0,y0,z0</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+    <HistorySet name="outMC3">
+      <Input>x0,y0,z0</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+    <HistorySet name="clusterInfo">
+      <Input>labels</Input>
+      <Output>time,x,y,z</Output>
+    </HistorySet>
+  </DataObjects>
+
+</Simulation>

@@ -1,0 +1,6 @@
+  <Distributions>
+    <Normal name="distrib">
+      <mean>4</mean>
+      <sigma>1</sigma>
+    </Normal>
+  </Distributions>

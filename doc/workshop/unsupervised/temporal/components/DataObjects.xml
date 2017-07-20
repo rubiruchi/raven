@@ -1,0 +1,14 @@
+<DataObjects>
+  <PointSet name="template">
+    <Input>x0,y0,z0</Input>
+    <Output>OutputPlaceHolder</Output>
+  </PointSet>
+  <HistorySet name="clusterInfo">
+    <Input>labels</Input>
+    <Output>time,x,y,z</Output>
+  </HistorySet>
+  <HistorySet name="data">
+    <Input>x0,y0,z0</Input>
+    <Output>time,x,y,z</Output>
+  </HistorySet>
+</DataObjects>
