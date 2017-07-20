@@ -20,8 +20,6 @@
                xmlToLoad="../auxiliary/Distributions.xml"/>
   <ExternalXML node="Samplers"
                xmlToLoad="../auxiliary/Samplers.xml"/>
-  <ExternalXML node="Models"
-               xmlToLoad="../auxiliary/Models.xml"/>
   <ExternalXML node="OutStreams"
                xmlToLoad="../auxiliary/OutStreams.xml"/>
 

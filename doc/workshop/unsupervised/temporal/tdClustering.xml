@@ -1,0 +1,96 @@
+<Simulation>
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      generateData,
+      plotOriginal,
+      clustering,
+      plotClusterLabels,
+      plotCenters
+    </Sequence>
+  </RunInfo>
+
+  <ExternalXML node="Distributions"
+               xmlToLoad="components/Distribution.xml"/>  
+  <ExternalXML node="Samplers"
+               xmlToLoad="components/Sampler.xml"/>
+  <ExternalXML node="Models"
+               xmlToLoad="components/modelLibrary.xml"/>
+  <ExternalXML node="DataObjects"
+               xmlToLoad="components/DataObjects.xml"/>
+  <ExternalXML node="OutStreams"
+               xmlToLoad="components/plotLibrary.xml"/>
+
+  <Steps>
+    <MultiRun name="generateData">
+      <Input class="DataObjects" type="PointSet">
+        template
+      </Input>
+      <Model class="Models" type="ExternalModel">
+        PythonModule
+      </Model>
+      <Sampler class="Samplers" type="MonteCarlo">
+        MC
+      </Sampler>
+      <Output class="DataObjects" type="HistorySet">
+        data
+      </Output>
+    </MultiRun>
+
+
+
+
+    <PostProcess name="clustering">
+      <Input class="DataObjects" type="HistorySet">
+        data
+      </Input>
+
+      <Model class="Models" type="PostProcessor">
+        threadCluster
+      </Model>
+      <SolutionExport class="DataObjects" type="HistorySet">
+        clusterInfo
+      </SolutionExport>
+      <Output class="DataObjects" type="HistorySet">
+        data
+      </Output>
+    </PostProcess>
+
+    <!-- Output Generation -->
+    <IOStep name="plotOriginal" pauseAtEnd = "True">
+      <Input  class="DataObjects" type="HistorySet">
+        data
+      </Input>
+      <Output class="OutStreams"  type="Plot">
+        inputData
+      </Output>
+    </IOStep>
+    <IOStep name="plotClusterLabels" pauseAtEnd = "True">
+      <Input  class="DataObjects" type="HistorySet">
+        data
+      </Input>
+      <Output class="OutStreams"  type="Plot">
+        clusteredData
+      </Output>
+    </IOStep>
+    <IOStep name="plotCenters" pauseAtEnd = "True">
+      <Input  class="DataObjects" type="HistorySet">
+        clusterInfo
+      </Input>
+      <Output class="OutStreams"  type="Plot">
+        clusterCenters
+      </Output>
+    </IOStep>
+    <IOStep name="printCenters" pauseAtEnd = "True">
+      <Input  class="DataObjects" type="HistorySet">
+        clusterInfo
+      </Input>
+      <Output class='OutStreams'  type='Print'>
+        centroid
+      </Output>
+    </IOStep>
+
+  </Steps>
+
+
+</Simulation>

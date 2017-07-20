@@ -1,0 +1,18 @@
+<Samplers>
+  <MonteCarlo name="MC">
+    <samplerInit>
+      <limit>100</limit>
+      <initialSeed>1</initialSeed>
+    </samplerInit>
+    <!-- Use the same distribution for all variables -->
+    <variable name="x0">
+      <distribution>distrib</distribution>
+    </variable>
+    <variable name="y0">
+      <distribution>distrib</distribution>
+    </variable>
+    <variable name="z0">
+      <distribution>distrib</distribution>
+    </variable>
+  </MonteCarlo>
+</Samplers>

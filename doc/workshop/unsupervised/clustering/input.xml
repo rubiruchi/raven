@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<Simulation verbosity="debug">
+
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      readData,
+      cluster,
+      plotResults
+    </Sequence>
+  </RunInfo>
+
+  <!-- Look here for the available data shapes  -->
+  <ExternalXML node="Files" xmlToLoad="fileLibrary.xml"/>
+  <!-- Look here for the available clustering techniques -->
+  <ExternalXML node="Models"
+               xmlToLoad="clusterLibrary.xml"/>
+
+  <Steps>
+    <IOStep name="readData">
+      <!-- Choose the data you want to read -->
+      <!-- Where do you want to put it? -->
+    </IOStep>
+    <PostProcess name="cluster" pauseAtEnd="True">
+      <!-- What are you operating on? -->
+      <!-- What method are you using? -->
+      <!-- Where do you want to put the results? You can
+           choose the same place you started. -->
+    </PostProcess>
+    <IOStep name="plotResults">
+      <!-- Where is the data coming from for the plot? -->
+      <!-- Who specifies the structure of the plot? -->
+      <Output class="OutStreams" type="Plot">plot</Output>
+    </IOStep>
+  </Steps>
+
+  <OutStreams>
+    <Plot  name="plot" overwrite="false">
+      <filename>clusterResults</filename>
+      <plotSettings>
+        <plot>
+          <type>dataMining</type>
+          <SKLtype>cluster</SKLtype>
+          <!-- <x>??</x> -->
+          <!-- <y>??</y> -->
+          <!-- <clusterLabels>??</clusterLabels> -->
+        </plot>
+      </plotSettings>
+      <actions>
+        <how>screen</how>
+      </actions>
+    </Plot>
+  </OutStreams>
+
+  <DataObjects>
+    <!-- Create at least one data object to hold the data
+         from whatever file you choose -->
+  </DataObjects>
+
+  <VariableGroups>
+    <!-- Extra Credit -->
+    <!-- Consider using variable groups, so you can more
+         easily swap out data sets or clustering techniques.
+         Try a few and see where you have to copy and paste
+         a lot. -->
+  </VariableGroups>
+
+  <!-- Extra Credit -->
+  <!-- Can you cluster a single object using multiple
+       methods and plot the data in a single window? -->
+
+</Simulation>

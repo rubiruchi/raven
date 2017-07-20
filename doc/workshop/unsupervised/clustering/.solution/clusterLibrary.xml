@@ -1,0 +1,105 @@
+<Models>
+
+  <!-- Auto-select cluster count -->
+  <PostProcessor name="affinity" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|AffinityPropogation</SKLtype>
+      <!-- <Features>??</Features> -->
+      <damping>0.99</damping>
+      <max_iter>2000</max_iter>
+      <convergence_iter>15</convergence_iter>
+      <preference>-50</preference>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="meanShift" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|MeanShift</SKLtype>
+      <!-- <Features>??</Features> -->
+      <bin_seeding>True</bin_seeding>
+    </KDD>
+  </PostProcessor> 
+
+  <PostProcessor name="DBSCAN" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|DBSCAN</SKLtype>
+      <Features>x,y</Features>
+      <eps>0.2</eps>
+    </KDD>
+  </PostProcessor>
+
+  <!-- K-Means -->
+
+  <PostProcessor name="kMeans" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|KMeans</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_clusters>??</n_clusters> -->
+      <tol>1E-10</tol>
+      <random_state>1</random_state>
+      <init>k-means++</init>
+      <precompute_distances>True</precompute_distances>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="miniBatch" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|MiniBatchKMeans</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_clusters>??</n_clusters> -->
+      <random_state>0</random_state>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Spectral Clustering -->
+
+  <PostProcessor name="spectral" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|SpectralClustering</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_clusters>??</n_clusters> -->
+      <eigen_solver>arpack</eigen_solver>
+      <affinity>nearest_neighbors</affinity>
+      <random_state>0</random_state>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Hierarchical -->
+
+  <PostProcessor name="agglomerative" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>cluster|Agglomerative</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_clusters>??</n_clusters> -->
+      <linkage>ward</linkage>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Gaussian Mixture Models -->
+
+  <PostProcessor name="GMM" subType="DataMining">
+    <KDD labelFeature="labels" lib="SciKitLearn">
+      <SKLtype>mixture|GMM</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_components>??</n_components> -->
+      <covariance_type>full</covariance_type>
+      <random_state>0</random_state>
+      <n_iter>10000</n_iter>
+      <init_params>wc</init_params>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="variationalGMM" subType="DataMining">
+    <KDD lib="SciKitLearn" labelFeature="label" >
+      <SKLtype>mixture|VBGMM</SKLtype>
+      <!-- <Features>??</Features> -->
+      <!-- <n_components>??</n_components> -->
+      <covariance_type>diag</covariance_type>
+      <random_state>0</random_state>
+      <n_iter>10000</n_iter>
+      <alpha>1</alpha>
+    </KDD>
+  </PostProcessor>
+
+
+</Models>
