@@ -1,0 +1,20 @@
+  <Files>
+  	<!-- Datasaurus Dozen -->
+    <Input name="away">data/away.csv</Input>
+    <Input name="bullseye">data/bullseye.csv</Input>
+    <Input name="circle">data/circle.csv</Input>
+    <Input name="dino">data/dino.csv</Input>
+    <Input name="dots">data/dots.csv</Input>
+    <Input name="h_lines">data/h_lines.csv</Input>
+    <Input name="high_lines">data/high_lines.csv</Input>
+    <Input name="slant_down">data/slant_down.csv</Input>
+    <Input name="slant_up">data/slant_up.csv</Input>
+    <Input name="star">data/star.csv</Input>
+    <Input name="v_lines">data/v_lines.csv</Input>
+    <Input name="wide_lines">data/wide_lines.csv</Input>
+    <Input name="x_shape">data/x_shape.csv</Input>
+	<!-- Bonus Data -->
+    <Input name="circles">data/circles.csv</Input>
+    <Input name="crescents">data/crescents.csv</Input>
+    <Input name="rings">data/rings.csv</Input>
+  </Files>
