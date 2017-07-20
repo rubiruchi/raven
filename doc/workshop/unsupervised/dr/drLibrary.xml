@@ -1,0 +1,116 @@
+<Models>
+
+<!--#####################################################-->
+<!-- Projection Methods -->
+
+  <!-- PCA-based Techniques -->
+  <PostProcessor name="PCA" subType="DataMining">
+    <KDD lib="SciKitLearn">
+      <SKLtype>decomposition|PCA</SKLtype>
+        <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>  
+
+  <Models>
+    <PostProcessor name="rPCA" subType="DataMining">
+      <KDD labelFeature="component" lib="SciKitLearn">
+        <SKLtype>decomposition|RandomizedPCA</SKLtype>
+        <!-- <Features>??</Features> -->
+        <n_components>2</n_components>
+      </KDD>
+    </PostProcessor>
+  </Models>
+
+  <PostProcessor name="sPCA" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>decomposition|SparsePCA</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="mbsPCA" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>decomposition|MiniBatchSparsePCA</SKLtype>
+        <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+      <random_state>1</random_state>
+      <shuffle>false</shuffle>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="kPCA" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>decomposition|KernelPCA</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+  <PostProcessor name="ICA" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>decomposition|FastICA</SKLtype>
+      <!-- <Features>??</Features> -->
+      <random_state>0</random_state>
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+<!--#####################################################-->
+<!-- Manifold Learning -->
+
+  <!-- Multidimensional Scaling -->
+  <PostProcessor name="MDS" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>manifold|MDS</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+      <random_state>0</random_state>
+      <max_iter>10000</max_iter>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Spectral Embedding -->
+
+  <PostProcessor name="SE" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>manifold|SpectralEmbedding</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Truncated Singular Value Decomposition -->
+
+  <PostProcessor name="tSVD" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>decomposition|TruncatedSVD</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Locally Linear Embedding -->
+
+  <PostProcessor name="LLE" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>manifold|LocallyLinearEmbedding</SKLtype>
+      <!-- <Features>??</Features> -->
+      <eigen_solver>dense</eigen_solver>
+      <tol>1E-10</tol>
+      <random_state>1</random_state>
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+
+  <!-- Isomap -->
+
+  <PostProcessor name="Isomap" subType="DataMining">
+    <KDD labelFeature="component" lib="SciKitLearn">
+      <SKLtype>manifold|Isomap</SKLtype>
+      <!-- <Features>??</Features> -->
+      <n_components>2</n_components>
+    </KDD>
+  </PostProcessor>
+</Models>
