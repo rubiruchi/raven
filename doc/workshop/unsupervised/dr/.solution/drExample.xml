@@ -1,0 +1,110 @@
+<Simulation verbosity="debug">
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>
+      sampleData,
+      reduce,
+      plotResults
+    </Sequence>
+  </RunInfo>
+
+  <Distributions>
+    <Uniform name="Uniform">
+      <lowerBound>0</lowerBound>
+      <upperBound>6.28</upperBound>
+    </Uniform>
+  </Distributions>
+
+  <Samplers>
+    <MonteCarlo name="sampler">
+      <samplerInit>
+        <limit>500</limit>
+        <initialSeed>8</initialSeed>
+      </samplerInit>
+      <variable name="x">
+        <distribution>Uniform</distribution>
+      </variable>
+      <variable name="t">
+        <distribution>Uniform</distribution>
+      </variable>
+    </MonteCarlo>
+  </Samplers>
+
+  <Steps>
+    <MultiRun name="sampleData">
+      <Sampler class="Samplers"    type="MonteCarlo"   >sampler</Sampler>
+      <Input   class="DataObjects" type="PointSet"     >dataTemplate</Input>
+      <Model   class="Models"      type="ExternalModel">generator</Model>
+      <Output  class="DataObjects" type="PointSet"     >myData</Output>
+    </MultiRun>
+    <PostProcess name="reduce">
+      <Input class="DataObjects" type="PointSet">myData</Input>
+      <Model class="Models" type="PostProcessor">reducer</Model>
+      <Output class="DataObjects" type="PointSet">myData</Output>
+    </PostProcess>
+    <IOStep name="plotResults" pauseAtEnd="true">
+      <Input class="DataObjects" type="PointSet">myData</Input>
+      <Output class="OutStreams" type="Plot">plotBefore</Output>
+      <Input class="DataObjects" type="PointSet">myData</Input>
+      <Output class="OutStreams" type="Plot">plotAfter</Output>
+    </IOStep>
+  </Steps>
+
+  <Models>
+    <ExternalModel ModuleToLoad="externalModel.py" name="generator" subType="">
+      <variables>x,y,z,t</variables>
+    </ExternalModel>
+    <PostProcessor name="reducer" subType="DataMining">
+      <KDD lib="SciKitLearn" labelFeature='c'>
+        <Features>x,y,z</Features>
+        <SKLtype>decomposition|PCA</SKLtype>
+        <n_components>2</n_components>
+      </KDD>
+    </PostProcessor>
+  </Models>
+  
+  <DataObjects>
+    <PointSet name="dataTemplate">
+      <Input>x,t</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+    <PointSet name="myData">
+      <Input>x,t</Input>
+      <Output>y,z</Output>
+    </PointSet>
+  </DataObjects>
+
+  <OutStreams>
+    <Plot  name="plotBefore" overwrite="false">
+      <filename>drPreliminary</filename>
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>myData|input|x</x>
+          <y>myData|output|y</y>
+          <z>myData|output|z</z>
+        </plot>
+      </plotSettings>
+      <actions>
+        <how>screen</how>
+        <camera>
+          <azimuth>0</azimuth>
+        </camera>
+      </actions>
+    </Plot>
+    <Plot  name="plotAfter" overwrite="false">
+      <filename>drResults</filename>
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>myData|output|c1</x>
+          <y>myData|output|c2</y>
+        </plot>
+      </plotSettings>
+      <actions>
+        <how>screen</how>
+      </actions>
+    </Plot>
+  </OutStreams>
+
+</Simulation>
