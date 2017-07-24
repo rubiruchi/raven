@@ -36,10 +36,11 @@ from math import ceil
 #External Modules End--------------------------------------------------------------------------------
 
 #Internal Modules------------------------------------------------------------------------------------
+from PostProcessors import LimitSurface
 from .AdaptiveSampler import AdaptiveSampler
 import Distributions
-import PostProcessors
 from AMSC_Object import AMSC_Object
+from utils import randomUtils
 #Internal Modules End--------------------------------------------------------------------------------
 
 class LimitSurfaceSearch(AdaptiveSampler):
@@ -289,7 +290,7 @@ class LimitSurfaceSearch(AdaptiveSampler):
       @ Out, None
     """
     self.converged        = False
-    self.limitSurfacePP   = PostProcessors.returnInstance("LimitSurface",self)
+    self.limitSurfacePP   = LimitSurface(self.messageHandler)
     if 'Function' in self.assemblerDict.keys():
       self.goalFunction = self.assemblerDict['Function'][0][3]
     if 'TargetEvaluation' in self.assemblerDict.keys():
@@ -648,9 +649,9 @@ class LimitSurfaceSearch(AdaptiveSampler):
       #here we are still generating the batch
       for key in self.distDict.keys():
         if self.toleranceWeight=='cdf':
-          self.values[key]                       = self.distDict[key].ppf(float(Distributions.random()))
+          self.values[key]                       = self.distDict[key].ppf(float(randomUtils.random()))
         else:
-          self.values[key]                       = self.distDict[key].lowerBound+(self.distDict[key].upperBound-self.distDict[key].lowerBound)*float(Distributions.random())
+          self.values[key]                       = self.distDict[key].lowerBound+(self.distDict[key].upperBound-self.distDict[key].lowerBound)*float(randomUtils.random())
         self.inputInfo['distributionName'][key]  = self.toBeSampled[key]
         self.inputInfo['distributionType'][key]  = self.distDict[key].type
         self.inputInfo['SampledVarsPb'   ][key]  = self.distDict[key].pdf(self.values[key])

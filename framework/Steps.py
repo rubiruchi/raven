@@ -317,7 +317,7 @@ class SingleRun(Step):
       @ Out, None
     """
     #Model initialization
-    modelInitDict = {}
+    modelInitDict = {'Output':inDictionary['Output']}
     if 'SolutionExport' in inDictionary.keys():
       modelInitDict['SolutionExport'] = inDictionary['SolutionExport']
     if inDictionary['Model'].createWorkingDir:
@@ -460,7 +460,7 @@ class MultiRun(SingleRun):
       @ Out, None
     """
     SingleRun._localInitializeStep(self,inDictionary)
-    self.conter = 0
+    self.counter = 0
     self._samplerInitDict['externalSeeding'] = self.initSeed
     self._initializeSampler(inDictionary)
     #generate lambda function list to collect the output without checking the type
@@ -541,7 +541,7 @@ class MultiRun(SingleRun):
         ## in addition, we cannot provide more jobs than the sampler can provide.
         ## So, we take the minimum of these two values.
         for _ in range(min(jobHandler.availability(),sampler.endJobRunnable())):
-          self.raiseADebug('Testing the sampler if it is ready to generate a new input')
+          self.raiseADebug('Testing if the sampler is ready to generate a new input')
 
           if sampler.amIreadyToProvideAnInput():
             try:

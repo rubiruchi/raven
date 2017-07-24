@@ -50,8 +50,9 @@ import MessageHandler
 import VariableGroups
 from utils import utils
 from utils import TreeStructure
-from Application import __PySideAvailable
-if __PySideAvailable:
+from Application import __QtAvailable
+from Interaction import Interaction
+if __QtAvailable:
   from Application import InteractiveApplication
 #Internal Modules End--------------------------------------------------------------------------------
 
@@ -427,13 +428,13 @@ class Simulation(MessageHandler.MessageUser):
     Using the attribute in the xml node <MyType> type discouraged to avoid confusion
   """
 
-  def __init__(self,frameworkDir,verbosity='all',interactive=False):
+  def __init__(self,frameworkDir,verbosity='all',interactive=Interaction.No):
     """
       Constructor
       @ In, frameworkDir, string, absolute path to framework directory
       @ In, verbosity, string, optional, general verbosity level
-      @ In, interactive, boolean, optional, toggles the ability to provide an
-        interactive UI or to run to completion without human interaction
+      @ In, interactive, Interaction, optional, toggles the ability to provide
+        an interactive UI or to run to completion without human interaction
       @ Out, None
     """
     self.FIXME          = False
@@ -543,8 +544,11 @@ class Simulation(MessageHandler.MessageUser):
     self.whichDict['OutStreams']['Print'] = self.OutStreamManagerPrintDict
 
     # The QApplication
+    ## The benefit of this enumerated type is that anything other than
+    ## Interaction.No will evaluate to true here and correctly make the
+    ## interactive app.
     if interactive:
-      self.app = InteractiveApplication([],self.messageHandler)
+      self.app = InteractiveApplication([],self.messageHandler, interactive)
     else:
       self.app = None
 
@@ -750,7 +754,7 @@ class Simulation(MessageHandler.MessageUser):
       else:
         #tag not in whichDict, check if it's a documentation tag
         if child.tag not in ['TestInfo']:
-          self.raiseAnError(IOError,'the '+child.tag+' is not among the known simulation components '+ET.tostring(child))
+          self.raiseAnError(IOError,'<'+child.tag+'> is not among the known simulation components '+repr(child))
     # If requested, duplicate input
     # ###NOTE: All substitutions to the XML input tree should be done BEFORE this point!!
     if self.runInfoDict.get('printInput',False):

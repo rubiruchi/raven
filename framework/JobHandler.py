@@ -72,10 +72,6 @@ class JobHandler(MessageHandler.MessageUser):
     self.printTag         = 'Job Handler'
     self.runInfoDict      = {}
 
-    ## Is it one or the other?
-    self.mpiCommand       = ''
-    self.threadingCommand = ''
-
     self.isParallelPythonInitialized = False
 
     self.sleepTime  = 0.005
@@ -131,11 +127,6 @@ class JobHandler(MessageHandler.MessageUser):
     """
     self.runInfoDict = runInfoDict
     self.messageHandler = messageHandler
-    if self.runInfoDict['NumMPI'] != 1 and len(self.runInfoDict['ParallelCommand']) > 0:
-      self.mpiCommand = self.runInfoDict['ParallelCommand'] + ' ' + str(self.runInfoDict['NumMPI'])
-
-    if self.runInfoDict['NumThreads'] != 1 and len(self.runInfoDict['ThreadingCommand']) > 0:
-      self.threadingCommand = self.runInfoDict['ThreadingCommand'] + ' ' + str(self.runInfoDict['NumThreads'])
 
     #initialize PBS
     with self.__queueLock:
@@ -384,11 +375,11 @@ class JobHandler(MessageHandler.MessageUser):
 
   def availability(self, client=False):
     """
-    Returns the number of runs that can be added until we consider our queue
-    saturated
-    @ In, client, bool, if true, then return the values for the
-    __clientQueue, otherwise use __queue
-    @ Out, availability, int the number of runs that can be added until we
+      Returns the number of runs that can be added until we consider our queue
+      saturated
+      @ In, client, bool, if true, then return the values for the
+      __clientQueue, otherwise use __queue
+      @ Out, availability, int the number of runs that can be added until we
       reach saturation
     """
     ## Due to possibility of memory explosion, we should include the finished
