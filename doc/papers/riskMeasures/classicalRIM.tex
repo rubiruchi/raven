@@ -1,0 +1,30 @@
+\section{Classical RIMs}
+\label{sec:classicalRIMs}
+
+In classical PRA methods, for any basic event, the most used RIMs measures are: 
+Risk Achievement Worth (RAW), Risk Reduction Worth (RRW), Birnbaum (B) and 
+Fussell-Vesely (FV)~\cite{}. 
+All these RIMs are calculated by determining three values based on core damage 
+frequency (CDF):
+\begin{itemize}
+  \item $R_0$: nominal CDF
+  \item $R_i^-$: CDF for basic event i assuming perfectly reliable
+  \item $R_i^+$: CDF for basic event i assuming it has failed
+\end{itemize}
+
+Once these three values are determined, then the RIMs are calculated~\cite{} as 
+follows for each basic event $i$:
+
+\begin{align} 
+  RAW_i &= \frac{R_i^+}{R_0}  \\
+  RRW_i &= \frac{R_0}{R_i^-}  \\
+  B_i &= R_i^+-R_i^-   \\
+  FV_i &= \frac{R_0-R_i^-}{R_0} 
+\end{align}
+
+Note the four RIMs listed above is not exhaustive: in literature it is possible to 
+find additional RIMs such as the 
+Differential Importance Measure (DIM)~\cite{}. 
+Since, the scope of this paper is tight to risk-informed application of 10CFR50.69, 
+we will focus this paper only on the four RIMs listed above.
+

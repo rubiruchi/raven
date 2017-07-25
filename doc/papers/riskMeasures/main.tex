@@ -8,14 +8,19 @@
 %=== Added for MU paper ====
 \usepackage{color,soul} %% this was needed to have highlighted text
 \usepackage{graphicx}
+\usepackage{array,colortbl,xcolor}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{nomencl}
+\usepackage{bm}
+\usepackage{subcaption}
+\usepackage{systeme}
 \makenomenclature
 \graphicspath{{./figures/}}
 
-\journal{Annals of Nuclear Energy}
+\journal{Reliability Engineering \& System Safety}
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Elsevier bibliography styles
@@ -57,7 +62,7 @@
 %% \tnotetext[mytitlenote]{Fully documented templates are available in the elsarticle package on \href{http://www.ctan.org/tex-archive/macros/latex/contrib/elsarticle}{CTAN}.}
 
 %% Group authors per affiliation:
-\author{D. Mandelli, D. Maljovec, A. Alfonsi, C. Parisi, C. Smith}
+\author{D. Mandelli, C. Parisi, Z. Ma, D. Maljovec, A. Alfonsi, C. Smith}
 \address{Idaho National Laboratory (INL), 2525 Fremont Ave, 83402 Idaho Falls (ID), USA}
 
 \begin{abstract}
@@ -66,7 +71,7 @@
 
 \begin{keyword}
 %% keywords here, in the form: keyword \sep keyword
-Data Mining \sep Dynamic PRA \sep Probabilistic Risk Assessment \sep Clustering 
+Importance Measures \sep Dynamic PRA \sep Probabilistic Risk Assessment 
 \end{keyword}
 
 \end{frontmatter}
@@ -76,8 +81,14 @@ Data Mining \sep Dynamic PRA \sep Probabilistic Risk Assessment \sep Clustering
 \printnomenclature[1in]
 
 \input{introduction.tex}
+\input{classicalRIM.tex}
 \input{rismc.tex}
 \input{raven.tex}
+\input{classicalRIM_RISMC.tex}
+\input{newRIM_RISMC.tex}
+\input{examples.tex}
+\input{LOCAanalysis.tex}
+\input{conclusions.tex}
 
 \section*{References}
 

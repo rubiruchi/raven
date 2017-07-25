@@ -41,8 +41,8 @@ From a mathematical point of view, a single simulator run can be represented as 
 phase space. The evolution of such a trajectory in the phase space can be described as follows:
 \begin{equation}
   \begin{cases}
-    \frac{\partial \boldsymbol \theta }{\partial t}  = \boldsymbol \Xi (\boldsymbol \theta , \boldsymbol c, \boldsymbol s , t)    \\ 
-    \frac{\partial \boldsymbol \c }{\partial t}  = \boldsymbol \Gamma (\boldsymbol \theta , \boldsymbol c, \boldsymbol s , t) 
+    \dfrac{\partial \boldsymbol \theta }{\partial t}  = \boldsymbol \Xi (\boldsymbol \theta , \boldsymbol c, \boldsymbol s , t)   \\ \\ 
+    \dfrac{\partial \boldsymbol c }{\partial t}  = \boldsymbol \Gamma (\boldsymbol \theta , \boldsymbol c, \boldsymbol s , t) 
   \end{cases}    
   \label{eq:trajectory}
 \end{equation}
@@ -64,7 +64,7 @@ By using the RISMC approach, the PRA analysis is performed by []:
 \begin{enumerate}
   \item Associating a probabilistic distribution function (pdf) to the set of parameters $\boldsymbol s$ (e.g., timing of events)
   \item Performing stochastic sampling of the pdfs defined in Step 1
-  \item Performing a simulation run given $\boldsymbol s$ sampled in Step 2, i.e., solve the system of equations~\ref{}
+  \item Performing a simulation run given $\boldsymbol s$ sampled in Step 2, i.e., solve the system of equations~\ref{??}
 \end{enumerate}
 
 Repeating Steps 2 and 3 $M$ times and evaluating user defined stochastic parameters such as core damage (CD) 
