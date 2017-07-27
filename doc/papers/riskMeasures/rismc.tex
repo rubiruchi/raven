@@ -1,5 +1,6 @@
 \section{RISMC Approach to PRA}
 \label{sec:rismc}
+
 The RISMC approach~\cite{RISMC} employs both deterministic and stochastic methods 
 in a single analysis framework (see Figure~\ref{fig:RISMCoverview}). In the deterministic method 
 set we include:
@@ -17,7 +18,8 @@ set we include:
 \end{figure}
 
 Note that deterministic modeling of the plant or external events can be performed by employing specific 
-simulator codes but also surrogate models~\cite{ROM}, known as reduced order models (ROM). ROMs would be employed 
+simulator codes but also surrogate models~\cite{ROM}, known as reduced order models (ROM). ROMs would 
+be employed 
 in order to decrease the high computational costs of employed codes. In addition, multi-fidelity codes 
 can be employed to model the same system; the idea is to switch from low-fidelity to high-fidelity code 
 when higher accuracy is needed (e.g., use low-fidelity codes for steady-state conditions and high-fidelity 
@@ -57,15 +59,55 @@ where:
 Starting from the system located in an initial state, $\boldsymbol \theta (t=0) = \boldsymbol \theta(0)$, 
 and the set of stochastic parameters (which are generally generated through a stochastic sampling process), 
 the simulator determine at each 
-time step the temporal evolution of $\boldsymbol \theta (t)$. At the same time, the system control logic  determines the status 
-of the system and components $\boldsymbol c(t)$.
+time step the temporal evolution of $\boldsymbol \theta (t)$. At the same time, the system control logic  
+determines the status of the system and components $\boldsymbol c(t)$.
  
-By using the RISMC approach, the PRA analysis is performed by []:
+By using the RISMC approach, the PRA analysis is performed by~\cite{}:
 \begin{enumerate}
-  \item Associating a probabilistic distribution function (pdf) to the set of parameters $\boldsymbol s$ (e.g., timing of events)
+  \item Associating a probabilistic distribution function (pdf) to the set of parameters 
+        $\boldsymbol s$ (e.g., timing of events)
   \item Performing stochastic sampling of the pdfs defined in Step 1
-  \item Performing a simulation run given $\boldsymbol s$ sampled in Step 2, i.e., solve the system of equations~\ref{??}
+  \item Performing a simulation run given $\boldsymbol s$ sampled in Step 2, i.e., solve the 
+        system of equations~\ref{??}
+  \item Repeating Steps 2 and 3 $M$ times and evaluating user defined stochastic parameters such 
+        as core damage (CD) probability ($P_{CD}$).
 \end{enumerate}
 
-Repeating Steps 2 and 3 $M$ times and evaluating user defined stochastic parameters such as core damage (CD) 
-probability ($P_{CD}$).
+\section{RISMC Approach and Classical PRA}
+\label{sec:analogy}
+
+In order to better understand the results obtained in Section~\ref{sec:test} it is worth to illustrate 
+a link between classical PRA and RISMC approach.
+Let's consider a system that is composed by two components (i.e, A and B) in a series configuration where
+each component has a failure probability (i.e., $p_A$ and $p_B$ respectively) as shown in Fig.~ref{}.
+
+In a classical PRA framework such system can be modeled using a FT method that is composed by two basic events:
+A failed and B failed.
+System failure would be represented by a single ``AND'' gate that combine the two basic events as shown in 
+Fig.~ref{}.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.6]{ABsystem.pdf}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.3]{andGate.pdf}
+    \label{fig:sub2}
+  \end{subfigure}
+  \caption{Components A and B in a series configuration (left) and associated Fault-Tree (right).}
+  \label{fig:chebyshev}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{2D.pdf}
+    \caption{}
+    \label{fig:2Danalogy}
+\end{figure} 
+
+
+

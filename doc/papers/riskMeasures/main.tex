@@ -18,7 +18,11 @@
 \usepackage{subcaption}
 \usepackage{systeme}
 \makenomenclature
+
 \graphicspath{{./figures/}}
+
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
 
 \journal{Reliability Engineering \& System Safety}
 
@@ -86,6 +90,7 @@ Importance Measures \sep Dynamic PRA \sep Probabilistic Risk Assessment
 \input{raven.tex}
 \input{classicalRIM_RISMC.tex}
 \input{examples.tex}
+\input{timeDepRIMs.tex}
 \input{LOCAanalysis.tex}
 \input{newRIM_RISMC.tex}
 \input{conclusions.tex}

@@ -7,15 +7,21 @@ how this method can be applied to fairly common cases.
 \subsection{Example 1: series/parallel configuration}
 \label{sec:example1}
 
-The first example is shown in Fig.~\ref{}: it consists of 3 components arranged 
-in a series/parallel 
-configuration. In this case the following probabilities of failures (on-demand) 
-are provided:
+The first example consists of 3 components 
+arranged in a series/parallel configuration as shown in Fig.~\ref{fig:example12}. 
+In this case the following probabilities of failures (on-demand) are provided:
 \begin{itemize}
   \item $p_A = 1.0 10^{-2}$
   \item $p_B = 5.0 10^{-2}$
   \item $p_C = 1.0 10^{-1}$
 \end{itemize}
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[scale=0.4]{simpleCase.pdf}}
+    \caption{System considered for Examples 1 and 2.}
+    \label{fig:example12}
+\end{figure}
   
 From a dynamic PRA point of view the analysis of this system is performed as follows:
 \begin{itemize}
@@ -29,7 +35,7 @@ From a dynamic PRA point of view the analysis of this system is performed as fol
         distribution  
   \item Define $I_i^+$ and $I_i^-$ for each distribution: in this case we have chosen 
         $I_i^-=[0.0,0.1]$ and $I_i^+=[1.0,1.1]$ 
-  \item Generate $N$ samples, for example by Monte-Carlo sampling 
+  \item Generate $N$ samples, for example by employing Monte-Carlo or Grid sampling strategies
   \item Determine $R_0$, $R_i^-$ and $R_i^+$ for each component 
   \item Determine the desired RIMs for each component
 \end{itemize}
@@ -51,19 +57,33 @@ Below, the FV importance for all three components obtained by RAVEN (using a Gri
 strategy) are shown compared with the analytical ones.
 
 \begin{table}
-  \caption{Results obtained for Example I.} 
-  \centering 
-  \begin{tabular}{c | c | c } 
-    \hline 
-     & Analytical & RAVEN \\ 
-    \hline 
-    $FV_A$ & 0.6656 & 0.6656   \\
-    $FV_B$ & 0.3311 & 0.3311   \\
-    $FV_C$ & 0.3311 & 0.3311   \\
-    \hline 
-  \end{tabular}
-  \label{tab:example1} 
+    \caption{Results obtained for Example I.}
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $FV_A$ & 0.6656 & 0.6656   \\
+        $FV_B$ & 0.3311 & 0.3311   \\
+        $FV_C$ & 0.3311 & 0.3311   \\
+        \hline 
+      \end{tabular}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $RAW_A$ & - & 66.88963211  \\
+        $RAW_B$ & - & 7.2909699    \\
+        $RAW_C$ & - & 3.97993311   \\
+        \hline 
+      \end{tabular}
+    \end{minipage} 
 \end{table}
+
 
 \subsection{Example 2: Time-dependent system}
 \label{sec:example2}
@@ -132,7 +152,7 @@ In other words, the ECCS is vital especially in the hours right after a reactor 
 \begin{figure}
     \centering
     \centerline{\includegraphics[scale=0.6]{case2.pdf}}
-    \caption{System for Example III.}
+    \caption{System considered for Example 3.}
     \label{fig:example3}
 \end{figure}
 
@@ -164,6 +184,6 @@ sampling strategy) compared with the analytical ones.
 \begin{figure}
     \centering
     \centerline{\includegraphics[scale=0.6]{case3.pdf}}
-    \caption{System for Example IV.}
+    \caption{System considered for Example 4.}
     \label{fig:example4}
 \end{figure}
