@@ -73,18 +73,57 @@ By using the RISMC approach, the PRA analysis is performed by~\cite{}:
         as core damage (CD) probability ($P_{CD}$).
 \end{enumerate}
 
-\section{RISMC Approach and Classical PRA}
+\subsection{RISMC Approach and Classical PRA}
 \label{sec:analogy}
 
 In order to better understand the results obtained in Section~\ref{sec:test} it is worth to illustrate 
 a link between classical PRA and RISMC approach.
 Let's consider a system that is composed by two components (i.e, A and B) in a series configuration where
-each component has a failure probability (i.e., $p_A$ and $p_B$ respectively) as shown in Fig.~ref{}.
+each component has a failure probability (i.e., $p_A$ and $p_B$ respectively) as shown in Fig.~\ref{fig:ABsystem}.
 
 In a classical PRA framework such system can be modeled using a FT method that is composed by two basic events:
 A failed and B failed.
 System failure would be represented by a single ``AND'' gate that combine the two basic events as shown in 
-Fig.~ref{}.
+Fig.~\ref{fig:ABsystem}.
+
+In a RISMC approach, such system would be modeled by using two stochastic parameters (i.e., $var_A$ and $var_B$)
+with a Bernoulli distribution $\operatorname{Bern}(p)$ associated to each of them: 
+$var_A \sim \operatorname{Bern}(p_A)$ and $var_B \sim \operatorname{Bern}(p_B)$. 
+The model that emulates system response would simply implement the ``AND" logic of the $var_A$ and $var_B$. 
+In order to determine system failure probability a numerical integration has to be performed in a 2-dimensional 
+(a dimension for each stochastic parameter).
+
+Two possible sampling strategies can be followed:
+\begin{itemize}
+  \item Monte-Carlo: generate $N$ samples and count the the number of samples that lead to system failure
+  \item Grid: partition the 2-dimensional space into a Cartesian grid; generate a sample for each partition 
+        and associate a probability weight $w$ to each sample. This weight can be determined by integrating the pdf
+        $pdf(A,B) = B(p_A) B(p_B)$ in each partition. In this specific case, since each stochastic parameter 
+        has two possible outcomes (i.e. 0 and 1), the space has been partitioned into 4 regions as 
+        shown in Fig.~\ref{fig:2Danalogy}. Each cell of Fig.~\ref{fig:2Danalogy} has indicated the system outcome:
+        system failure (F) or system success (OK).
+\end{itemize}
+
+The Monte-Carlo would require a large number of samples in order to decrease the statistical error associated
+to system failure probability.
+On the other hand a Grid sampler would determine the exact value of system failure probability with only 4 samples:
+\begin{enumerate}
+  \item sample 1: $A=0$ and $B=0$ (bottom left cell of Fig.~\ref{fig:2Danalogy}), $w_1 = (1-p_A)(1-p_B)$
+  \item sample 2: $A=1$ and $B=0$ (top left cell of Fig.~\ref{fig:2Danalogy}), $w_2 = p_A (1-p_B)$
+  \item sample 3: $A=0$ and $B=1$ (bottom right cell of Fig.~\ref{fig:2Danalogy}), $w_3 = (1-p_A) p_B$
+  \item sample 4: $A=1$ and $B=1$ (top right cell of Fig.~\ref{fig:2Danalogy}), $w_4 = p_A p_B$
+\end{enumerate}
+Note that each sample/cell of Fig.~\ref{fig:2Danalogy} that leads to system failure corresponds to a specific cut-set
+\begin{itemize}
+  \item Cut-set 1 (CS1) corresponds to sample 2; $p_{CS1} = p_A$
+  \item Cut-set 2 (CS2) corresponds to sample 3; $p_{CS2} = p_B$
+  \item Cut-set 3 (CS3) corresponds to sample 4; $p_{CS3} = p_A p_B$
+\end{itemize}
+Hence, the two methods (classical and PRA) would provide identical results.
+
+Observe now that the number of samples required for $M$ stochastic parameters (assuming they are all distributed with 
+a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be employed for a small value of $M$.
+
 
 \begin{figure}
   \centering
@@ -98,8 +137,8 @@ Fig.~ref{}.
     \includegraphics[scale=0.3]{andGate.pdf}
     \label{fig:sub2}
   \end{subfigure}
-  \caption{Components A and B in a series configuration (left) and associated Fault-Tree (right).}
-  \label{fig:chebyshev}
+  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
+  \label{fig:ABsystem}
 \end{figure}
 
 \begin{figure}

@@ -23,7 +23,8 @@ In this case the following probabilities of failures (on-demand) are provided:
     \label{fig:example12}
 \end{figure}
   
-From a dynamic PRA point of view the analysis of this system is performed as follows:
+From a RISMC (i.e., dynamic PRA) point of view the analysis of this system is performed as follows 
+(see Section~\ref{sec:analogy}):
 \begin{itemize}
   \item Define 3 stochastic parameters (i.e., $S=3$):
     \begin{itemize}
@@ -44,7 +45,8 @@ Note that a Monte-Carlo sampling is not the best sampling strategy in terms of c
 costs. This is even more relevant if the value of $p_A$, $p_B$ or $p_C$ were several order of 
 magnitude lower. 
 
-A more effective sampling strategy would be the Grid sampling: the stochastic variables 
+A more effective sampling strategy would be the Grid sampling (see Section~\ref{sec:analogy}): 
+the stochastic variables 
 are sampled over a fixed Cartesian grid and a probability weight is associated to each sample. 
 In this case, each stochastic variable $s_i$ is sampled over two values, 0.0 and 1.0, and the 
 probability weights $w_i^0$ and $w_i^1$ values associated to each sample coordinate are:
@@ -52,12 +54,12 @@ probability weights $w_i^0$ and $w_i^1$ values associated to each sample coordin
   \item $s_i=0.0$: $w_i^0=prob(s_i \in [-\infty,0.5])$
   \item $s_i=1.0$: $w_i^1=prob(s_i \in [0.5,+\infty])$
 \end{itemize}
-Following this grid sampling strategy, only $2^N=8$ are needed.
-Below, the FV importance for all three components obtained by RAVEN (using a Grid sampling 
+Following this grid sampling strategy, only $2^3=8$ are needed.
+Below, the FV and RAW importance values for all three components obtained by RAVEN (using a Grid sampling 
 strategy) are shown compared with the analytical ones.
 
 \begin{table}
-    \caption{Results obtained for Example I.}
+    \caption{Results obtained for Example 1.}
     \begin{minipage}{.5\linewidth}
       \centering
       \begin{tabular}{c | c | c } 
@@ -84,70 +86,65 @@ strategy) are shown compared with the analytical ones.
     \end{minipage} 
 \end{table}
 
+% 
+% \subsection{Example 2: Time-dependent system}
+% \label{sec:example2}
+% 
+% The second example is similar to Example I but with different reliability data: 
+% a failure rate is provided for each component (mission time: 24 hours): 
+% \begin{itemize}
+%   \item $\lambda_A = 1.0 10^{-3} hr^{-1}$
+%   \item $\lambda_B = 5.0 10^{-3} hr^{-1}$
+%   \item $\lambda_C = 1.0 10^{-2} hr^{-1}$
+% \end{itemize}
+% Thus it is assumed that failure probability of each component is exponentially 
+% distributed: sampled value $s_i$ from its own distribution is failure time of each 
+% component ($t_A$, $t_B$ and $t_C$).
+% In this case, $I_i^+$ and $I_i^-$ can be defined as follows:
+% \begin{itemize}
+%   \item $I_i^-=[24.0,+\infty]$: component is considered perfectly reliable if the failure 
+%         time is greater than the mission time
+%   \item $I_i^+=[0.0,1.0]$: component is considered unreliable if the failure time 
+%         occurs within the first hour
+% \end{itemize}
+% 
+% As shown for Example I, a Grid sampling strategy has been employed. Table~\ref{} shows the 
+% FV importance for all three components obtained by RAVEN (using a Grid sampling strategy) 
+% compared with the analytical ones.
+% 
+% \begin{table}
+%   \caption{Results obtained for Example II.} 
+%   \centering 
+%   \begin{tabular}{c | c | c } 
+%     \hline 
+%      & Analytical & RAVEN \\ 
+%     \hline 
+%     $FV_A$ & 0.48957 & 0.48957  \\
+%     $FV_B$ & 0.4983  & 0.4983   \\
+%     $FV_C$ & 0.4983  & 0.4983   \\
+%     \hline 
+%   \end{tabular}
+%   \label{tab:example2} 
+% \end{table}
 
-\subsection{Example 2: Time-dependent system}
+\subsection{Example 2: time-dependent stand-by configuration}
 \label{sec:example2}
 
-The second example is similar to Example I but with different reliability data: 
-a failure rate is provided for each component (mission time: 24 hours): 
-\begin{itemize}
-  \item $\lambda_A = 1.0 10^{-3} hr^{-1}$
-  \item $\lambda_B = 5.0 10^{-3} hr^{-1}$
-  \item $\lambda_C = 1.0 10^{-2} hr^{-1}$
-\end{itemize}
-Thus it is assumed that failure probability of each component is exponentially 
-distributed: sampled value $s_i$ from its own distribution is failure time of each 
-component ($t_A$, $t_B$ and $t_C$).
-In this case, $I_i^+$ and $I_i^-$ can be defined as follows:
-\begin{itemize}
-  \item $I_i^-=[24.0,+\infty]$: component is considered perfectly reliable if the failure 
-        time is greater than the mission time
-  \item $I_i^+=[0.0,1.0]$: component is considered unreliable if the failure time 
-        occurs within the first hour
-\end{itemize}
-
-As shown for Example I, a Grid sampling strategy has been employed. Table~\ref{} shows the 
-FV importance for all three components obtained by RAVEN (using a Grid sampling strategy) 
-compared with the analytical ones.
-
-\begin{table}
-  \caption{Results obtained for Example II.} 
-  \centering 
-  \begin{tabular}{c | c | c } 
-    \hline 
-     & Analytical & RAVEN \\ 
-    \hline 
-    $FV_A$ & 0.48957 & 0.48957  \\
-    $FV_B$ & 0.4983  & 0.4983   \\
-    $FV_C$ & 0.4983  & 0.4983   \\
-    \hline 
-  \end{tabular}
-  \label{tab:example2} 
-\end{table}
-
-\subsection{Example 3: stand-by configuration}
-\label{sec:example3}
-
-The third example considers a simplified ECCS model (see Fig.~\ref{}) for a Pressurized 
-Water Reactor (PWR). It consists of the following components and for a subset of them a 
+The second example considers a simplified ECCS model (see Fig.~\ref{}) of a reactor. 
+It consists of the following components and for a subset of them a 
 value of mean time to failure (MTTF) is provided:
 \begin{itemize}
-  \item Motor-operate valve M (MTTF = 24 h)
-  \item Two redundant pumps, pump1 and pump2 (MTTF = 12 h)
+  \item Motor-operate valve M (MTTF = 24 h, $\lambda_{valve} = 0.041667$)
+  \item Two redundant pumps, pump1 and pump2 
+        (MTTF = 12 h, $\lambda_{pump1} = \lambda_{pump2} = 0.083333$)
   \item Heat exchanger HX (reliability = 1.0)
 \end{itemize}
 
 Pump1 is normally used while pump2 is on standby. If Pump1 fails then pump2 provide water flow. 
 Pump2 cannot fail while in standby. Switch from pump1 to pump2 is perfectly reliable. 
-The cooling is such that it takes 2 hours to reach vessel failure condition if the M-pump1-pump2 
-system has failed. Top event is: overheating of the vessel. Mission time is again equal to 24 hours.
-
-Failure of the system occurs when temperature insider the core reaches a limit temperature. 
-Note that the configuration is slightly different from the one presented in the first two 
-examples (here a stand-by configuration is introduced) but also the condition of system failure 
-is dictated by the dynamic behavior of the PWR.  The system is designed such that a late failure 
-of the ECCS may not lead to system failure (i.e., natural circulation is providing enough cooling). 
-In other words, the ECCS is vital especially in the hours right after a reactor scram.
+The cooling is such that it takes 2 hours to reach vessel failure condition if the 
+M-pump1-pump2 
+system has failed. Mission time is again equal to 24 hours.
 
 \begin{figure}
     \centering
@@ -158,32 +155,126 @@ In other words, the ECCS is vital especially in the hours right after a reactor 
 
 Note in this case classical PRA methods require few model simplifications in order to correctly 
 determine system reliability.
-In contrast, a dynamic PRA analysis follows the same steps presented for the first two examples; 
-the only difference is represented by the simulator that is actually employed.
 Below are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
 sampling strategy) compared with the analytical ones.
 
 \begin{table}
-  \caption{Results obtained for Example III.} 
-  \centering 
-  \begin{tabular}{c | c | c } 
-    \hline 
-     & Analytical & RAVEN \\ 
-    \hline 
-    $FV_{pump1}$ &   & 0.25893  \\
-    $FV_{pump2}$ &   & 0.25893   \\
-    $FV_{valve}$ &   & 0.30331   \\
-    \hline 
-  \end{tabular}
-  \label{tab:example3} 
+    \caption{Results obtained for Example 2.}
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $FV_{valve}$ & 0.301708135 &   \\
+        $FV_{pump1}$ & 0.256887262 &   \\
+        $FV_{pump2}$ & 0.256887262 &   \\
+        \hline 
+      \end{tabular}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $RAW_{valve}$ & 1.175587151 &   \\
+        $RAW_{pump1}$ & 1.117058099 &   \\
+        $RAW_{pump2}$ & 1.117058099 &   \\
+        \hline 
+      \end{tabular}
+    \end{minipage} 
 \end{table}
 
-\subsection{Example 4: $K$ out of $N$ configuration}
-\label{sec:example4}
+
+\subsection{Example 3: $K$ out of $N$ configuration}
+\label{sec:example3}
+
+The third example is similar to the one shown in Section~\ref{sec:example2}
+It consists of the following components:
+\begin{itemize}
+  \item Motor-operate valve M (MTTF = 24 h, $\lambda_{valve} = 0.041667$)
+  \item Three pumps, pump1, pump2 and pump3 
+        (MTTF = 12 h, $\lambda_{pump1} = \lambda_{pump2} = \lambda_{pump3} = 0.083333$)
+  \item Heat exchanger HX (reliability = 1.0)
+\end{itemize}
+All pumps are initially running but 2 out of 3 are required to cool the system.
+Mission time is again equal to 24 hours.
 
 \begin{figure}
     \centering
     \centerline{\includegraphics[scale=0.6]{case3.pdf}}
-    \caption{System considered for Example 4.}
+    \caption{System considered for Example 3.}
     \label{fig:example4}
 \end{figure}
+
+Below are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
+sampling strategy) compared with the analytical ones.
+
+\begin{table}
+    \caption{Results obtained for Example III.}
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $FV_{valve}$ & 0.032191338 &   \\
+        $FV_{pump1}$ & 0.075840848 &   \\
+        $FV_{pump2}$ & 0.075840848 &   \\
+        $FV_{pump3}$ & 0.075840848 &   \\ 
+        \hline 
+      \end{tabular}
+    \end{minipage}%
+    \begin{minipage}{.5\linewidth}
+      \centering
+      \begin{tabular}{c | c | c } 
+        \hline 
+         & Analytical & RAVEN \\ 
+        \hline 
+        $RAW_{valve}$ & 1.018734614 &   \\
+        $RAW_{pump1}$ & 1.011870432 &   \\
+        $RAW_{pump2}$ & 1.011870432 &   \\
+        $RAW_{pump3}$ & 1.011870432 &   \\ 
+        \hline 
+      \end{tabular}
+    \end{minipage} 
+    \label{tab:example3}
+\end{table}
+
+
+\subsection{Example 4: time and physics dependent stand-by configuration}
+\label{sec:example4}
+
+The forth example considers the system of Example 2 (see Section~\ref{sec:example2}) but it considers 
+also the temporal behavior of the reactor.
+The top event is not the failure of valve-pump1-pump2 system but it occurs when core temperature $T$
+reaches a threshold value $T_{max}$ (i.e., reactor failure). 
+The analysis is perrofmed for two different power levels: 100\% and 120\%.
+Mission time is still 24 hours.
+
+Note that the configuration is slightly different from the one presented in the first two 
+examples (here a stand-by configuration is introduced) but also the condition of system failure 
+is dictated by the dynamic behavior of the PWR.  The system is designed such that a late failure 
+of the ECCS may not lead to system failure (i.e., natural circulation is providing enough cooling). 
+In other words, the ECCS is vital especially in the hours right after a reactor scram.
+
+In principle, this test case cannot be solved analytically due to the complexity of the reactor behavior.
+Practically it can be solve by identifying the time $T_{lim}$ (limit time) after which a failure of the  
+valve-pump1-pump2 system does not cause reactor failure.
+Note that $T_{lim}$ could only be determined be recursively run the system simulator. 
+
+\begin{table}
+  \caption{Results obtained for Example 4.}
+  \centering
+  \begin{tabular}{c | c | c }
+    \hline
+          & FV & RAW \\
+    \hline
+    valve &  &   \\
+    pump1 &  &   \\
+    pump1 &  &   \\
+    \hline
+  \end{tabular}
+  \label{tab:example4}
+\end{table}
