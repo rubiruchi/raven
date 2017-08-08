@@ -1,8 +1,77 @@
 \section{Test Examples}
 \label{sec:test}
 
-In this section we present few examples that will help the reader to understand 
-how this method can be applied to fairly common cases.
+In order to better understand the results obtained in this section it is worth to illustrate 
+a link between classical PRA and RISMC approach.
+Let's consider a system that is composed by two components (i.e, A and B) in a series configuration where
+each component has a failure probability (i.e., $p_A$ and $p_B$ respectively) as shown in Fig.~\ref{fig:ABsystem}.
+
+In a classical PRA framework such system can be modeled using a FT method that is composed by two basic events:
+A failed and B failed.
+System failure would be represented by a single ``AND'' gate that combine the two basic events as shown in 
+Fig.~\ref{fig:ABsystem}.
+
+In a RISMC approach, such system would be modeled by using two stochastic parameters (i.e., $var_A$ and $var_B$)
+with a Bernoulli distribution $\operatorname{Bern}(p)$ associated to each of them: 
+$var_A \sim \operatorname{Bern}(p_A)$ and $var_B \sim \operatorname{Bern}(p_B)$. 
+The model that emulates system response would simply implement the ``AND" logic of the $var_A$ and $var_B$. 
+In order to determine system failure probability a numerical integration has to be performed in a 2-dimensional 
+(a dimension for each stochastic parameter).
+
+Two possible sampling strategies can be followed:
+\begin{itemize}
+  \item Monte-Carlo: generate $N$ samples and count the the number of samples that lead to system failure
+  \item Grid: partition the 2-dimensional space into a Cartesian grid; generate a sample for each partition 
+        and associate a probability weight $w$ to each sample. This weight can be determined by integrating the pdf
+        $pdf(A,B) = \operatorname{Bern}(p_A) \operatorname{Bern}(p_B)$ in each partition. 
+        In this specific case, since each stochastic parameter 
+        has two possible outcomes (i.e. 0 and 1), the space has been partitioned into 4 regions as 
+        shown in Fig.~\ref{fig:2Danalogy}. Each cell of Fig.~\ref{fig:2Danalogy} has indicated the system outcome:
+        system failure (F) or system success (OK).
+\end{itemize}
+
+The Monte-Carlo would require a large number of samples in order to decrease the statistical error associated
+to system failure probability.
+On the other hand a Grid sampler would determine the exact value of system failure probability with only 4 samples:
+\begin{enumerate}
+  \item sample 1: $A=0$ and $B=0$ (bottom left cell of Fig.~\ref{fig:2Danalogy}), $w_1 = (1-p_A) \cdot (1-p_B)$
+  \item sample 2: $A=1$ and $B=0$ (top left cell of Fig.~\ref{fig:2Danalogy}), $w_2 = p_A (1-p_B)$
+  \item sample 3: $A=0$ and $B=1$ (bottom right cell of Fig.~\ref{fig:2Danalogy}), $w_3 = (1-p_A) \cdot p_B$
+  \item sample 4: $A=1$ and $B=1$ (top right cell of Fig.~\ref{fig:2Danalogy}), $w_4 = p_A \cdot p_B$
+\end{enumerate}
+Note that each sample/cell of Fig.~\ref{fig:2Danalogy} that leads to system failure corresponds to a specific cut-set
+\begin{itemize}
+  \item Cut-set 1 (CS1) corresponds to sample 2; $p_{CS1} = p_A$
+  \item Cut-set 2 (CS2) corresponds to sample 3; $p_{CS2} = p_B$
+  \item Cut-set 3 (CS3) corresponds to sample 4; $p_{CS3} = p_A \cdot p_B$
+\end{itemize}
+Hence, the two methods (classical and PRA) would provide identical results.
+
+Observe now that the number of samples required for $M$ stochastic parameters (assuming they are all distributed with 
+a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be employed for a small value of $M$.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.6]{ABsystem.pdf}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.3]{andGate.pdf}
+    \label{fig:sub2}
+  \end{subfigure}
+  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
+  \label{fig:ABsystem}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{2D.pdf}
+    \caption{}
+    \label{fig:2Danalogy}
+\end{figure} 
 
 \subsection{Example 1: series/parallel configuration}
 \label{sec:example1}
@@ -11,20 +80,29 @@ The first example consists of 3 components
 arranged in a series/parallel configuration as shown in Fig.~\ref{fig:example12}. 
 In this case the following probabilities of failures (on-demand) are provided:
 \begin{itemize}
-  \item $p_A = 1.0 10^{-2}$
-  \item $p_B = 5.0 10^{-2}$
-  \item $p_C = 1.0 10^{-1}$
+  \item $p_A = 1.0 \cdot 10^{-2}$
+  \item $p_B = 5.0 \cdot 10^{-2}$
+  \item $p_C = 1.0 \cdot 10^{-1}$
 \end{itemize}
 
 \begin{figure}
     \centering
-    \centerline{\includegraphics[scale=0.4]{simpleCase.pdf}}
+    \centerline{\includegraphics[scale=0.6]{simpleCase.pdf}}
     \caption{System considered for Examples 1 and 2.}
     \label{fig:example12}
 \end{figure}
+
+From a classical PRA perspective, this system can be modeled using a FT as shown in Fig.~\ref{fig:case1_FT}.
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[scale=0.6]{case1_FT.pdf}}
+    \caption{FT structure for the system shown in Fig.~\ref{fig:example12}.}
+    \label{fig:case1_FT}
+\end{figure}
   
-From a RISMC (i.e., dynamic PRA) point of view the analysis of this system is performed as follows 
-(see Section~\ref{sec:analogy}):
+From a RISMC (i.e., dynamic PRA) point of view the analysis of this system is performed as 
+follows (see Section~\ref{sec:analogy}):
 \begin{itemize}
   \item Define 3 stochastic parameters (i.e., $S=3$):
     \begin{itemize}
@@ -55,32 +133,33 @@ probability weights $w_i^0$ and $w_i^1$ values associated to each sample coordin
   \item $s_i=1.0$: $w_i^1=prob(s_i \in [0.5,+\infty])$
 \end{itemize}
 Following this grid sampling strategy, only $2^3=8$ are needed.
-Below, the FV and RAW importance values for all three components obtained by RAVEN (using a Grid sampling 
-strategy) are shown compared with the analytical ones.
+Below, the FV and RAW importance values for all three components obtained by RAVEN (using a 
+Grid sampling strategy) are shown compared with the analytical ones.
 
 \begin{table}
     \caption{Results obtained for Example 1.}
+    \centering
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_A$ & 0.6656 & 0.6656   \\
-        $FV_B$ & 0.3311 & 0.3311   \\
-        $FV_C$ & 0.3311 & 0.3311   \\
+        $FV_A$ & 0.6656 & 0.669 & 0.6656   \\
+        $FV_B$ & 0.3311 & 0.34 & 0.3311   \\
+        $FV_C$ & 0.3311 & 0.34 & 0.3311   \\
         \hline 
       \end{tabular}
-    \end{minipage}%
+    \end{minipage}\\
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_A$ & - & 66.88963211  \\
-        $RAW_B$ & - & 7.2909699    \\
-        $RAW_C$ & - & 3.97993311   \\
+        $RAW_A$ & 66.889  & 66.9 & 66.88963211  \\
+        $RAW_B$ & 7.2909  & 7.29 & 7.2909699    \\
+        $RAW_C$ & 3.97993 & 3.98 & 3.97993311   \\
         \hline 
       \end{tabular}
     \end{minipage} 
@@ -162,25 +241,25 @@ sampling strategy) compared with the analytical ones.
     \caption{Results obtained for Example 2.}
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_{valve}$ & 0.301708135 &   \\
-        $FV_{pump1}$ & 0.256887262 &   \\
-        $FV_{pump2}$ & 0.256887262 &   \\
+        $FV_{valve}$ & 0.301708135 & 0.697 & 0.303310397 \\
+        $FV_{pump1}$ & 0.256887262 & 0.824 & 0.258927596 \\
+        $FV_{pump2}$ & 0.256887262 & 0.824 & 0.258927596 \\
         \hline 
       \end{tabular}
-    \end{minipage}%
+    \end{minipage} \\
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_{valve}$ & 1.175587151 &   \\
-        $RAW_{pump1}$ & 1.117058099 &   \\
-        $RAW_{pump2}$ & 1.117058099 &   \\
+        $RAW_{valve}$ & 1.175587151 & 1.10 & 1.179402119 \\
+        $RAW_{pump1}$ & 1.117058099 & 1.05 & 1.118857043 \\
+        $RAW_{pump2}$ & 1.117058099 & 1.05 & 1.118857043 \\
         \hline 
       \end{tabular}
     \end{minipage} 
@@ -215,27 +294,27 @@ sampling strategy) compared with the analytical ones.
     \caption{Results obtained for Example III.}
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_{valve}$ & 0.032191338 &   \\
-        $FV_{pump1}$ & 0.075840848 &   \\
-        $FV_{pump2}$ & 0.075840848 &   \\
-        $FV_{pump3}$ & 0.075840848 &   \\ 
+        $FV_{valve}$ & 0.032191338 & 0.636 & 0.032625538  \\
+        $FV_{pump1}$ & 0.075840848 & 0.942 & 0.080560827  \\
+        $FV_{pump2}$ & 0.075840848 & 0.942 & 0.080560827  \\
+        $FV_{pump3}$ & 0.075840848 & 0.942 & 0.080560827  \\ 
         \hline 
       \end{tabular}
-    \end{minipage}%
+    \end{minipage} \\
     \begin{minipage}{.5\linewidth}
       \centering
-      \begin{tabular}{c | c | c } 
+      \begin{tabular}{c | c | c | c} 
         \hline 
-         & Analytical & RAVEN \\ 
+         & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_{valve}$ & 1.018734614 &   \\
-        $RAW_{pump1}$ & 1.011870432 &   \\
-        $RAW_{pump2}$ & 1.011870432 &   \\
-        $RAW_{pump3}$ & 1.011870432 &   \\ 
+        $RAW_{valve}$ & 1.018734614 & 1.01 & 1.020401014 \\
+        $RAW_{pump1}$ & 1.011870432 & 1.0 & 1.012910957  \\
+        $RAW_{pump2}$ & 1.011870432 & 1.0 & 1.012910957  \\
+        $RAW_{pump3}$ & 1.011870432 & 1.0 & 1.012910957  \\ 
         \hline 
       \end{tabular}
     \end{minipage} 
@@ -250,19 +329,32 @@ The forth example considers the system of Example 2 (see Section~\ref{sec:exampl
 also the temporal behavior of the reactor.
 The top event is not the failure of valve-pump1-pump2 system but it occurs when core temperature $T$
 reaches a threshold value $T_{max}$ (i.e., reactor failure). 
-The analysis is perrofmed for two different power levels: 100\% and 120\%.
+The analysis is performed for two different power levels: 100\% and 120\%.
 Mission time is still 24 hours.
 
 Note that the configuration is slightly different from the one presented in the first two 
 examples (here a stand-by configuration is introduced) but also the condition of system failure 
-is dictated by the dynamic behavior of the PWR.  The system is designed such that a late failure 
+is dictated by the dynamic behavior of the PWR. The system is designed such that a late failure 
 of the ECCS may not lead to system failure (i.e., natural circulation is providing enough cooling). 
 In other words, the ECCS is vital especially in the hours right after a reactor scram.
 
-In principle, this test case cannot be solved analytically due to the complexity of the reactor behavior.
-Practically it can be solve by identifying the time $T_{lim}$ (limit time) after which a failure of the  
-valve-pump1-pump2 system does not cause reactor failure.
-Note that $T_{lim}$ could only be determined be recursively run the system simulator. 
+In principle, this test case cannot be solved analytically due to the complexity of the reactor 
+behavior. Practically it can be solve by identifying the time $T_{lim}$ (limit time) after which a 
+failure of the valve-pump1-pump2 system does not cause reactor failure.
+Note that $T_{lim}$ could only be determined be recursively run the system simulator until a 
+good estimate of $T_{lim}$ is reached.
+
+Figure~\ref{fig:limitTime} shows the histogram of the failure time of valve-pump1-pump2 system along 
+with the limit time $T_{lim}$ for the two different power levels (100\% and 120\%). 
+Note that a higher power level implies a faster reactor heatup rate; hence, the limit time $T_{lim}$
+would increases: 
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[scale=0.6]{limitTime.pdf}}
+    \caption{}
+    \label{fig:limitTime}
+\end{figure}
 
 \begin{table}
   \caption{Results obtained for Example 4.}
@@ -278,3 +370,6 @@ Note that $T_{lim}$ could only be determined be recursively run the system simul
   \end{tabular}
   \label{tab:example4}
 \end{table}
+
+\subsection{Considerations on the mission time}
+\label{sec:missionTime}

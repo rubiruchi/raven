@@ -1,29 +1,72 @@
 \section{Classical RIMs}
 \label{sec:classicalRIMs}
 
-In classical PRA methods, for any basic event, the most used RIMs measures are: 
-Risk Achievement Worth (RAW), Risk Reduction Worth (RRW), Birnbaum (B) and 
-Fussell-Vesely (FV)~\cite{flemingRiskImportance}. 
-All these RIMs are calculated by determining three values based on core damage 
-frequency (CDF):
+% In classical PRA methods, for any basic event, the most used RIMs measures are: 
+% Risk Achievement Worth (RAW), Risk Reduction Worth (RRW), Birnbaum (B) and 
+% Fussell-Vesely (FV)~\cite{flemingRiskImportance}. 
+% All these RIMs are calculated by determining three values based on core damage 
+% frequency (CDF):
+% \begin{itemize}
+%   \item $R_0$: nominal CDF
+%   \item $R_i^-$: CDF for basic event i assuming perfectly reliable
+%   \item $R_i^+$: CDF for basic event i assuming it has failed
+% \end{itemize}
+% 
+% Once these three values are determined, then the RIMs are calculated~\cite{} as 
+% follows for each basic event $i$:
+% \begin{align} 
+%   RAW_i &= \frac{R_i^+}{R_0}    \\
+%   RRW_i &= \frac{R_0}{R_i^-}    \\
+%   B_i &= R_i^+-R_i^-            \\
+%   FV_i &= \frac{R_0-R_i^-}{R_0} 
+% \end{align}
+% 
+% Note the four RIMs listed above is not exhaustive: in literature it is possible to 
+% find additional RIMs such as the 
+% Differential Importance Measure (DIM)~\cite{BorgonovoApostolakis}. 
+% Since, the scope of this paper is tight to risk-informed application of 10CFR50.69, 
+% we will focus this paper only on the four RIMs listed above.
+
+The SAPHIRE PRA code can calculate the following seven different basic event importance 
+measures for each basic event for the respective fault tree, accident sequence, or end state:
 \begin{itemize}
-  \item $R_0$: nominal CDF
-  \item $R_i^-$: CDF for basic event i assuming perfectly reliable
-  \item $R_i^+$: CDF for basic event i assuming it has failed
+  \item Fussell-Vesely (FV)
+  \item Risk Increase Ratio (RIR)
+  \item Risk Increase Difference (RID)
+  \item Risk Reduction Ratio (RRR)
+  \item Risk Reduction Difference (RRD)
+  \item Birnbaum (B)
+  \item Uncertainty Importance
+\end{itemize}   
+  
+The most used importance measures are Fussell-Vesely, Risk Increase Ratio, Risk Reduction Ratio, 
+and Birnbaum. 
+The Fussell-Vesely importance measure indicates the fraction of the minimal cut set upper bound 
+(or sequence frequency, core damage frequency) contributed by the cut sets containing the 
+interested basic event. It is calculated in SAPHIRE Version 8 with the following equation:
+FV = F(i) / F(x)
+where:
+\begin{itemize}
+  \item F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean value
+  \item F(i) = value of all the minimal cut sets that contain the interested basic event i.
 \end{itemize}
 
-Once these three values are determined, then the RIMs are calculated~\cite{} as 
-follows for each basic event $i$:
-\begin{align} 
-  RAW_i &= \frac{R_i^+}{R_0}    \\
-  RRW_i &= \frac{R_0}{R_i^-}    \\
-  B_i &= R_i^+-R_i^-            \\
-  FV_i &= \frac{R_0-R_i^-}{R_0} 
-\end{align}
+    
+The Risk Increase Ratio or Risk Increase Difference importance measure indicates the increase (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) if the interested basic event always occurred (i.e., the basic event failure probability is 1.0). The Risk Increase Ration importance is often called Risk Reduction Worth (RRW) in industry. The risk reduction importance measures are calculated in SAPHIRE Version 8 with the following equation:
+RIR (or RAW)=F(1)/F(x)
+RID=F(1)-F(x)
+where F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean value.
+   F(1) = value of all the minimal cut sets evaluated with the interested basic event probability set to 1.0.
+The Risk Reduction Ratio or Risk Reduction Difference importance measure indicates the reduction (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) if the interested basic event never occurred (i.e., the basic event failure probability is 0.0). The Risk Reduction Ratio importance is often called Risk Achievement Worth (RAW) in industry. The risk increase importance measures are calculated in SAPHIRE Version 8 with the following equation:
+RRR (or RRW)=F(x)/F(0)
+RRD=F(x)-F(0)
+where F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean values.
+    F(0) = value of all the minimal cut sets evaluated with the interested basic event probability set to 0.0.
+The Birnbaum importance measure is an indication of the sensitivity of the minimal cut set upper bound (or sequence frequency, core damage frequency) with respect to the interested basic event. It is calculated by the following equation:
+B=F(1)-F(0)
+where F(1) = value of all the minimal cut sets evaluated with the interested basic event probability set to 1.0.
+    F(0) = value of all the minimal cut sets evaluated with the interested basic event probability set to 0.0.
+The Uncertainty Importance measure is an indication of the contribution of the interested basic event’s uncertainty to the total output uncertainty. This importance measure is not widely used and is not discussed in further detail.
+As a simple example, let’s look at the importance measures of basic event LPI-XHE-XM-ERRORHL in LLOCA event tree. The value of all the minimal cut sets evaluated with the basic event probabilities at their mean values for LLOCA event tree is 2.036E-8/year. There is only one cut set that contain the interested basic event, LPI-XHE-XM-ERRORHL, whose mean probability is 5.00E-3 (refer to the table below for top 20 cut sets of LLOCA event tree).
 
-Note the four RIMs listed above is not exhaustive: in literature it is possible to 
-find additional RIMs such as the 
-Differential Importance Measure (DIM)~\cite{BorgonovoApostolakis}. 
-Since, the scope of this paper is tight to risk-informed application of 10CFR50.69, 
-we will focus this paper only on the four RIMs listed above.
 
