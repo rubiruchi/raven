@@ -194,13 +194,12 @@ class GradientBasedOptimizer(Optimizer):
       gradArray[var] = np.zeros(2) #why are we initializing to this?
     # Evaluate gradient at each point
     # first, get average opt point
-    optOutAvg = np.average(list(optVarsValues[i*2]['output'] for i in range(self.gradDict['numIterForAve'])))
     # then, evaluate gradients
     for i in range(self.gradDict['numIterForAve']):
       opt  = optVarsValues[i*2]     #the latest opt point
       pert = optVarsValues[i*2 + 1] #the perturbed point
       #calculate grad(F) wrt each input variable
-      lossDiff = pert['output'] - optOutAvg
+      lossDiff = pert['output'] - opt['output'] #optOutAvg
       #cover "max" problems
       # TODO it would be good to cover this in the base class somehow, but in the previous implementation this
       #   sign flipping was only called when evaluating the gradient.
@@ -238,6 +237,17 @@ class GradientBasedOptimizer(Optimizer):
     """
     identifier = str(trajID) + '_' + str(iterID) + '_' + str(evalType)
     return identifier
+
+  def getPreviousIdentifierGivenCurrent(self,prefix):
+    """
+      Method to get the previous identifier given the current prefix
+      @ In, prefix, str, the current identifier
+      @ Out, previousPrefix, str, the previous identifier
+    """
+
+    traj, _, _ = prefix.split("_")
+    traj       = int(traj)
+    return self.counter['prefixHistory'][traj][-1]
 
   def localEvaluateGradient(self, optVarsValues, gradient = None):
     """
@@ -471,10 +481,7 @@ class GradientBasedOptimizer(Optimizer):
       @ In, myInput, list, the generating input
     """
     # for some reason, Ensemble Model doesn't preserve this information, so wrap this debug in a try:
-    try:
-      prefix = jobObject.getMetadata()['prefix']
-    except TypeError:
-      prefix = ''
+    prefix = jobObject.getMetadata()['prefix']
     self.raiseADebug('Collected sample "{}"'.format(prefix))
 
     # TODO REWORK move this whole piece to Optimizer base class as much as possible
@@ -524,6 +531,9 @@ class GradientBasedOptimizer(Optimizer):
               self.counter['recentOptHist'][traj][0] = {}
               self.counter['recentOptHist'][traj][0]['inputs'] = self.optVarsHist[traj][self.counter['varsUpdate'][traj]]
               self.counter['recentOptHist'][traj][0]['output'] = currentObjectiveValue
+              if traj not in self.counter['prefixHistory']:
+                self.counter['prefixHistory'][traj] = []
+              self.counter['prefixHistory'][traj].append(prefix)
 
             # update solution export
             #FIXME much of this should move to the base class!
