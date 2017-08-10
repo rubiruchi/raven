@@ -60,7 +60,7 @@ a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be emp
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[scale=0.3]{andGate.pdf}
-    \label{fig:sub2}
+    \label{fig:ABsystem}
   \end{subfigure}
   \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
   \label{fig:ABsystem}
@@ -68,7 +68,7 @@ a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be emp
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.4]{2D.pdf}
+    \includegraphics[scale=0.3]{2D.pdf}
     \caption{}
     \label{fig:2Danalogy}
 \end{figure} 
@@ -96,7 +96,7 @@ From a classical PRA perspective, this system can be modeled using a FT as shown
 
 \begin{figure}
     \centering
-    \centerline{\includegraphics[scale=0.6]{case1_FT.pdf}}
+    \centerline{\includegraphics[scale=0.4]{case1_FT.pdf}}
     \caption{FT structure for the system shown in Fig.~\ref{fig:example12}.}
     \label{fig:case1_FT}
 \end{figure}
@@ -329,7 +329,6 @@ The forth example considers the system of Example 2 (see Section~\ref{sec:exampl
 also the temporal behavior of the reactor.
 The top event is not the failure of valve-pump1-pump2 system but it occurs when core temperature $T$
 reaches a threshold value $T_{max}$ (i.e., reactor failure). 
-The analysis is performed for two different power levels: 100\% and 120\%.
 Mission time is still 24 hours.
 
 Note that the configuration is slightly different from the one presented in the first two 
@@ -340,18 +339,20 @@ In other words, the ECCS is vital especially in the hours right after a reactor 
 
 In principle, this test case cannot be solved analytically due to the complexity of the reactor 
 behavior. Practically it can be solve by identifying the time $T_{lim}$ (limit time) after which a 
-failure of the valve-pump1-pump2 system does not cause reactor failure.
+failure of the valve-pump1-pump2 system does not cause reactor failure since natural circulation
+can provide enough cooling.
 Note that $T_{lim}$ could only be determined be recursively run the system simulator until a 
 good estimate of $T_{lim}$ is reached.
 
 Figure~\ref{fig:limitTime} shows the histogram of the failure time of valve-pump1-pump2 system along 
 with the limit time $T_{lim}$ for the two different power levels (100\% and 120\%). 
-Note that a higher power level implies a faster reactor heatup rate; hence, the limit time $T_{lim}$
-would increases: 
+Note that a higher power level implies a faster reactor heatup rate; hence, the 
+valve-pump1-pump2 system must provide more cooling before the natural circulation can sustain a failure
+of the valve-pump1-pump2 system: $T_{lim}$ increases.
 
 \begin{figure}
     \centering
-    \centerline{\includegraphics[scale=0.6]{limitTime.pdf}}
+    \centerline{\includegraphics[scale=0.4]{limitTime.pdf}}
     \caption{}
     \label{fig:limitTime}
 \end{figure}
@@ -363,9 +364,9 @@ would increases:
     \hline
           & FV & RAW \\
     \hline
-    valve &  &   \\
-    pump1 &  &   \\
-    pump1 &  &   \\
+    valve & 0.585800564 & 2.211368178  \\
+    pump1 & 0.279188039 & 1.484429855  \\
+    pump2 & 0.279188039 & 1.484429855  \\
     \hline
   \end{tabular}
   \label{tab:example4}
@@ -373,3 +374,78 @@ would increases:
 
 \subsection{Considerations on the mission time}
 \label{sec:missionTime}
+
+In the example presented in Section~\ref{sec:example4} two code stopping conditions were: core temperature 
+greater than 2200 F and simulation time reaches 24 hours (mission time).
+Note that the mission time stopping condition imposes that a simulation is considered successful even if the
+valve-pump1-pump2 system has failed and the reactor temperature increases; if a bigger mission time would 
+be chosen then the simulation would be classified no longer with an OK outcome but with a fail outcome.
+Thus, special attention has be given to the assumptions behind the mission time. 
+
+Depending on the employed code simulator the best solution is to re-define the mission time $T_{miss}$ as the 
+time below which events can occur; in addition, the code is set to end the simulation not when the mission 
+time is reached but at a time $T_{end} = T_{miss} + T_{relax}$ where the addition of $T_{relax}$ allows 
+the simulation to reach a steady-state condition.
+
+\subsection{Considerations on the sampling strategy}
+\label{sec:samplingStrategy}
+
+In order to get accurate results of the risk importance measures the number of simulation run to perform 
+can be very high (order of thousands and up). In addition, given that each simulation run may require 
+hours of simulation time, this kind of analysis may be feasible only for large high performance computing 
+systems.
+
+An alternative approach is to employ ROMs instead of the actual simulation code so that a large number of 
+data points can be generated in a much faster time on standard computing machines.
+In this case the approach would be as follows:
+\begin{enumerate}
+  \item Generate a limited set of sample points using the simulation code 
+  \item Train and validate a ROM given the data set generated in Step 1
+  \item Perform the analysis with the ROM obtained in Step 2
+\end{enumerate}
+The training and creation of the ROM can be performed in several ways; for the applications targeted by this 
+paper we have found two optimal choices.
+
+The first one explores the totality of input space uniformly and it reconstructs the response of the code in 
+the input space. 
+
+The second one exploits the binary nature of the problem (i.e., the outcome of each simulation run is binary:
+either OK or failed) and it try to determine the limit surface: the boundaries in the input space that separate 
+failure region (i.e.,
+characterized by the undesired simulation outcome; e.g., core damage) from success region (i.e., characterized 
+by the desired simulation outcome; e.g., max clad temperature below 2200 F). 
+This sampling strategy, called ``adaptive sampling'' (or smart sampling), can obtain much better statistical results
+since the the code response is queried in the most relevant zones of the input space (the limit surface).
+The main adaptive sampling steps are explained as follows:
+\begin{enumerate}
+  \item Perform a set of runs the simulator code: the number of required runs may depend on the dimensionality of 
+        the input space
+  \item Given the set of simulation runs obtained in Step 1, create a ROM. The objective of this ROM is to:
+        \begin{itemize}
+          \item Infer the response of the simulator code, i.e., create an approximate output given the same set of input parameters
+          \item Predict region in the input space that maximize the objective function
+        \end{itemize}
+  \item Employ the ROM to approximate the structure of the goal function
+  \item Identify a set of points that satisfy the conditions specified in the goal function
+  \item Chose a subset of points from the ones obtained in Step 4 that maximize the goal function
+  \item Perform a simulation run for each of the points obtained in Step 5 using the simulator code
+  \item Repeat Steps 2 through 6 until convergence is reached
+\end{enumerate}
+
+An example of adaptive sampling is shown in Fig.~\ref{fig:adaptiveSampling} for a 2-dimensional case. 
+Figure~\ref{fig:adaptiveSampling} shows
+the location of the chosen sample points and the estimate of the limit surface as the iteration illustrated above 
+progresses. Note that the code is evaluated in a safety strategic area: the limit surface. 
+
+\begin{figure}
+    \centering
+    \centerline{\includegraphics[scale=0.4]{adaptiveSampling.pdf}}
+    \caption{Example of adaptive sampling}
+    \label{fig:adaptiveSampling}
+\end{figure}
+
+   
+
+ 
+
+

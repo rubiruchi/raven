@@ -28,18 +28,11 @@ is 0.0 or 1.0. So now we can indicate:
 An example is shown below for a hypothetical case where obtained $pdf_0(T)$ is indicated 
 using an histogram while the limit value for PCT is shown using the red line passing at 2200 F.
 In order to make a connection to what has been presented in the previous section, note that by 
-looking at Fig.~\ref{fig:pdf0}:
+looking at Fig.~\ref{fig:margin0}:
 \begin{equation}
   R_0 = \int_{2200}^\infty \! pdf_0(T) \, dT
   \label{eq:R0}
 \end{equation}
-
-\begin{figure}
-    \centering
-    \centerline{\includegraphics[scale=0.4]{pdf0.png}}
-    \caption{Plot of a hypothetical $pdf_0(T)$}
-    \label{fig:pdf0}
-\end{figure}
 
 As part of the RISMC analysis, the user might want to supplement the results obtained in the 
 previous section with the information associated to a more effective margin analysis.
@@ -50,10 +43,17 @@ In particular, of interest for RISMC applications is (see Fig.~\ref{fig:margin0}
 \end{equation}
 
 \begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
     \centering
-    \centerline{\includegraphics[scale=0.4]{margin0.png}}
-    \caption{Plot of $margin_0$ for the case shown in Fig.~\ref{fig:pdf0}}
-    \label{fig:margin0}
+    \centerline{\includegraphics[scale=0.3]{pdf0.png}}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \centerline{\includegraphics[scale=0.3]{margin0.png}}
+  \end{subfigure}
+  \caption{Plot of a hypothetical $pdf_0(T)$ (left) and its associated margin $margin_0$ (right).}
+  \label{fig:margin0}
 \end{figure}
  
 Using the same philosophy indicated in the previous section for classical RIMs, we want 
@@ -74,24 +74,22 @@ Hence, now the challenge arises on how to compare two pdfs:
 \end{itemize}
 
 \begin{figure}
-    \centering
-    \centerline{\includegraphics[scale=0.4]{dist_dist_1.png}}
-    \caption{Plot of the pdfs for $PCT$ (green) and $CFT$ (red).}
-    \label{fig:dist_dist_1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \centerline{\includegraphics[scale=0.4]{dist_dist_2.png}}
-    \caption{Plot of the pdf of the variable $CFT-PCT$.}
-    \label{fig:dist_dist_2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \centerline{\includegraphics[scale=0.4]{dist_dist_3.png}}
-    \caption{Plot of the pdf of the margin, i.e., $CFT-PCT>0$.}
-    \label{fig:dist_dist_3}
+  \begin{subfigure}{.5\linewidth}
+  \centering
+  \includegraphics[scale=.3]{dist_dist_1.png}
+  \end{subfigure}%
+  \begin{subfigure}{.5\linewidth}
+  \centering
+  \includegraphics[scale=.3]{dist_dist_2.png}
+  \end{subfigure}\\[1ex]
+  \begin{subfigure}{\linewidth}
+  \centering
+  \includegraphics[scale=.3]{dist_dist_3.png}
+  \end{subfigure}
+  \caption{Plot of the pdfs for $PCT$ (green) and $CFT$ (red) (top left), 
+           Plot of the pdf of the variable $CFT-PCT$ (top right) and 
+           Plot of the pdf of the margin, i.e., $CFT-PCT>0$ (bottom).}
+  \label{fig:dist_dist}
 \end{figure}
 
 Assume two pdfs are given: $pdf_1(x)$ and $pdf_2(x)$. Few approaches can be followed: Z-test or 
