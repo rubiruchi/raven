@@ -1,0 +1,106 @@
+<Simulation color="true" verbosity="debug">
+  <RunInfo>
+    <WorkingDir>.</WorkingDir>
+    <Sequence>sample,stats</Sequence>
+  </RunInfo>
+  <Steps>
+    <MultiRun name="sample">
+      <Input   class="DataObjects" type="PointSet"     >placeholder_range</Input>
+      <Sampler class="Samplers"    type="MonteCarlo"   >mc</Sampler>
+      <Model   class="Models"      type="EnsembleModel">ensemble</Model>
+      <Output  class="DataObjects" type="PointSet"     >results</Output>
+    </MultiRun>
+    <PostProcess name="stats">
+      <Input  class="DataObjects" type="PointSet"     >results</Input>
+      <Model  class="Models"      type="PostProcessor">stats</Model>
+      <Output class="Files"       type=""             >results</Output>
+    </PostProcess>
+  </Steps>
+  <DataObjects>
+    <PointSet name="placeholder_range">
+      <Input>v0,th0,g</Input>
+    </PointSet>
+    <PointSet name="placeholder_impact">
+      <Input>m,vf</Input>
+    </PointSet>
+    <PointSet name="range_data">
+      <Input>v0,th0,g</Input>
+      <Output>R,vf</Output>
+    </PointSet>
+    <PointSet name="impact_data">
+      <Input>vf,m</Input>
+      <Output>I</Output>
+    </PointSet>
+    <PointSet name="results">
+      <Input>v0,th0,g</Input>
+      <Output>R,I</Output>
+    </PointSet>
+  </DataObjects>
+
+  <Files>
+    <Input name="results">results.csv</Input>
+  </Files>
+
+  <Models>
+    <PostProcessor name="stats" subType="BasicStatistics">
+      <expectedValue>R,I</expectedValue>
+      <sigma>R,I</sigma>
+      <maximum>R,I</maximum>
+      <minimum>R,I</minimum>
+      <sensitivity>
+        <targets>v0,th0,g</targets>
+        <features>R,I</features>
+      </sensitivity>
+    </PostProcessor>
+    <ExternalModel ModuleToLoad="rangefinder" name="range" subType="">
+      <variables>v0,th0,g,tf,R,vf</variables>
+    </ExternalModel>
+    <ExternalModel ModuleToLoad="impact" name="impact" subType="">
+      <variables>m,R,vf,I</variables>
+    </ExternalModel>
+    <EnsembleModel name="ensemble" subType="">
+      <Model class="Models" type="ExternalModel">
+        range
+        <Input class="DataObjects" type="PointSet">placeholder_range</Input>
+        <TargetEvaluation class="DataObjects" type="PointSet">range_data</TargetEvaluation>
+      </Model>
+      <Model class="Models" type="ExternalModel">
+        impact
+        <Input class="DataObjects" type="PointSet">placeholder_impact</Input>
+        <TargetEvaluation class="DataObjects" type="PointSet">impact_data</TargetEvaluation>
+      </Model>
+    </EnsembleModel>
+  </Models>
+  <Samplers>
+    <MonteCarlo name='mc'>
+      <samplerInit>
+        <limit>1000</limit>
+        <initialSeed>42</initialSeed>
+      </samplerInit>
+      <variable name="v0">
+        <distribution>v0</distribution>
+      </variable>
+      <variable name="th0">
+        <distribution>th0</distribution>
+      </variable>
+      <variable name="g">
+        <distribution>g</distribution>
+      </variable>
+      <constant name="m">1.0</constant>
+    </MonteCarlo>
+  </Samplers>
+  <Distributions>
+    <Uniform name="v0">
+      <lowerBound>20</lowerBound>
+      <upperBound>40</upperBound>
+    </Uniform>
+    <Uniform name="th0">
+      <lowerBound>10</lowerBound>
+      <upperBound>70</upperBound>
+    </Uniform>
+    <Uniform name="g">
+      <lowerBound>9.7639</lowerBound>
+      <upperBound>9.8337</upperBound>
+    </Uniform>
+  </Distributions>
+</Simulation>
