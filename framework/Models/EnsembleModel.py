@@ -69,6 +69,7 @@ class EnsembleModel(Dummy):
       @ Out, None
     """
     Dummy.__init__(self,runInfoDict)
+    self.clientMode            = True     # Client Mode is the default behavior.
     self.modelsDictionary      = {}       # dictionary of models that are going to be assembled
                                           # {'modelName':{'Input':[in1,in2,..,inN],'Output':[out1,out2,..,outN],'Instance':Instance}}
     self.activatePicard        = False    # is non-linear system beeing identified?
@@ -93,6 +94,9 @@ class EnsembleModel(Dummy):
       @ Out, None
     """
     Dummy.localInputAndChecks(self, xmlNode)
+    if 'longRunsMode'  in xmlNode.attrib.keys():
+      if xmlNode.attrib['longRunsMode'].strip().lower() in utils.stringsThatMeanFalse():
+        self.clientMode = False # Client Mode is the default behavior (here we set it to sequential behavior)
     for child in xmlNode:
       if child.tag not in  ["Model","settings"]:
         self.raiseAnError(IOError, "Expected <Model> or <settings> tag. Got "+child.tag)
@@ -502,7 +506,8 @@ class EnsembleModel(Dummy):
            a mandatory key is the sampledVars'that contains a dictionary {'name variable':value}
         @ Out, returnValue, dict, This holds the output information of the evaluated sample.
     """
-    jobHandler = kwargs.pop('jobHandler')
+    jobHandler = kwargs.pop('jobHandler') if self.clientMode else None
+
     Input = self.createNewInput(myInput[0], samplerType, **kwargs)
 
     ## Unpack the specifics for this class, namely just the jobHandler
@@ -521,57 +526,24 @@ class EnsembleModel(Dummy):
            a mandatory key is the sampledVars'that contains a dictionary {'name variable':value}
         @ Out, None
     """
-    for mm in utils.returnImportModuleString(jobHandler):
-      if mm not in self.mods:
-        self.mods.append(mm)
-
+    #for mm in utils.returnImportModuleString(jobHandler)+utils.returnImportModuleString(self.__class__.evaluateSample):
+    #  if mm not in self.mods:
+    #    self.mods.append(mm)
     prefix = kwargs['prefix']
     self.tempOutputs['uncollectedJobIds'].append(prefix)
-
-    ## Ensemble models need access to the job handler, so let's stuff it in our
-    ## catch all kwargs where evaluateSample can pick it up, not great, but
-    ## will suffice until we can better redesign this whole process.
-    kwargs['jobHandler'] = jobHandler
 
     ## This may look a little weird, but due to how the parallel python library
     ## works, we are unable to pass a member function as a job because the
     ## pp library loses track of what self is, so instead we call it from the
     ## class and pass self in as the first parameter
-    jobHandler.addJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs)
-
-
-  def submitAsClient(self,myInput,samplerType,jobHandler,**kwargs):
-    """
-        This will submit an individual sample to be evaluated by this model to a
-        specified jobHandler as a client job. Note, some parameters are needed
-        by createNewInput and thus descriptions are copied from there.
-        @ In, myInput, list, the inputs (list) to start from to generate the new
-          one
-        @ In, samplerType, string, is the type of sampler that is calling to
-          generate a new input
-        @ In,  jobHandler, JobHandler instance, the global job handler instance
-        @ In, **kwargs, dict,  is a dictionary that contains the information
-          coming from the sampler, a mandatory key is the sampledVars' that
-          contains a dictionary {'name variable':value}
-        @ Out, None
-    """
-    for mm in utils.returnImportModuleString(jobHandler):
-      if mm not in self.mods:
-        self.mods.append(mm)
-
-    prefix = kwargs['prefix']
-    self.tempOutputs['uncollectedJobIds'].append(prefix)
-
-    ## Ensemble models need access to the job handler, so let's stuff it in our
-    ## catch all kwargs where evaluateSample can pick it up, not great, but
-    ## will suffice until we can better redesign this whole process.
-    kwargs['jobHandler'] = jobHandler
-
-    ## This may look a little weird, but due to how the parallel python library
-    ## works, we are unable to pass a member function as a job because the
-    ## pp library loses track of what self is, so instead we call it from the
-    ## class and pass self in as the first parameter
-    jobHandler.addClientJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs)
+    if self.clientMode:
+      ## Ensemble models (in client mode) need access to the job handler, so let's stuff it in our
+      ## catch all kwargs where evaluateSample can pick it up, not great, but
+      ## will suffice until we can better redesign this whole process.
+      kwargs['jobHandler'] = jobHandler
+      jobHandler.addClientJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs)
+    else:
+      jobHandler.addJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs, self.mods)
 
   def __retrieveDependentOutput(self,modelIn,listOfOutputs, typeOutputs):
     """
@@ -613,7 +585,7 @@ class EnsembleModel(Dummy):
   def _externalRun(self,inRun, jobHandler):
     """
       Method that performs the actual run of the essembled model (separated from run method for parallelization purposes)
-      @ In, inRun, tuple, tuple of Inputs (inRun[0] actual input, inRun[1] jobHandler instance )
+      @ In, inRun, tuple, tuple of Inputs (inRun[0] actual input, inRun[1] jobHandler instance (if self.clientMode is True, else None) )
       @ Out, returnEvaluation, tuple, the results of the essembled model:
                                - returnEvaluation[0] dict of results from each sub-model,
                                - returnEvaluation[1] the dataObjects where the projection of each model is stored
@@ -707,33 +679,44 @@ class EnsembleModel(Dummy):
 
         nextModel = False
         while not nextModel:
-          moveOn = False
-          while not moveOn:
-            if jobHandler.availability() > 0:
-              # run the model
-              if modelIn not in modelsOnHold:
-                self.modelsDictionary[modelIn]['Instance'].submit(originalInput[modelIn], samplerType, jobHandler, **inputKwargs[modelIn])
-                # wait until the model finishes, in order to get ready to run the subsequential one
-                while not jobHandler.isThisJobFinished(modelIn+utils.returnIdSeparator()+identifier):
-                  time.sleep(1.e-3)
-              nextModel = moveOn = True
-            else:
-              time.sleep(1.e-3)
-          # store the results in the working dictionaries
-            returnDict[modelIn]   = {}
-          if modelIn not in modelsOnHold:
-            # get job that just finished to gather the results
-            finishedRun = jobHandler.getFinished(jobIdentifier = modelIn+utils.returnIdSeparator()+identifier, uniqueHandler=self.name+identifier)
-            evaluation = finishedRun[0].getEvaluation()
-            if isinstance(evaluation, Runners.Error):
-              # the model failed
-              for modelToRemove in self.orderList:
-                if modelToRemove != modelIn:
-                  jobHandler.getFinished(jobIdentifier = modelToRemove + utils.returnIdSeparator() + identifier, uniqueHandler = self.name + identifier)
-              self.raiseAnError(RuntimeError,"The Model  " + modelIn + " identified by " + finishedRun[0].identifier +" failed!")
+          if self.clientMode:
+            moveOn = False
+            while not moveOn:
+              if jobHandler.availability() > 0:
+                # run the model
+                if modelIn not in modelsOnHold:
+                  self.modelsDictionary[modelIn]['Instance'].submit(originalInput[modelIn], samplerType, jobHandler, **inputKwargs[modelIn])
+                  # wait until the model finishes, in order to get ready to run the subsequential one
+                  while not jobHandler.isThisJobFinished(modelIn+utils.returnIdSeparator()+identifier):
+                    time.sleep(1.e-3)
+                moveOn = True
+              else:
+                time.sleep(1.e-3)
+          else:
+            if modelIn not in modelsOnHold:
+              modelReturn = self.modelsDictionary[modelIn]['Instance'].evaluateSample(originalInput[modelIn], samplerType, inputKwargs[modelIn])
+          nextModel = True
 
-            # collect output in the temporary data object
-            exportDict = self.modelsDictionary[modelIn]['Instance'].createExportDictionaryFromFinishedJob(finishedRun[0], True)
+          # store the results in the working dictionaries
+          returnDict[modelIn]   = {}
+          if modelIn not in modelsOnHold:
+            finishedJob = None
+            if self.clientMode:
+              # get job that just finished to gather the results
+              finishedRun = jobHandler.getFinished(jobIdentifier = modelIn+utils.returnIdSeparator()+identifier, uniqueHandler=self.name+identifier)
+              finishedJob = finishedRun[0]
+              evaluation = finishedJob.getEvaluation()
+              if isinstance(evaluation, Runners.Error):
+                # the model failed
+                for modelToRemove in self.orderList:
+                  if modelToRemove != modelIn:
+                    jobHandler.getFinished(jobIdentifier = modelToRemove + utils.returnIdSeparator() + identifier, uniqueHandler = self.name + identifier)
+                self.raiseAnError(RuntimeError,"The Model  " + modelIn + " identified by " + ffinishedJob.identifier +" failed!")
+
+              # collect output in the temporary data object
+              exportDict = self.modelsDictionary[modelIn]['Instance'].createExportDictionaryFromFinishedJob(finishedJob, True)
+            else:
+              exportDict = self.modelsDictionary[modelIn]['Instance'].createExportDictionaryFromFinishedJob((modelReturn[0],modelReturn[1],inputKwargs[modelIn]), True)
           else:
             exportDict = holdCollector[modelIn]['exportDict']
           # store the output dictionary
@@ -741,7 +724,10 @@ class EnsembleModel(Dummy):
 
           # collect the target evaluation
           if modelIn not in modelsOnHold:
-            self.modelsDictionary[modelIn]['Instance'].collectOutput(finishedRun[0],tempTargetEvaluations[modelIn],options={'exportDict':exportDict})
+            if self.clientMode:
+              self.modelsDictionary[modelIn]['Instance'].collectOutput(finishedJob,tempTargetEvaluations[modelIn],options={'exportDict':exportDict})
+            else:
+              self.modelsDictionary[modelIn]['Instance'].collectOutputFromDict(exportDict,tempTargetEvaluations[modelIn],options={'exportDict':exportDict})
           else:
             tempTargetEvaluations[modelIn] = holdCollector[modelIn]['targetEvaluations']
 

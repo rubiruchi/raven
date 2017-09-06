@@ -196,7 +196,8 @@ class Model(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
     self.subType  = ''
     self.runQueue = []
     self.printTag = 'MODEL'
-    self.createWorkingDir = False
+    self.clientMode = False       # Do we need to run it in client mode?
+    self.createWorkingDir = False # Do we need to create the workind directory?
 
   def _readMoreXML(self,xmlNode):
     """
@@ -411,11 +412,12 @@ class Model(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
     ## class and pass self in as the first parameter
     jobHandler.addClientJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, metadata=metadata, modulesToImport=self.mods, uniqueHandler=uniqueHandler)
 
+
   def createExportDictionaryFromFinishedJob(self,finishedJob, addJobId = False, inputParams = None):
     """
       Method that is aimed to create a dictionary with the sampled and output variables that can be collected by the different
       output objects.
-      @ In, finishedJob, InternalRunner object, instance of the run just finished
+      @ In, finishedJob, InternalRunner object or tuple, instance of the run just finished (or tuple (sampledVars,outputDict,metadata))
       @ In, addJobId, bool, optional, add prefix in the exportDictionary? Default: False
       @ In, inputParams, list, optional, list of input space parameters in the output object? Default: None
       @ Out, exportDict, dict, dictionary containing the output/input values: {'inputSpaceParams':dict(sampled variables),
@@ -424,13 +426,16 @@ class Model(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
     """
     if inputParams is None:
       inputParams = []
-
-    evaluation = finishedJob.getEvaluation()
-    if isinstance(evaluation, Runners.Error):
-      self.raiseAnError(AttributeError,"No available Output to collect")
-
-    sampledVars,outputDict = evaluation
-
+    if type(finishedJob).__name__ != "tuple":
+      evaluation = finishedJob.getEvaluation()
+      if isinstance(evaluation, Runners.Error):
+        self.raiseAnError(AttributeError,"No available Output to collect")
+      sampledVars,outputDict = evaluation
+      metadata = finishedJob.getMetadata()
+      prefix   = finishedJob.identifier
+    else:
+      sampledVars, outputDict, metadata = finishedJob[0], finishedJob[1], finishedJob[2]
+      prefix   = metadata['prefix']
     if type(outputDict).__name__ == "tuple":
       outputEval = outputDict[0]
     else:
@@ -464,9 +469,9 @@ class Model(utils.metaclass_insert(abc.ABCMeta,BaseType),Assembler):
         elif key in inputParams:
           sampledVars[key] = value[0]
 
-    exportDict = copy.deepcopy({'inputSpaceParams':sampledVars,'outputSpaceParams':outputEval,'metadata':finishedJob.getMetadata()})
+    exportDict = copy.deepcopy({'inputSpaceParams':sampledVars,'outputSpaceParams':outputEval,'metadata':metadata})
     if addJobId:
-      exportDict['prefix'] = finishedJob.identifier
+      exportDict['prefix'] = prefix
     self._replaceVariablesNamesWithAliasSystem(exportDict['inputSpaceParams'], 'input',True)
 
     return exportDict
