@@ -41,6 +41,9 @@ add_path_recursively(os.path.join(frameworkFolder,'contrib','pp'))
 #add_path_recursively(os.path.join(frameworkFolder,'contrib','StringIO'))
 add_path(os.path.join(frameworkFolder,'contrib','AMSC'))
 add_path(os.path.join(frameworkFolder,'contrib'))
+#add_path(os.path.join(frameworkFolder,'Models'))
+from Models.EnsembleModel import *
+
 
 
 #filepath = os.path.dirname(os.path.abspath(inspect.getsourcefile(lambda _: None)))

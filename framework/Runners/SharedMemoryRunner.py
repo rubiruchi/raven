@@ -120,6 +120,7 @@ class SharedMemoryRunner(InternalRunner):
         ## Queue is empty!
         self.runReturn = None
       else:
+        self.raiseADebug("Collecting job: "+str(self.identifier))
         self.runReturn = self.subque.popleft()
 
       self.hasBeenAdded = True
@@ -131,8 +132,9 @@ class SharedMemoryRunner(InternalRunner):
       @ Out, None
     """
     try:
+      self.raiseADebug("Starting job: "+str(self.identifier))
       self.thread = threading.Thread(target = lambda q, *arg : q.append(self.functionToRun(*arg)), name = self.identifier, args=(self.subque,)+tuple(self.args))
-
+     
       self.thread.daemon = True
       self.thread.start()
       self.started = True

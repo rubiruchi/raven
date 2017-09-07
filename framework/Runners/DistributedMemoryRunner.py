@@ -110,6 +110,7 @@ class DistributedMemoryRunner(InternalRunner):
     if not self.hasBeenAdded:
       if self.thread is not None:
         self.runReturn = self.thread()
+        self.raiseADebug("Collecting job: "+str(self.identifier))
       else:
         self.runReturn = None
       self.hasBeenAdded = True
@@ -121,6 +122,7 @@ class DistributedMemoryRunner(InternalRunner):
       @ Out, None
     """
     try:
+      self.raiseADebug("Starting job: "+str(self.identifier))
       self.thread = self.__ppserver.submit(self.functionToRun, args=self.args, depfuncs=(), modules = tuple(list(set(self.frameworkMods))),functionToSkip=self.functionToSkip)
       self.started = True
     except Exception as ae:

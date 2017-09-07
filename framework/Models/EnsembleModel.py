@@ -506,8 +506,8 @@ class EnsembleModel(Dummy):
            a mandatory key is the sampledVars'that contains a dictionary {'name variable':value}
         @ Out, returnValue, dict, This holds the output information of the evaluated sample.
     """
+    
     jobHandler = kwargs.pop('jobHandler') if self.clientMode else None
-
     Input = self.createNewInput(myInput[0], samplerType, **kwargs)
 
     ## Unpack the specifics for this class, namely just the jobHandler
@@ -532,6 +532,37 @@ class EnsembleModel(Dummy):
     prefix = kwargs['prefix']
     self.tempOutputs['uncollectedJobIds'].append(prefix)
 
+    fakeSelf = utils.Object() 
+    fakeSelf.__dict__['modelsDictionary'] = {}
+    for modelIn in self.modelsDictionary.keys():
+      fakeSelf.__dict__['modelsDictionary'][modelIn] = {'Instance':self.modelsDictionary[modelIn]['Instance'],'Output':self.modelsDictionary[modelIn]['Output'],'Input':self.modelsDictionary[modelIn]['Input'],'InputObject':self.modelsDictionary[modelIn]['InputObject']}
+      if 'metadataToTransfer' in self.modelsDictionary[modelIn]:
+        fakeSelf.__dict__['modelsDictionary'][modelIn]['metadataToTransfer'] = self.modelsDictionary[modelIn]['metadataToTransfer'] 
+    self.modelsDictionary[modelIn]['Instance']
+
+    fakeSelf.__dict__['holdOutputSpace'] = kwargs['holdOutputSpace'] if 'holdOutputSpace' in kwargs else None
+    fakeSelf.__dict__['holdCollector'] = {}
+    if fakeSelf.__dict__['holdOutputSpace'] :
+      fakeSelf.__dict__['modelsOnHold'] = self._identifyModelsOnHold(self,holdOutputSpace)
+      for modelOnHold in fakeSelf.__dict__['modelsOnHold']:
+        fakeSelf.__dict__['holdCollector'][modelOnHold]  = {'exportDict':self.tempOutputs['forHold'][holdOutputSpace[1]]['outs'][modelOnHold],'targetEvaluations':self.tempOutputs['forHold'][holdOutputSpace[1]]['targetEvaluations'][modelOnHold]}
+    fakeSelf.__dict__['tempTargetEvaluations']  = {}
+    for modelIn in self.orderList:
+      self.tempTargetEvaluations[modelIn].resetData()
+      fakeSelf.__dict__['tempTargetEvaluations'][modelIn] = copy.copy(self.tempTargetEvaluations[modelIn])
+    fakeSelf.__dict__['activatePicard'] = self.activatePicard
+    fakeSelf.__dict__['orderList']      = self.orderList
+    fakeSelf.__dict__['maxIterations']  = self.maxIterations
+    fakeSelf.__dict__['clientMode']     = self.clientMode
+    fakeSelf.__dict__['name']           = self.name
+    fakeSelf.__dict__['initialConditions'] = self.initialConditions
+    fakeSelf.__dict__['convergenceTol'] = self.convergenceTol
+    fakeSelf.__dict__['alias'] = self.alias
+    fakeSelf.__dict__['needToCheckInputs']  = self.needToCheckInputs
+    fakeSelf.__dict__['allOutputs']  = self.allOutputs
+    
+    
+    
     ## This may look a little weird, but due to how the parallel python library
     ## works, we are unable to pass a member function as a job because the
     ## pp library loses track of what self is, so instead we call it from the
@@ -543,23 +574,16 @@ class EnsembleModel(Dummy):
       kwargs['jobHandler'] = jobHandler
       jobHandler.addClientJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs)
     else:
-      jobHandler.addJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs, self.mods)
-
-  def __retrieveDependentOutput(self,modelIn,listOfOutputs, typeOutputs):
-    """
-      This method is aimed to retrieve the values of the output of the models on which the modelIn depends on
-      @ In, modelIn, string, name of the model for which the dependent outputs need to be
-      @ In, listOfOutputs, list, list of dictionary outputs ({modelName:dictOfOutputs})
-      @ Out, dependentOutputs, dict, the dictionary of outputs the modelIn needs
-    """
-    dependentOutputs = {}
-    for previousOutputs, outputType in zip(listOfOutputs,typeOutputs):
-      if len(previousOutputs.values()) > 0:
-        for input in self.modelsDictionary[modelIn]['Input']:
-          if input in previousOutputs.keys():
-            dependentOutputs[input] =  previousOutputs[input][-1] if outputType != 'HistorySet' else np.asarray(previousOutputs[input])
-          #if input in previousOutputs.keys(): dependentOutputs[input] =  previousOutputs[input] if outputType != 'HistorySet' else np.asarray(previousOutputs[input])
-    return dependentOutputs
+      #jobHandler.addJob((self, myInput, samplerType, kwargs), self.__class__.evaluateSample, prefix, kwargs, self.mods)'
+      #if 'import EnsembleModel' not in self.mods:
+      #  self.mods.append(str('import EnsembleModel'))
+      #print(self.mods)
+      jobHandler.addJob((fakeSelf, myInput, samplerType, kwargs), evaluateSampleCleaned, prefix, kwargs, self.mods, )
+      
+      #print(self.mods)
+      #aaa
+    
+    self.needToCheckInputs = False   
 
   def _identifyModelsOnHold(self,holdOutputSpace):
     """
@@ -644,7 +668,7 @@ class EnsembleModel(Dummy):
           metadataToTransfer[metadataToGet if alias is None else alias] = returnDict[source]['metadata'][metadataToGet][-1]
 
         # get dependent outputs
-        dependentOutput = self.__retrieveDependentOutput(modelIn, gotOutputs, typeOutputs)
+        dependentOutput = _retrieveDependentOutput(self,modelIn, gotOutputs, typeOutputs)
         # if nonlinear system, check for initial coditions
         if iterationCount == 1  and self.activatePicard:
           sampledVars = inputKwargs[modelIn]['SampledVars'].keys()
@@ -774,3 +798,310 @@ class EnsembleModel(Dummy):
       @ Out, acceptHoldOutputSpace, bool, True if a certain output space can be kept on hold
     """
     return True
+
+def externalRunCleaned(dataContainerFake,inRun, jobHandler):
+  """
+    Method that performs the actual run of the essembled model (separated from run method for parallelization purposes)
+    @ In, inRun, tuple, tuple of Inputs (inRun[0] actual input, inRun[1] jobHandler instance (if dataContainerFake.clientMode is True, else None) )
+    @ Out, returnEvaluation, tuple, the results of the essembled model:
+                             - returnEvaluation[0] dict of results from each sub-model,
+                             - returnEvaluation[1] the dataObjects where the projection of each model is stored
+  """
+  originalInput = inRun[0]
+  samplerType = inRun[1]
+  inputKwargs = inRun[2]
+  identifier = inputKwargs.pop('prefix')
+  tempOutputs = {}
+  tempTargetEvaluations = {}
+  #holdOutputSpace = inputKwargs.values()[-1]['holdOutputSpace'] if 'holdOutputSpace' in inputKwargs.values()[-1] else None
+  # the sampler or optimizer wants to hold the result of
+  modelsOnHold    = []
+  residueContainer = dict.fromkeys(dataContainerFake.modelsDictionary.keys())
+  gotOutputs       = [{}]*len(dataContainerFake.orderList)
+  typeOutputs      = ['']*len(dataContainerFake.orderList)
+
+  # if nonlinear system, initialize residue container
+  if dataContainerFake.activatePicard:
+    for modelIn in dataContainerFake.orderList:
+      residueContainer[modelIn] = {'residue':{},'iterValues':[{}]*2}
+      for out in dataContainerFake.modelsDictionary[modelIn]['Output']:
+        residueContainer[modelIn]['residue'][out] = np.zeros(1)
+        residueContainer[modelIn]['iterValues'][0][out] = np.zeros(1)
+        residueContainer[modelIn]['iterValues'][1][out] = np.zeros(1)
+
+  maxIterations = dataContainerFake.maxIterations if dataContainerFake.activatePicard else 1
+  iterationCount = 0
+  while iterationCount < maxIterations:
+    returnDict     = {}
+    iterationCount += 1
+
+    if dataContainerFake.activatePicard:
+      print("Picard's Iteration "+ str(iterationCount))
+
+    for modelCnt, modelIn in enumerate(dataContainerFake.orderList):
+      dataContainerFake.tempTargetEvaluations[modelIn].resetData()
+      # in case there are metadataToTransfer, let's collect them from the source
+      metadataToTransfer = None
+      if dataContainerFake.modelsDictionary[modelIn]['metadataToTransfer']:
+        metadataToTransfer = {}
+
+      for metadataToGet, source, alias in dataContainerFake.modelsDictionary[modelIn]['metadataToTransfer']:
+        if metadataToGet not in returnDict[source]['metadata'].keys():
+          raise RuntimeError ('metadata "'+metadataToGet+'" is not present among the ones available in source "'+source+'"!')
+        metadataToTransfer[metadataToGet if alias is None else alias] = returnDict[source]['metadata'][metadataToGet][-1]
+
+      # get dependent outputs
+      dependentOutput = _retrieveDependentOutput(dataContainerFake,modelIn, gotOutputs, typeOutputs)
+      # if nonlinear system, check for initial coditions
+      if iterationCount == 1  and dataContainerFake.activatePicard:
+        sampledVars = inputKwargs[modelIn]['SampledVars'].keys()
+        conditionsToCheck = set(dataContainerFake.modelsDictionary[modelIn]['Input']) - set(dependentOutput.keys()+sampledVars)
+        for initialConditionToSet in conditionsToCheck:
+          if initialConditionToSet in dataContainerFake.initialConditions.keys():
+            dependentOutput[initialConditionToSet] = dataContainerFake.initialConditions[initialConditionToSet]
+          else:
+            raise IOError ("No initial conditions provided for variable "+ initialConditionToSet)
+
+        ## Does the same as above, probably should see if either of these is faster,
+        ## otherwise I would recommend the block above for its clarity.
+        # for initCondToSet in [x for x in dataContainerFake.modelsDictionary[modelIn]['Input'] if x not in set(dependentOutput.keys()+sampledVars)]:
+        #   if initCondToSet in dataContainerFake.initialConditions.keys():
+        #     dependentOutput[initCondToSet] = dataContainerFake.initialConditions[initCondToSet]
+        #   else:
+        #     self.raiseAnError(IOError,"No initial conditions provided for variable "+ initCondToSet)
+
+      # set new identifiers
+      inputKwargs[modelIn]['prefix']        = modelIn+utils.returnIdSeparator()+identifier
+      inputKwargs[modelIn]['uniqueHandler'] = dataContainerFake.name+identifier
+      if metadataToTransfer is not None:
+        inputKwargs[modelIn]['metadataToTransfer'] = metadataToTransfer
+
+      for key, value in dependentOutput.items():
+        inputKwargs[modelIn]["SampledVars"  ][key] =  dependentOutput[key]
+        ## FIXME it is a mistake (Andrea). The SampledVarsPb for this variable should be transferred from outside
+        ## Who has this information? -- DPM 4/11/17
+        inputKwargs[modelIn]["SampledVarsPb"][key] =  1.0
+      _replaceVariablesNamesWithAliasSystemLocal(dataContainerFake,inputKwargs[modelIn]["SampledVars"  ],'input',False)
+      _replaceVariablesNamesWithAliasSystemLocal(dataContainerFake,inputKwargs[modelIn]["SampledVarsPb"],'input',False)
+
+      nextModel = False
+      while not nextModel:
+        if dataContainerFake.clientMode:
+          moveOn = False
+          while not moveOn:
+            if jobHandler.availability() > 0:
+              # run the model
+              if modelIn not in modelsOnHold:
+                dataContainerFake.modelsDictionary[modelIn]['Instance'].submit(originalInput[modelIn], samplerType, jobHandler, **inputKwargs[modelIn])
+                # wait until the model finishes, in order to get ready to run the subsequential one
+                while not jobHandler.isThisJobFinished(modelIn+utils.returnIdSeparator()+identifier):
+                  time.sleep(1.e-3)
+              moveOn = True
+            else:
+              time.sleep(1.e-3)
+        else:
+          if modelIn not in modelsOnHold:
+            modelReturn = dataContainerFake.modelsDictionary[modelIn]['Instance'].evaluateSample(originalInput[modelIn], samplerType, inputKwargs[modelIn])
+        nextModel = True
+
+        # store the results in the working dictionaries
+        returnDict[modelIn]   = {}
+        if modelIn not in modelsOnHold:
+          finishedJob = None
+          if dataContainerFake.clientMode:
+            # get job that just finished to gather the results
+            finishedRun = jobHandler.getFinished(jobIdentifier = modelIn+utils.returnIdSeparator()+identifier, uniqueHandler=dataContainerFake.name+identifier)
+            finishedJob = finishedRun[0]
+            evaluation = finishedJob.getEvaluation()
+            if isinstance(evaluation, Runners.Error):
+              # the model failed
+              for modelToRemove in dataContainerFake.orderList:
+                if modelToRemove != modelIn:
+                  jobHandler.getFinished(jobIdentifier = modelToRemove + utils.returnIdSeparator() + identifier, uniqueHandler = dataContainerFake.name + identifier)
+              raise RuntimeError("The Model  " + modelIn + " identified by " + ffinishedJob.identifier +" failed!")
+
+            # collect output in the temporary data object
+            exportDict = dataContainerFake.modelsDictionary[modelIn]['Instance'].createExportDictionaryFromFinishedJob(finishedJob, True)
+          else:
+            exportDict = dataContainerFake.modelsDictionary[modelIn]['Instance'].createExportDictionaryFromFinishedJob((modelReturn[0],modelReturn[1],inputKwargs[modelIn]), True)
+        else:
+          exportDict = dataContainerFake.holdCollector[modelIn]['exportDict']
+        # store the output dictionary
+        tempOutputs[modelIn] = copy.deepcopy(exportDict)
+
+        # collect the target evaluation
+        if modelIn not in modelsOnHold:
+          if dataContainerFake.clientMode:
+            dataContainerFake.modelsDictionary[modelIn]['Instance'].collectOutput(finishedJob,dataContainerFake.tempTargetEvaluations[modelIn],options={'exportDict':exportDict})
+          else:
+            dataContainerFake.modelsDictionary[modelIn]['Instance'].collectOutputFromDict(exportDict,dataContainerFake.tempTargetEvaluations[modelIn],options={'exportDict':exportDict})
+        else:
+          dataContainerFake.tempTargetEvaluations[modelIn] = dataContainerFake.holdCollector[modelIn]['targetEvaluations']
+
+        responseSpace         = dataContainerFake.tempTargetEvaluations[modelIn].getParametersValues('outputs', nodeId = 'RecontructEnding')
+        inputSpace            = dataContainerFake.tempTargetEvaluations[modelIn].getParametersValues('inputs', nodeId = 'RecontructEnding')
+        typeOutputs[modelCnt] = dataContainerFake.tempTargetEvaluations[modelIn].type
+        gotOutputs[modelCnt]  = responseSpace if typeOutputs[modelCnt] != 'HistorySet' else responseSpace.values()[-1]
+
+        #store the results in return dictionary
+        returnDict[modelIn]['outputSpaceParams'] = gotOutputs[modelCnt]
+        returnDict[modelIn]['inputSpaceParams' ] = inputSpace if typeOutputs[modelCnt] != 'HistorySet' else inputSpace.values()[-1]
+        returnDict[modelIn]['metadata'         ] = dataContainerFake.tempTargetEvaluations[modelIn].getAllMetadata()
+
+        # if nonlinear system, compute the residue
+        if dataContainerFake.activatePicard:
+          residueContainer[modelIn]['iterValues'][1] = copy.copy(residueContainer[modelIn]['iterValues'][0])
+          for out in gotOutputs[modelCnt].keys():
+            residueContainer[modelIn]['iterValues'][0][out] = copy.copy(gotOutputs[modelCnt][out])
+            if iterationCount == 1:
+              residueContainer[modelIn]['iterValues'][1][out] = np.zeros(len(residueContainer[modelIn]['iterValues'][0][out]))
+          for out in gotOutputs[modelCnt].keys():
+            residueContainer[modelIn]['residue'][out] = abs(np.asarray(residueContainer[modelIn]['iterValues'][0][out]) - np.asarray(residueContainer[modelIn]['iterValues'][1][out]))
+          residueContainer[modelIn]['Norm'] =  np.linalg.norm(np.asarray(residueContainer[modelIn]['iterValues'][1].values())-np.asarray(residueContainer[modelIn]['iterValues'][0].values()))
+
+    # if nonlinear system, check the total residue and convergence
+    if dataContainerFake.activatePicard:
+      iterZero = []
+      iterOne = []
+      for modelIn in dataContainerFake.orderList:
+        iterZero += residueContainer[modelIn]['iterValues'][0].values()
+        iterOne  += residueContainer[modelIn]['iterValues'][1].values()
+      residueContainer['TotalResidue'] = np.linalg.norm(np.asarray(iterOne)-np.asarray(iterZero))
+      print("Picard's Iteration Norm: "+ str(residueContainer['TotalResidue']))
+      if residueContainer['TotalResidue'] <= dataContainerFake.convergenceTol:
+        print("Picard's Iteration converged. Norm: "+ str(residueContainer['TotalResidue']))
+        break
+  returnEvaluation = returnDict, dataContainerFake.tempTargetEvaluations, tempOutputs
+  return returnEvaluation
+
+
+def _replaceVariablesNamesWithAliasSystemLocal(localSelf, sampledVars, aliasType='input', fromModelToFramework=False):
+    """
+      Method to convert kwargs Sampled vars with the alias system
+      @ In , sampledVars, dict, dictionary that are going to be modified
+      @ In, aliasType, str, optional, type of alias to be replaced
+      @ In, fromModelToFramework, bool, optional, When we define aliases for some input variables, we need to be sure to convert the variable names
+                                                  (if alias is of type input) coming from RAVEN (e.g. sampled variables) into the corresponding names
+                                                  of the model (e.g. frameworkVariableName = "wolf", modelVariableName="thermal_conductivity").
+                                                  Viceversa, when we define aliases for some model output variables, we need to convert the variable
+                                                  names coming from the model into the one that are used in RAVEN (e.g. modelOutputName="00001111",
+                                                  frameworkVariableName="clad_temperature"). The fromModelToFramework bool flag controls this action
+                                                  (if True, we convert the name in the dictionary from the model names to the RAVEN names, False vice versa)
+      @ Out, originalVariables, dict, dictionary of the original sampled variables
+    """
+    if aliasType =='inout':
+      listAliasType = ['input','output']
+    else:
+      listAliasType = [aliasType]
+    originalVariables = copy.deepcopy(sampledVars)
+    for aliasTyp in listAliasType:
+      if len(localSelf.alias[aliasTyp].keys()) != 0:
+        for varFramework,varModel in localSelf.alias[aliasTyp].items():
+          whichVar =  varModel if fromModelToFramework else varFramework
+          found = sampledVars.pop(whichVar,[sys.maxint])
+          if not np.array_equal(np.asarray(found), [sys.maxint]):
+            if fromModelToFramework:
+              sampledVars[varFramework] = originalVariables[varModel]
+            else:
+              sampledVars[varModel]     = originalVariables[varFramework]
+    return originalVariables
+
+
+
+
+########
+# LOCALLLLLLLLL
+#######
+  
+def createNewInputCleaned(dataContainerFake,myInput,samplerType,**kwargs):
+  """
+    This function will return a new input to be submitted to the model, it is called by the sampler.
+    @ In, myInput, list, the inputs (list) to start from to generate the new one
+    @ In, samplerType, string, is the type of sampler that is calling to generate a new input
+    @ In, **kwargs, dict,  is a dictionary that contains the information coming from the sampler,
+         a mandatory key is the sampledVars'that contains a dictionary {'name variable':value}
+    @ Out, newInputs, dict, dict that returns the new inputs for each sub-model
+  """
+  # check if all the inputs of the submodule are covered by the sampled vars and Outputs of the other sub-models
+  if dataContainerFake.needToCheckInputs:
+    allCoveredVariables = list(set(dataContainerFake.allOutputs + kwargs['SampledVars'].keys()))
+
+  identifier = kwargs['prefix']
+  # global prefix
+  newKwargs = {'prefix':identifier}
+
+  newInputs = {}
+
+  ## First check the inputs if they need to be checked
+  if dataContainerFake.needToCheckInputs:
+    for modelIn, specs in dataContainerFake.modelsDictionary.items():
+      for inp in specs['Input']:
+        if inp not in allCoveredVariables:
+          raise RuntimeError ("for sub-model "+ modelIn + " the input "+inp+" has not been found among other models' outputs and sampled variables!")
+
+  ## Now prepare the new inputs for each model
+  for modelIn, specs in dataContainerFake.modelsDictionary.items():
+    newKwargs[modelIn] = selectInputSubsetCleaned(dataContainerFake,modelIn,kwargs)
+
+    # if specs['Instance'].type != 'Code':
+    #   inputDict = [self._inputToInternal(self.modelsDictionary[modelIn]['InputObject'][0],newKwargs['SampledVars'].keys())]
+    # else:
+    #   inputDict = self.modelsDictionary[modelIn]['InputObject']
+
+    # local prefix
+    newKwargs[modelIn]['prefix'] = modelIn+utils.returnIdSeparator()+identifier
+    newInputs[modelIn]  = dataContainerFake.modelsDictionary[modelIn]['InputObject']
+
+    # if specs['Instance'].type == 'Code':
+    #   newInputs[modelIn][1]['originalInput'] = inputDict
+
+  dataContainerFake.needToCheckInputs = False
+  return (newInputs, samplerType, newKwargs)
+
+def evaluateSampleCleaned(fakeSelf, myInput, samplerType, kwargs):
+  """
+      This will evaluate an individual sample on this model. Note, parameters
+      are needed by createNewInput and thus descriptions are copied from there.
+      @ In, myInput, list, the inputs (list) to start from to generate the new one
+      @ In, samplerType, string, is the type of sampler that is calling to generate a new input
+      @ In, kwargs, dict,  is a dictionary that contains the information coming from the sampler,
+         a mandatory key is the sampledVars'that contains a dictionary {'name variable':value}
+      @ Out, returnValue, dict, This holds the output information of the evaluated sample.
+  """
+  
+  jobHandler = kwargs.pop('jobHandler') if fakeSelf.clientMode else None
+  Input = createNewInputCleaned(fakeSelf,myInput[0], samplerType, **kwargs)
+
+  ## Unpack the specifics for this class, namely just the jobHandler
+  returnValue = (Input,externalRunCleaned(fakeSelf,Input,jobHandler))
+  return returnValue
+
+def selectInputSubsetCleaned(localSelf,modelName, kwargs ):
+  """
+    Method aimed to select the input subset for a certain model
+    @ In, modelName, string, the model name
+    @ In, kwargs , dict, the kwarded dictionary where the sampled vars are stored
+    @ Out, selectedkwargs , dict, the subset of variables (in a swallow copy of the kwargs  dict)
+  """
+  selectedkwargs = copy.copy(kwargs)
+  selectedkwargs['SampledVars'], selectedkwargs['SampledVarsPb'] = {}, {}
+  for key in kwargs["SampledVars"].keys():
+    if key in localSelf.modelsDictionary[modelName]['Input']:
+      selectedkwargs['SampledVars'][key], selectedkwargs['SampledVarsPb'][key] =  kwargs["SampledVars"][key],  kwargs["SampledVarsPb"][key] if 'SampledVarsPb' in kwargs.keys() else 1.0
+  return selectedkwargs
+
+def _retrieveDependentOutput(modelContainer,modelIn,listOfOutputs, typeOutputs):
+  """
+    This method is aimed to retrieve the values of the output of the models on which the modelIn depends on
+    @ In, modelIn, string, name of the model for which the dependent outputs need to be
+    @ In, listOfOutputs, list, list of dictionary outputs ({modelName:dictOfOutputs})
+    @ Out, dependentOutputs, dict, the dictionary of outputs the modelIn needs
+  """
+  dependentOutputs = {}
+  for previousOutputs, outputType in zip(listOfOutputs,typeOutputs):
+    if len(previousOutputs.values()) > 0:
+      for input in modelContainer.modelsDictionary[modelIn]['Input']:
+        if input in previousOutputs.keys():
+          dependentOutputs[input] =  previousOutputs[input][-1] if outputType != 'HistorySet' else np.asarray(previousOutputs[input])
+        #if input in previousOutputs.keys(): dependentOutputs[input] =  previousOutputs[input] if outputType != 'HistorySet' else np.asarray(previousOutputs[input])
+  return dependentOutputs
