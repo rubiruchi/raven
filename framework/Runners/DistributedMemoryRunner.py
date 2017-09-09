@@ -123,7 +123,7 @@ class DistributedMemoryRunner(InternalRunner):
     """
     try:
       self.raiseADebug("Starting job: "+str(self.identifier))
-      self.thread = self.__ppserver.submit(self.functionToRun, args=self.args, depfuncs=(), modules = tuple(list(set(self.frameworkMods))),functionToSkip=self.functionToSkip)
+      self.thread = self.__ppserver.submit(self.functionToRun, args=self.args, depfuncs=(), modules = tuple(self.frameworkMods),functionToSkip=self.functionToSkip)
       self.started = True
     except Exception as ae:
       self.raiseAWarning(self.__class__.__name__ + " job "+self.identifier+" failed with error:"+ str(ae) +" !",'ExceptedError')

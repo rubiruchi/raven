@@ -420,7 +420,7 @@ class Server(object):
 
         for module in modules:
             if not isinstance(module, types.StringType):
-              raise TypeError("modules argument must be a list of strings." + "Got "+ type(module).__name__)
+                raise TypeError("modules argument must be a list of strings." + "Got "+ type(module).__name__)
 
         tid = self.__gentid()
 
@@ -454,12 +454,12 @@ class Server(object):
                 if ppcommon.is_not_imported(arg, modules):
                     clshier = ppcommon.get_class_hierarchy(arg.__class__)
                     if functionToSkip != None:
-                      tempclshier = []
-                      clshierstr = [str(elem) for elem in clshier] # we use string in order to avoid baseclass identity!
-                      functionToSkipSet = set([str(elem) for elem in functionToSkip])
-                      for cnt, clshierfun in enumerate(clshierstr):
-                        if clshierfun not in functionToSkipSet: tempclshier.append(clshier[cnt])
-                      clshier = tempclshier
+                        tempclshier = []
+                        clshierstr = [str(elem) for elem in clshier] # we use string in order to avoid baseclass identity!
+                        functionToSkipSet = set([str(elem) for elem in functionToSkip])
+                        for cnt, clshierfun in enumerate(clshierstr):
+                            if clshierfun not in functionToSkipSet: tempclshier.append(clshier[cnt])
+                        clshier = tempclshier
                     depfuncs += tuple(clshier)
         # if there is a function in the arguments add this
         # function to dependancies

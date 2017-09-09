@@ -79,7 +79,7 @@ class JobHandler(MessageHandler.MessageUser):
 
     ## Stops the pending queue from getting too big. TODO: expose this to the
     ## user
-    self.maxQueueSize = 24
+    self.maxQueueSize = 1000
 
     ############################################################################
     ## The following variables are protected by the __queueLock
@@ -620,7 +620,6 @@ class JobHandler(MessageHandler.MessageUser):
           ## should not be modified by the main thread, however they may inquire
           ## it by calling numRunning.
           with self.__queueLock:
-            run.getEvaluation()
             self.__finished.append(run)
             runList[i] = None
 
