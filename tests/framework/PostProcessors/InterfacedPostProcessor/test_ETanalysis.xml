@@ -1,0 +1,100 @@
+<Simulation verbosity="debug">
+
+  <RunInfo>
+    <WorkingDir>ETanalysis</WorkingDir>
+    <Sequence>importET,generateDynamicData,compare</Sequence>
+    <batchSize>1</batchSize>
+  </RunInfo>
+
+  <Files>
+    <Input name='ET'>ET.xml</Input>
+  </Files>
+
+  <Models>
+    <ExternalModel name='PythonModuleReduced' subType='' ModuleToLoad='example'>
+      <variables>ACC,LPI,LPR,Tmax</variables>
+    </ExternalModel>
+    <PostProcessor name="ETanalysis" subType="InterfacedPostProcessor">
+      <method>ETanalysis</method>
+      <variable varID='ACC' R0values='0,2'   >acc</variable>
+      <variable varID='LPI' R0values='0,300' >lpi</variable>
+      <variable varID='LPR' R0values='0,300' >lpr</variable>
+      <target   values='1400,1500'>Tmax</target>
+    </PostProcessor>
+  </Models>
+
+  <Distributions>
+    <Uniform name='ACC_dist'>
+      <lowerBound>0</lowerBound>
+      <upperBound>50</upperBound>
+    </Uniform>
+    <Uniform name='LPI_dist'>
+      <lowerBound>0</lowerBound>
+      <upperBound>3000</upperBound>
+    </Uniform>
+    <Uniform name='LPR_dist'>
+      <lowerBound>0</lowerBound>
+      <upperBound>3000</upperBound>
+    </Uniform>
+  </Distributions>
+
+  <Samplers>
+    <MonteCarlo name='MC'>
+      <samplerInit>
+        <limit>20</limit>
+      </samplerInit>
+      <variable name='ACC'>
+        <distribution>ACC_dist</distribution>
+      </variable>
+      <variable name='LPI'>
+        <distribution>LPI_dist</distribution>
+      </variable>
+      <variable name='LPR'>
+        <distribution>LPR_dist</distribution>
+      </variable>
+    </MonteCarlo>
+  </Samplers>
+
+  <Steps>
+    <PostProcess name="importET">
+      <Input   class="Files"        type=""                >ET</Input>
+      <Model   class="Models"       type="PostProcessor"   >ETreader</Model>
+      <Output  class="DataObjects"  type="PointSet"        >ETdata</Output>
+    </PostProcess>
+    <MultiRun name="generateDynamicData" pauseAtEnd="True">
+      <Input   class="DataObjects"  type="PointSet"        >inputPlaceHolder</Input>
+      <Model   class="Models"       type="ExternalModel"   >PythonModuleReduced</Model>
+      <Sampler class="Samplers"     type="MonteCarlo"      >MC</Sampler>
+      <Output  class="DataObjects"  type="PointSet"        >outRun</Output>
+    </MultiRun>
+    <PostProcess name="compare">
+      <Input   class="DataObjects"  type="PointSet"        >outRun</Input>
+      <Input   class="DataObjects"  type="PointSet"        >ETdata</Input>
+      <Model   class="Models"       type="PostProcessor"   >ETanalysis</Model>
+      <Output  class="DataObjects"  type="PointSet"        >outRun</Output>
+    </PostProcess>
+  </Steps>
+
+  <OutStreams>
+    <Print name="PrintPPS_dump">
+      <type>csv</type>
+      <source>outPPS</source>
+    </Print>
+  </OutStreams>
+
+  <DataObjects>
+    <PointSet name="inputPlaceHolder">
+      <Input>ACC,LPI,LPR</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+    <PointSet name="outRun">
+      <Input>ACC,LPI,LPR</Input>
+      <Output>Tmax</Output>
+    </PointSet>
+    <PointSet name="ETdata">
+      <Input>acc,lpi,lpr</Input>
+      <Output>outcome</Output>
+    </PointSet>
+  </DataObjects>
+
+</Simulation>
