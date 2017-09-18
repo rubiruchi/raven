@@ -27,7 +27,7 @@
 % Since, the scope of this paper is tight to risk-informed application of 10CFR50.69, 
 % we will focus this paper only on the four RIMs listed above.
 
-The SAPHIRE PRA code can calculate the following seven different basic event importance 
+Nuclear industry PRA codes such as SAPHIRE can calculate the following seven different basic event importance 
 measures for each basic event for the respective fault tree, accident sequence, or end state:
 \begin{itemize}
   \item Fussell-Vesely (FV)
@@ -39,34 +39,38 @@ measures for each basic event for the respective fault tree, accident sequence, 
   \item Uncertainty Importance
 \end{itemize}   
   
-The most used importance measures are Fussell-Vesely, Risk Increase Ratio, Risk Reduction Ratio, 
-and Birnbaum. 
-The Fussell-Vesely importance measure indicates the fraction of the minimal cut set upper bound 
-(or sequence frequency, core damage frequency) contributed by the cut sets containing the 
-interested basic event. It is calculated in SAPHIRE Version 8 with the following equation:
-FV = F(i) / F(x)
+The FV importance measure indicates the fraction of the minimal cut set upper bound 
+(or sequence frequency, core damage frequency) contributed by the cut sets containing the basic event of interest. 
+It is calculated in SAPHIRE Version 8 as $FV = F(i) / F(x)$
 where:
 \begin{itemize}
-  \item F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean value
-  \item F(i) = value of all the minimal cut sets that contain the interested basic event i.
+  \item $F(x)$ is the value of all the minimal cut sets evaluated with the basic event probabilities at their mean value
+  \item $F(i)$ is the value of all the minimal cut sets that contain the basic event $i$.
 \end{itemize}
 
     
-The Risk Increase Ratio or Risk Increase Difference importance measure indicates the increase (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) if the interested basic event always occurred (i.e., the basic event failure probability is 1.0). The Risk Increase Ration importance is often called Risk Reduction Worth (RRW) in industry. The risk reduction importance measures are calculated in SAPHIRE Version 8 with the following equation:
-RIR (or RAW)=F(1)/F(x)
-RID=F(1)-F(x)
-where F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean value.
-   F(1) = value of all the minimal cut sets evaluated with the interested basic event probability set to 1.0.
-The Risk Reduction Ratio or Risk Reduction Difference importance measure indicates the reduction (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) if the interested basic event never occurred (i.e., the basic event failure probability is 0.0). The Risk Reduction Ratio importance is often called Risk Achievement Worth (RAW) in industry. The risk increase importance measures are calculated in SAPHIRE Version 8 with the following equation:
-RRR (or RRW)=F(x)/F(0)
-RRD=F(x)-F(0)
-where F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean values.
-    F(0) = value of all the minimal cut sets evaluated with the interested basic event probability set to 0.0.
-The Birnbaum importance measure is an indication of the sensitivity of the minimal cut set upper bound (or sequence frequency, core damage frequency) with respect to the interested basic event. It is calculated by the following equation:
-B=F(1)-F(0)
-where F(1) = value of all the minimal cut sets evaluated with the interested basic event probability set to 1.0.
-    F(0) = value of all the minimal cut sets evaluated with the interested basic event probability set to 0.0.
-The Uncertainty Importance measure is an indication of the contribution of the interested basic event’s uncertainty to the total output uncertainty. This importance measure is not widely used and is not discussed in further detail.
-As a simple example, let’s look at the importance measures of basic event LPI-XHE-XM-ERRORHL in LLOCA event tree. The value of all the minimal cut sets evaluated with the basic event probabilities at their mean values for LLOCA event tree is 2.036E-8/year. There is only one cut set that contain the interested basic event, LPI-XHE-XM-ERRORHL, whose mean probability is 5.00E-3 (refer to the table below for top 20 cut sets of LLOCA event tree).
+The RIR or RID importance measure indicates the increase (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) when the basic event of interest has failed (i.e., the basic event failure probability is 1.0). 
+
+The RIR importance is often called Risk Achievement Worth (RAW) in industry. The risk increase importance measures are calculated in SAPHIRE Version 8 as follows: $RIR = F(1)/F(x)$ and $RID=F(1)-F(x)$
+where:
+\begin{itemize} 
+  \item $F(x)$ is the value of all the minimal cut sets evaluated with the basic event probabilities at their mean value.
+  \item $F(1)$ is the value of all the minimal cut sets evaluated with the probability of the basic event of interest set to 1.0.
+\end{itemize}
+
+The RRR or RRD importance measure indicates the reduction (in relative ratio changes or in actual differences) of the minimal cut set upper bound (or sequence frequency, core damage frequency) if the basic event of interest never fails (i.e., the basic event failure probability is 0.0). The Risk Reduction Ratio importance is also often called RRW in industry. The risk decrease importance measures are calculated in SAPHIRE Version 8 as follows:
+$RRR =F(x)/F(0)$ and $RRD=F(x)-F(0)$ where:
+\begin{itemize} 
+  \item $F(x)$ is the value of all the minimal cut sets evaluated with the basic event probabilities at their mean values.
+  \item $F(0)$ is the value of all the minimal cut sets evaluated with the probability of the basic event of interest set to 0.0.
+\end{itemize}
+
+The Birnbaum importance measure is an indication of the sensitivity of the minimal cut set upper bound (or sequence frequency, core damage frequency) with respect to the basic event of interest. It is calculated as $B=F(1)-F(0)$
+\begin{itemize} 
+  \item F(1) = value of all the minimal cut sets evaluated with the probability of the basic event of interest set to 1.0.
+  \item F(0) = value of all the minimal cut sets evaluated with the probability of the basic event of interest set to 0.0.
+ \end{itemize}
+  
+The Uncertainty Importance measure is an indication of the contribution of the  basic event of interest uncertainty to the total output uncertainty. This importance measure is not widely used and is not discussed in further detail.
 
 

@@ -1,9 +1,9 @@
 \section{RISMC Approach to PRA}
 \label{sec:rismc}
 
-The RISMC approach~\cite{RISMC} employs both deterministic and stochastic methods 
+The Risk Informed Safety MArgin Characterization (RISMC) approach~\cite{RISMC} employs both deterministic and stochastic models 
 in a single analysis framework (see Figure~\ref{fig:RISMCoverview}). In the deterministic method 
-set we include:
+set we include elements such as:
 \begin{itemize}
   \item Modeling of the thermal-hydraulic behavior of the plant~\cite{BWR_SBO_Mandelli,BWRanalysis}
   \item Modeling of external events such as flooding~\cite{mandelliPSA2015}
@@ -20,14 +20,14 @@ set we include:
 Note that deterministic modeling of the plant or external events can be performed by employing specific 
 simulator codes but also surrogate models~\cite{ROM}, known as reduced order models (ROM). ROMs would 
 be employed 
-in order to decrease the high computational costs of employed codes. In addition, multi-fidelity codes 
+in order to decrease the high computational costs of high fidelity codes. In addition, multi-fidelity codes 
 can be employed to model the same system; the idea is to switch from low-fidelity to high-fidelity code 
 when higher accuracy is needed (e.g., use low-fidelity codes for steady-state conditions and high-fidelity 
 code for transient conditions)
 
 In the stochastic modeling we include all stochastic parameters that are of interest in the PRA analysis 
 such as uncertain parameters and stochastic failure of system/components.
-As mentioned earlier, the RISMC approach heavily relies on multi-physics system simulator codes 
+As mentioned earlier, the RISMC approach relies on multi-physics system simulator codes 
 (e.g., RELAP5-3D~\cite{relap5}) coupled with stochastic analysis tools (e.g., RAVEN~\cite{raven}).  
 From a PRA point of view, this type of simulation can be described by using two sets of variables:
 \begin{itemize}
@@ -40,7 +40,7 @@ From a PRA point of view, this type of simulation can be described by using two 
 \end{itemize}
 
 From a mathematical point of view, a single simulator run can be represented as a single trajectory in the 
-phase space. The evolution of such a trajectory in the phase space can be described as follows:
+phase space. The evolution of such a trajectory in the phase space can be described mahtematically as follows:
 \begin{equation}
   \begin{cases}
     \dfrac{\partial \boldsymbol \theta }{\partial t}  = \boldsymbol \Xi (\boldsymbol \theta , \boldsymbol c, \boldsymbol s , t)   \\ \\ 
@@ -80,18 +80,19 @@ associated to the considered components.
 The goal of measuring components risk importance is to identify the components that contribute the most
 to the system/plant overall risk.
 
-The objective of this identification process once completed is that testing and maintenance 
-procedures can be directed towards more risk-significant components or they can be replaced with more 
-reliable models.
+The objective of this identification process once completed is that plant resources 
+(e.g., procurement costs, maintenance, testing)
+can be directed towards more risk-significant components or they can be replaced with more 
+reliable models while fewer resources can be allocated to components that are of lower risk.
 
 
 \subsection{RISMC Approach and Classical PRA}
 \label{sec:analogy}
 
 In a classical PRA framework, each BE has a unique probability value 
-associated to it while in a dynamic PRA one BEs each BE has a probability distribution function (pdf) 
+associated to it (with possible uncertainty) while in a dynamic PRA each BE has a probability distribution function (pdf) 
 associated to it.
-This pdf can be discrete in nature (e.g.,a bernoulli distribution) or continuous (e.g., exponential).
+This pdf that describes the stochastic behavior of the component can be discrete in nature (e.g.,a Bernoulli distribution) or continuous (e.g., exponential). 
 
 As an example lets consider two basic events associated to the emergency diesel generators (EDGs) of 
 a nuclear power plant: EDG failure to start ($EDG\_FS$) and EDG failure to run ($EDG\_FS$).
@@ -99,8 +100,8 @@ In a classical PRA framework two probability values would be associated to each 
 $p_{EDG\_FR}$.
 In a dynamic PRA framework two pdfs would be associated to each basic event:
 \begin{itemize}
-  \item $EDG\_FS \sim \operatorname{Bern}(p_{EDG\_FS})$ (Bernoulli distribution)
-  \item $EDG\_FR \sim \operatorname{Exp}(\lambda_{EDG\_FR})$ (Exponential distribution).
+  \item $EDG\_FS \sim \operatorname{Bern}(p_{EDG\_FS})$ (Bernoulli distribution representing success 0 or failure 1)
+  \item $EDG\_FR \sim \operatorname{Exp}(\lambda_{EDG\_FR})$ (Exponential distribution representing the time of failure).
 \end{itemize}
 When comparing Dynamic vs. Classical PRA approaches note the following:
 \begin{itemize}
@@ -116,15 +117,15 @@ When comparing Dynamic vs. Classical PRA approaches note the following:
 
 An additional methodological difference among classical and dynamic PRA is the modeling of sequencing
 and timing of events. In classical PRA this is typically performed using Event-Trees (ETs) where  
-sequence and timing of events are set by the analysis prior the analysis.
-An example of ET is shown in Fig.~\ref{fig:LLOCA_ET} for large Loss Of Coolant Accident (LOCA): successful 
+sequence and timing of events are set by the analysis prior to the analysis.
+An example of an ET is shown in Fig.~\ref{fig:LLOCA_ET} for large Loss Of Coolant Accident (LOCA): successful 
 outcome of each ET branch is guaranteed only if the accumulator, low-pressure injection (LPI) and low-pressure 
 recirculation (LPR) systems successfully perform their function. 
 Each ET branch corresponds to a possible accident scenario while each branching point corresponds to the 
 successful or failed activation of a system (accumulator, LPI and LPR) 
 The ET construction requires the definition of a set of acceptance criteria (e.g., collapsed level greater 
 than $1/3$ of core height) and a set of success criteria for each system involved in the accident progression.
-This criteria are determined by the analysis and are backed up by a set of thermo-hydraulic calculations.
+This criteria are determined by the analysis and might be backed up by a set of thermal-hydraulic calculations.
 
 \begin{figure}
     \centering
@@ -139,21 +140,21 @@ the plant control logic (e.g., system activation points and activation rules).
 In addition, acceptance criteria and success criteria are incorporated into the physics model of the code
 Back to the large LOCA scenario, in a dynamic framework it would be modeled by:
 \begin{itemize}
-  \item employing a system simulator code (e.g., RELAP5-3D) 
-  \item three stochastic parameters: 
+  \item Employing a system simulator code (e.g., RELAP5-3D) 
+  \item Defining three stochastic parameters: 
         \begin{itemize}
           \item accumulator system: failure on demand (Bernoulli distribution)
           \item LPI system: failure to run (Exponential distribution)
           \item LPR system: failure to run (Exponential distribution)
         \end{itemize}
-   \item the condition to end a code simulation run and its corresponding outcome:
+   \item Setting the condition to end a code simulation run and its corresponding outcome:
         \begin{itemize}
           \item OK outcome: mission time (e.g., 24 hours)
-          \item Fail outcome: max core temperature greater than 2200 F 
+          \item Fail outcome: maximum core temperature greater than 2200 F 
         \end{itemize}       
 \end{itemize}
 
-Note that a large discrepancies among classical and dynamic PRA methods can occur for large sequence of 
+Note that discrepancies among classical and dynamic PRA methods can occur for sequence of 
 events coupled with system dynamics.
 Assuming two events A and B occur in sequence and time of activation of each of them is a stochastic variable 
 ($t_A \sim pdf_A(t)$ and $t_B \sim pdf_B(t)$), the actual activation time $T_B$ of system B is a stochastic 
