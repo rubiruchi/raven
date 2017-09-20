@@ -2,12 +2,12 @@
 
   <RunInfo>
     <WorkingDir>ETanalysis</WorkingDir>
-    <Sequence>importET,generateDynamicData,compare</Sequence>
+    <Sequence>loadDataPS,generateDynamicData,compare</Sequence>
     <batchSize>1</batchSize>
   </RunInfo>
 
   <Files>
-    <Input name='ET'>ET.xml</Input>
+    <Input name='ET_data_file'>ET.csv</Input>
   </Files>
 
   <Models>
@@ -16,10 +16,12 @@
     </ExternalModel>
     <PostProcessor name="ETanalysis" subType="InterfacedPostProcessor">
       <method>ETanalysis</method>
-      <variable varID='ACC' R0values='0,2'   >acc</variable>
-      <variable varID='LPI' R0values='0,300' >lpi</variable>
-      <variable varID='LPR' R0values='0,300' >lpr</variable>
-      <target   values='1400,1500'>Tmax</target>
+      <mode>classification</mode>
+      <ETvariable simVarID='ACC' R0values='0,2'   >acc</ETvariable>
+      <ETvariable simVarID='LPI' R0values='0,300' >lpi</ETvariable>
+      <ETvariable simVarID='LPR' R0values='0,300' >lpr</ETvariable>
+      <target     R1values='1400,1500'            >Tmax</target>
+      <branchID                                   >id</branchID>
     </PostProcessor>
   </Models>
 
@@ -56,11 +58,10 @@
   </Samplers>
 
   <Steps>
-    <PostProcess name="importET">
-      <Input   class="Files"        type=""                >ET</Input>
-      <Model   class="Models"       type="PostProcessor"   >ETreader</Model>
-      <Output  class="DataObjects"  type="PointSet"        >ETdata</Output>
-    </PostProcess>
+    <IOStep name='loadDataPS'>
+      <Input     class='Files'         type=''             >ET_data_file</Input>
+      <Output    class='DataObjects'   type='PointSet'     >ETdata</Output>
+    </IOStep>
     <MultiRun name="generateDynamicData" pauseAtEnd="True">
       <Input   class="DataObjects"  type="PointSet"        >inputPlaceHolder</Input>
       <Model   class="Models"       type="ExternalModel"   >PythonModuleReduced</Model>
@@ -71,7 +72,7 @@
       <Input   class="DataObjects"  type="PointSet"        >outRun</Input>
       <Input   class="DataObjects"  type="PointSet"        >ETdata</Input>
       <Model   class="Models"       type="PostProcessor"   >ETanalysis</Model>
-      <Output  class="DataObjects"  type="PointSet"        >outRun</Output>
+      <Output  class="DataObjects"  type="PointSet"        >ETdata_dynamic</Output>
     </PostProcess>
   </Steps>
 
@@ -93,7 +94,11 @@
     </PointSet>
     <PointSet name="ETdata">
       <Input>acc,lpi,lpr</Input>
-      <Output>outcome</Output>
+      <Output>outcome,id</Output>
+    </PointSet>
+    <PointSet name="ETdata_dynamic">
+      <Input>acc,lpi,lpr</Input>
+      <Output>outcome,id</Output>
     </PointSet>
   </DataObjects>
 
