@@ -1,7 +1,7 @@
 \section{Test Examples}
 \label{sec:test}
 
-In order to better understand the results obtained in this section it is worth to illustrate 
+In order to better understand the results obtained in this section, it is worth to illustrate 
 a link between classical PRA and RISMC approach.
 Let's consider a system that is composed by two components (i.e, A and B) in a series configuration where
 each component has a failure probability (i.e., $p_A$ and $p_B$ respectively) as shown in Fig.~\ref{fig:ABsystem}.
@@ -30,9 +30,9 @@ Two possible sampling strategies can be followed:
         system failure (F) or system success (OK).
 \end{itemize}
 
-The Monte-Carlo would require a large number of samples in order to decrease the statistical error associated
+The Monte-Carlo approach would require a large number of samples in order to decrease the statistical error associated
 to system failure probability.
-On the other hand a Grid sampler would determine the exact value of system failure probability with only 4 samples:
+On the other hand, a Grid sampler would determine the exact value of system failure probability with only 4 samples:
 \begin{enumerate}
   \item sample 1: $A=0$ and $B=0$ (bottom left cell of Fig.~\ref{fig:2Danalogy}), $w_1 = (1-p_A) \cdot (1-p_B)$
   \item sample 2: $A=1$ and $B=0$ (top left cell of Fig.~\ref{fig:2Danalogy}), $w_2 = p_A (1-p_B)$
@@ -62,7 +62,7 @@ a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be emp
     \includegraphics[scale=0.3]{andGate.pdf}
     \label{fig:ABsystem}
   \end{subfigure}
-  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
+  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree [FIX THE FIGURE???] (right).}
   \label{fig:ABsystem}
 \end{figure}
 
@@ -145,9 +145,9 @@ Grid sampling strategy) are shown compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_A$ & 0.6656 & 0.669 & 0.6656   \\
-        $FV_B$ & 0.3311 & 0.34 & 0.3311   \\
-        $FV_C$ & 0.3311 & 0.34 & 0.3311   \\
+        $FV_A$ & 0.67 & 0.67 & 0.67  \\
+        $FV_B$ & 0.33 & 0.34 & 0.33   \\
+        $FV_C$ & 0.33 & 0.34 & 0.33   \\
         \hline 
       \end{tabular}
     \end{minipage}\\
@@ -157,9 +157,9 @@ Grid sampling strategy) are shown compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_A$ & 66.889  & 66.9 & 66.88963211  \\
-        $RAW_B$ & 7.2909  & 7.29 & 7.2909699    \\
-        $RAW_C$ & 3.97993 & 3.98 & 3.97993311   \\
+        $RAW_A$ & 66.9  & 66.9 & 66.9  \\
+        $RAW_B$ & 7.3  & 7.3 & 7.3   \\
+        $RAW_C$ & 3.98 & 3.98 & 3.98   \\
         \hline 
       \end{tabular}
     \end{minipage} 
@@ -219,7 +219,8 @@ value of mean time to failure (MTTF) is provided:
   \item Heat exchanger HX (reliability = 1.0)
 \end{itemize}
 
-Pump1 is normally used while pump2 is on standby. If Pump1 fails then pump2 provide water flow. 
+Pump1 is normally used while pump2 is on standby. If Pump1 fails then pump2 provide water flow 
+in a switching arrangement. 
 Pump2 cannot fail while in standby. Switch from pump1 to pump2 is perfectly reliable. 
 The cooling is such that it takes 2 hours to reach vessel failure condition if the 
 M-pump1-pump2 
@@ -232,9 +233,10 @@ system has failed. Mission time is again equal to 24 hours.
     \label{fig:example3}
 \end{figure}
 
-Note in this case classical PRA methods require few model simplifications in order to correctly 
+Note in this case classical PRA methods require model adjustments via convolution calculations
+in order to correctly 
 determine system reliability.
-Below are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
+Table~\ref{tab:example2} are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
 sampling strategy) compared with the analytical ones.
 
 \begin{table}
@@ -245,9 +247,9 @@ sampling strategy) compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_{valve}$ & 0.301708135 & 0.697 & 0.303310397 \\
-        $FV_{pump1}$ & 0.256887262 & 0.824 & 0.258927596 \\
-        $FV_{pump2}$ & 0.256887262 & 0.824 & 0.258927596 \\
+        $FV_{valve}$ & 0.30 & 0.69 & 0.30 \\
+        $FV_{pump1}$ & 0.26 & 0.82 & 0.26 \\
+        $FV_{pump2}$ & 0.26 & 0.82 & 0.26 \\
         \hline 
       \end{tabular}
     \end{minipage} \\
@@ -257,12 +259,13 @@ sampling strategy) compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_{valve}$ & 1.175587151 & 1.10 & 1.179402119 \\
-        $RAW_{pump1}$ & 1.117058099 & 1.05 & 1.118857043 \\
-        $RAW_{pump2}$ & 1.117058099 & 1.05 & 1.118857043 \\
+        $RAW_{valve}$ & 1.18 & 1.10 & 1.18 \\
+        $RAW_{pump1}$ & 1.12 & 1.05 & 1.12 \\
+        $RAW_{pump2}$ & 1.12 & 1.05 & 1.12 \\
         \hline 
       \end{tabular}
     \end{minipage} 
+    \label{tab:example2}
 \end{table}
 
 
@@ -287,7 +290,7 @@ Mission time is again equal to 24 hours.
     \label{fig:example4}
 \end{figure}
 
-Below are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
+Table~\ref{tab:example3} are shown the FV importance for all three components obtained by RAVEN (using a Monte-Carlo 
 sampling strategy) compared with the analytical ones.
 
 \begin{table}
@@ -298,10 +301,10 @@ sampling strategy) compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $FV_{valve}$ & 0.032191338 & 0.636 & 0.032625538  \\
-        $FV_{pump1}$ & 0.075840848 & 0.942 & 0.080560827  \\
-        $FV_{pump2}$ & 0.075840848 & 0.942 & 0.080560827  \\
-        $FV_{pump3}$ & 0.075840848 & 0.942 & 0.080560827  \\ 
+        $FV_{valve}$ & 0.032 & 0.64 & 0.033  \\
+        $FV_{pump1}$ & 0.076 & 0.94 & 0.081  \\
+        $FV_{pump2}$ & 0.076 & 0.94 & 0.081  \\
+        $FV_{pump3}$ & 0.076 & 0.94 & 0.081  \\ 
         \hline 
       \end{tabular}
     \end{minipage} \\
@@ -311,10 +314,10 @@ sampling strategy) compared with the analytical ones.
         \hline 
          & Analytical & SAPHIRE & RAVEN \\ 
         \hline 
-        $RAW_{valve}$ & 1.018734614 & 1.01 & 1.020401014 \\
-        $RAW_{pump1}$ & 1.011870432 & 1.0 & 1.012910957  \\
-        $RAW_{pump2}$ & 1.011870432 & 1.0 & 1.012910957  \\
-        $RAW_{pump3}$ & 1.011870432 & 1.0 & 1.012910957  \\ 
+        $RAW_{valve}$ & 1.02 & 1.0 & 1.02  \\
+        $RAW_{pump1}$ & 1.01 & 1.0 & 1.01  \\
+        $RAW_{pump2}$ & 1.01 & 1.0 & 1.01  \\
+        $RAW_{pump3}$ & 1.01 & 1.0 & 1.01  \\ 
         \hline 
       \end{tabular}
     \end{minipage} 
@@ -338,7 +341,7 @@ of the ECCS may not lead to system failure (i.e., natural circulation is providi
 In other words, the ECCS is vital especially in the hours right after a reactor scram.
 
 In principle, this test case cannot be solved analytically due to the complexity of the reactor 
-behavior. Practically it can be solve by identifying the time $T_{lim}$ (limit time) after which a 
+behavior. It can be solved by identifying the time $T_{lim}$ (limit time) after which a 
 failure of the valve-pump1-pump2 system does not cause reactor failure since natural circulation
 can provide enough cooling.
 Note that $T_{lim}$ could only be determined be recursively run the system simulator until a 
@@ -364,21 +367,21 @@ of the valve-pump1-pump2 system: $T_{lim}$ increases.
     \hline
           & FV & RAW \\
     \hline
-    valve & 0.585800564 & 2.211368178  \\
-    pump1 & 0.279188039 & 1.484429855  \\
-    pump2 & 0.279188039 & 1.484429855  \\
+    valve & 0.58 & 2.21  \\
+    pump1 & 0.28 & 1.48  \\
+    pump2 & 0.28 & 1.48  \\
     \hline
   \end{tabular}
   \label{tab:example4}
 \end{table}
 
-\subsection{Considerations on the mission time}
+\subsubsection{Considerations on the mission time}
 \label{sec:missionTime}
 
 In the example presented in Section~\ref{sec:example4} two code stopping conditions were: core temperature 
 greater than 2200 F and simulation time reaches 24 hours (mission time).
 Note that the mission time stopping condition imposes that a simulation is considered successful even if the
-valve-pump1-pump2 system has failed and the reactor temperature increases; if a bigger mission time would 
+valve-pump1-pump2 system has failed and the reactor temperature increases; if a longer mission time would 
 be chosen then the simulation would be classified no longer with an OK outcome but with a fail outcome.
 Thus, special attention has be given to the assumptions behind the mission time. 
 
@@ -387,10 +390,10 @@ time below which events can occur; in addition, the code is set to end the simul
 time is reached but at a time $T_{end} = T_{miss} + T_{relax}$ where the addition of $T_{relax}$ allows 
 the simulation to reach a steady-state condition.
 
-\subsection{Considerations on the sampling strategy}
+\subsubsection{Considerations on the sampling strategy}
 \label{sec:samplingStrategy}
 
-In order to get accurate results of the risk importance measures the number of simulation run to perform 
+In order to get accurate results of the risk importance measures the number of simulation runs to perform 
 can be very high (order of thousands and up). In addition, given that each simulation run may require 
 hours of simulation time, this kind of analysis may be feasible only for large high performance computing 
 systems.
@@ -416,18 +419,15 @@ characterized by the undesired simulation outcome; e.g., core damage) from succe
 by the desired simulation outcome; e.g., max clad temperature below 2200 F). 
 This sampling strategy, called ``adaptive sampling'' (or smart sampling), can obtain much better statistical results
 since the the code response is queried in the most relevant zones of the input space (the limit surface).
-The main adaptive sampling steps are explained as follows:
+
+The steps for the adaptive sampling strategy are:
 \begin{enumerate}
-  \item Perform a set of runs the simulator code: the number of required runs may depend on the dimensionality of 
+  \item Perform a set of runs of the simulator code: the number of required runs may depend on the dimensionality of 
         the input space
-  \item Given the set of simulation runs obtained in Step 1, create a ROM. The objective of this ROM is to:
-        \begin{itemize}
-          \item Infer the response of the simulator code, i.e., create an approximate output given the same set of input parameters
-          \item Predict region in the input space that maximize the objective function
-        \end{itemize}
-  \item Employ the ROM to approximate the structure of the goal function
-  \item Identify a set of points that satisfy the conditions specified in the goal function
-  \item Chose a subset of points from the ones obtained in Step 4 that maximize the goal function
+  \item Given the set of simulation runs obtained in Step 1, create a ROM. The objective of this ROM is to infer the 
+        response of the simulator code, i.e., create an approximate output given the same set of input parameters
+  \item Identify a set of points on the limit surface
+  \item Chose a subset of points from the ones obtained in Step 4 
   \item Perform a simulation run for each of the points obtained in Step 5 using the simulator code
   \item Repeat Steps 2 through 6 until convergence is reached
 \end{enumerate}

@@ -1,7 +1,7 @@
 \section{Extension To Time-Dependent Data}
 \label{sec:timeDepRIMs}
 
-In order to extend the calculation presented above in the time-domain we need 
+In order to extend the calculation presented in Section~\ref{sec:classicalRIMs_RISMC} in the time-domain we need 
 additional information: the temporal profile of the status of those components 
 that might be taken offline due to maintenance or testing.
 
@@ -45,12 +45,13 @@ The calculation algorithms is as follows given a set of simulated data:
         \end{enumerate}
 \end{enumerate}
 
-\section{Test example}
+\subsection{Test case}
 \label{sec:timeDepRIMsExample}
 
-For the scope of this paper we have chosen an elementary example that can help the reader to 
+For the scope of this paper we have chosen an example that can help the reader to 
 understand the proposed algorithm. This a simple system composed of three components 
-(i.e., A, B and C) in a parallel/series configuration. To each component a failure rate is 
+(i.e., A, B and C) in a parallel/series configuration shown in Figure~\ref{fig:example12}. 
+To each component a failure rate is 
 provided when the system is called on demand:
 \begin{itemize}
   \item $\lambda_A=1.0 \cdot 10^{-3} hr^{-1}$
