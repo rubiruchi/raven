@@ -1,7 +1,7 @@
 \section{New RIMs in a Dynamic PRA Context}
 \label{sec:newRIM}
 
-Note that the RIMs described so far are tight to a binary logic of the outcome 
+Note that the RIMs described so far are tied to a binary logic of the outcome 
 variable (e.g., OK vs. CD). Dynamic PRA approaches typically generate a continuous 
 value of the outcome variables (e.g., peak clad temperature - $PCT$). 
 In our application (see previous sections) we typically convert $PCT$ to a discrete 
@@ -25,8 +25,8 @@ is 0.0 or 1.0. So now we can indicate:
   \item $pdf_i^+(T)$: pdf of PCT associated to basic event $i$ assuming basic event has failed
 \end{itemize}
 
-An example is shown below for a hypothetical case where obtained $pdf_0(T)$ is indicated 
-using an histogram while the limit value for PCT is shown using the red line passing at 2200 F.
+An example is shown below for a hypothetical case where the obtained $pdf_0(T)$ is indicated 
+using a histogram while the limit value for PCT is shown using the red line passing at 2200 F.
 In order to make a connection to what has been presented in the previous section, note that by 
 looking at Fig.~\ref{fig:margin0}:
 \begin{equation}
@@ -66,7 +66,7 @@ to determine:
                       $i$ when its assumed to be failed
 \end{itemize}
 
-Note now that $margin_0$, $margin_i^-$ and $margin_i^+$ are now pdfs and not numerical values. 
+Note now that $margin_0$, $margin_i^-$ and $margin_i^+$ are pdfs and not numerical values. 
 Hence, now the challenge arises on how to compare two pdfs:
 \begin{itemize}
   \item $margin_0$ vs. $margin_i^-$
@@ -92,7 +92,7 @@ Hence, now the challenge arises on how to compare two pdfs:
   \label{fig:dist_dist}
 \end{figure}
 
-Assume two pdfs are given: $pdf_1(x)$ and $pdf_2(x)$. Few approaches can be followed: Z-test or 
+Assume two pdfs are given: $pdf_1(x)$ and $pdf_2(x)$. A couple of approaches can be followed: Z-test or 
 Kolmogorov–Smirnov test. 
 In the first approach (Z-test), the following variable $Z$ is computed:
 \begin{equation}
@@ -117,7 +117,7 @@ Note that so far we have imposed clad failure temperature ($CFT$) to be a fixed 
 i.e., 2200 F. 
 In many RISMC applications $CFT$ is no longer a numerical value but it can be un uncertain 
 parameter, i.e., a pdf is associated to CDF: $pdf(T)$. 
-This link goes back to the original logo of RISMC where a pdf for ``load'' and ``capacity'' 
+This tie goes back to the original logo of RISMC where a pdf for ``load'' and ``capacity'' 
 (see Fig.~\ref{}).
 A new definition of margin can be then defined:
 
@@ -126,6 +126,6 @@ A new definition of margin can be then defined:
   \label{eq:new margin}
 \end{equation}
 
-From here, once the pdf associated to the margin variable is determined it is possible 
+Once the pdf associated to the margin variable is determined it is possible 
 to employ either the Z-tests or the Kolmogorov–Smirnov test in order to measure how this pdf 
 changes when each basic event is considered perfectly reliable or failed. 
