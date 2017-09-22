@@ -70,6 +70,7 @@ class locaAnalysis(PostProcessorInterfaceBase):
     inp['data']['output']['label']=np.zeros(inputWeights.size)
 
     for i in range(inputWeights.size):
+        inp['data']['output']['probability'][i]=inputWeights[i]
         if inp['data']['input']['ACC1'][i]==0.0 or inp['data']['input']['ACC2'][i]==0.0:
             if inp['data']['input']['LPI_A_FS'][i]==0.2 or inp['data']['input']['LPI_B_FS'][i]==0.2:
                 if inp['data']['input']['LPR_A_FS'][i]==120.0 or inp['data']['input']['LPR_B_FS'][i]==120.0:
