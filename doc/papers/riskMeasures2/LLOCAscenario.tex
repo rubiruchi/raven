@@ -1,4 +1,62 @@
-\section{Test Case [Diego]}
+\section{Test Case}
 \label{sec:testCase}
 
-[text]
+The test case considered in this paper is a 3-loop PWR system of Westinghouse 
+design with a large-dry containment.
+The initiating event is a LLOCA: a double-ended guillotine break of the hot leg.
+
+Under these accident conditions, the system experiences a sudden sub-cooled blowdown and 
+primary system pressure drops from about 2200 psi down to the saturation pressure 
+(about 1000 psi).
+
+In order to compensate the large loss of coolant inventory into the vessel and prevent
+core damage, two emergency core-cooling systems are employed: Accumulators and 
+Low-Pressure Injection System (LPIS).
+
+Accumulators are passive components consisting of pressurized water tanks that are 
+employed at the beginning of the transient and can dump large inventory of sub-cooled water
+into the vessel.
+
+The LPIS is activated when primary system pressure falls below 980 psi and by using pumps
+large amount of water are transfered from the Reactor Water Storage Tank (RWST) directly 
+into the vessel.
+
+The large amount of water that leaves the primary system and is collected in the containment
+and, thus, its temperature and pressure increases. In order to cool it down, Containment
+Sprays (CSs) are employed. Similarly to the LPIS, through pumps RWST water is sprayed from the 
+top level of the containment. 
+
+Once RWST is empty, both CSs and LPISs switch from injection mode to recirculation mode: 
+water collected at the base of the containment and through the sump and is injected back 
+into the vessel (through the LPI) and into the containment (through the CSs).
+
+
+\section{Comparison Workflow}
+
+The comparison between Classical (using SAPHIRE) and Dynamic PRA analysis (using RAVEN/RELAP5-3D)
+has been performed following these steps:
+\begin{enumerate}
+	\item Simplify the SAPHIRE FT structure by grouping its basic events into macro basic events.
+	\item Perform calculation of the ET-FT model: determine probability of each ET branch and the 
+	      risk importance of each macro basic events
+	\item Consider the SAPHIRE ET for the LLOCA initiating event and model the RELAP5-3D accident 
+	      progression following consistently with the ET logic. 
+	\item Construct the PWR logic based on the same macro basic events determined in Step 1: these
+	      macro basic events constitute the stochastic variables sampled by RAVEN 
+	\item Introduce time-dependent variables into the the PWR logic: this set of variables is also 
+	      part of the stochastic variables sampled by RAVEN 
+	\item Perform a dynamic analysis using RAVEN/RELAP5-3D for the system constructed in Steps 4 
+	      and 5, and  determine probability of each ET branch and the risk importance of each
+	      macro basic events
+	\item Compare the results obtained in Steps 3 and 6
+\end{enumerate}
+
+Step 1 has been deemed necessary in order to limit the number of unnecessary RELAP5-3D simulation runs.
+The rationale is that each basic event in the set of FTs are also stochastic variables sampled by RAVEN.
+If all basic events are considered (about ????) then the sampling strategy would require a very large
+number of RELAP5-3D simulation runs. The great majority of these runs would be identical since the
+impact of these basic events on accident progression is identical.
+
+The main target of this comparison is to identify commonalities and inconsistencies between classical 
+and Dynamic PRA methods on the accident progression level (i.e., at the ET level) while the FT level is 
+modeled in the same way for both methods.

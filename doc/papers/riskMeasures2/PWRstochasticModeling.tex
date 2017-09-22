@@ -1,4 +1,61 @@
-\section{PWR Stochastic Modeling [diego]}
+\section{PWR Stochastic Modeling}
 \label{PWRstochasticModeling}
 
-[text]
+In the Dynamic PRA analysis, the stochastic modeling of the PWR system have been performed
+for two different cases:
+\begin{itemize}
+	\item Case 1: set of RAVEN stochastic variables coincide with the set of macro basic events
+	      defined in Section~\ref{}
+	\item Case 2: set of RAVEN stochastic variables include not only the set of macro basic events
+	      defined in Section~\ref{} but also includes time related variables. As an example, 
+	      the failure to run of a component is modeled quantitatively by sampling not only if such 
+	      event occurs but the failure time of such component is actually sampled.
+\end{itemize}
+
+In Case 1, the PWR models in both Dynamic and classical PRA methods are identical: there is a 
+one-to-one connection between the stochastic elements (basic events vs. sampled variables) and
+accident progression (system simulator vs. ET) of both methods.
+
+\subsection{Stochastic Modeling: Case 1}
+
+In case 1 the set of macro basic events coincide with the set of stochastic parameters sampled
+by RAVEN. While in SAPHIRE each macro basic event ($BE_i$) is characterized by probability value 
+($p_i$), in RAVEN its corresponding stochastic variable ($v_i$) is modeled through a Bernoulli 
+distribution $v_i \sim \operatorname{Bern}(p_i)$.
+From this analysis we expect very similar results since the capabilities of Dynamic PRA methods
+are not exploited.
+However, this is a first test toward benchmarking Dynamic vs. classical PRA methods in order to 
+understand modeling differences and impact on final results.
+
+
+\subsection{Stochastic Modeling:Case 2}
+
+Case 2 expands the Dynamic PRA model by adding time dependent features in the analysis. 
+These features extend the stochastic parameters already present in the analysis by quantifying 
+timing of events such as failure time of systems.
+In addition, recovery time for the LPI system (in both injection and recirculation mode) is 
+also included in the analysis.
+
+Thus, timing of events now plays a role in the actual accident progression since timing of 
+occurrence of events is directly coupled with system dynamics (i.e., heating-up of the core
+due to loss of cooling).
+
+Table~\ref{tab:case2NewVars} shows the additional stochastic variables that have been 
+introduced in the analysis and their associated distribution.
+
+
+\begin{table}
+  \caption{Results obtained for Example 2.}
+  \label{tab:case2NewVars}
+  \centering
+  \begin{tabular}{c | c | c | p{5cm}} 
+   \hline 
+     no. & Name            & Distribution  & Description \\ 
+    \hline 
+      1  & LPI\_A\_RepTime   &  t   &  Repair time for LPI (Train A) when in injection mode \\
+      2  & LPI\_B\_RepTime   &  t   &  Repair time for LPI (Train B) when in injection mode \\
+      3  & LPR\_A\_RepTime   &  t   &  Repair time for LPI (Train A) when in recirculation mode \\
+      4  & LPR\_B\_RepTime   &  t   &  Repair time for LPI (Train B) when in recirculation mode \\
+    \hline 
+  \end{tabular}
+\end{table}

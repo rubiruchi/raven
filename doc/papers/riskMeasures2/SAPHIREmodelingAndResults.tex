@@ -1,8 +1,184 @@
-\section{SAPHIRE modeling [zhegang]}
+\section{SAPHIRE Modeling}
 \label{sec:SAPHIREmodeling}
 
-[text]
+This section provides an overview of the risk importance measures in SAPHIRE PRA 
+code [1], the introduction of the classical large loss-of-coolant (LLOCA) PRA model 
+for a generic 3-loop pressurized water reactor (PWR), the process to simplify the 
+typical LLOCA PRA model as needed, and the importance measure results from the 
+reformulated PRA model that could be compared with those from the corresponding 
+RAVEN/RELAP5 simulation model. 
 
-\subsection{ET-FT reformulation [zhegang]}
+\subsection{Risk Importance Measures in SAPHIRE}
 
-[text]
+The SAPHIRE code can calculate the following different basic event importance 
+measures for each basic event of the respective fault tree, accident sequence, 
+or end state:
+\begin{itemize}
+	\item Fussell-Vesely (FV) 
+	\item Risk Increase Ratio (RIR) 
+	\item Risk Increase Difference (RID)
+	\item Risk Reduction Ratio (RRR)
+	\item Risk Reduction Difference (RRD)
+	\item Birnbaum (B)
+	\item Uncertainty Importance
+\end{itemize}
+The most used importance measures are Fussell-Vesely, Risk Increase Ratio, Risk 
+Reduction Ratio, and Birnbaum. The Fussell-Vesely importance measure indicates 
+the fraction of the minimal cut set upper bound (or sequence frequency, core damage 
+frequency) contributed by the cut sets containing the interested basic event. 
+It is calculated with the following equation:
+FV = F(i) / F(x)
+where F(x) = value of all the minimal cut sets evaluated with the basic event probabilities at their mean value.
+    F(i) = value of all the minimal cut sets that contain the interested basic event i.
+
+The Risk Increase Ratio, which is often called Risk Achievement Worth (RAW), or Risk 
+Increase Difference importance measure indicates the increase (in relative ratio 
+changes or in actual differences) of the minimal cut set upper bound (or sequence 
+frequency, core damage frequency) if the interested basic event always occurred 
+(i.e., the basic event failure probability is 1.0). 
+The risk increase importance measures are calculated with the following equations:
+RIR (or RAW)=F(1)/F(x)
+RID=F(1)-F(x)
+where F(1) = value of all the minimal cut sets evaluated with the interested basic event probability set to 1.0.
+
+The Risk Reduction Ratio, which is often called Risk Reduction Worth (RRW), 
+or Risk Reduction Difference importance measure indicates the reduction (in relative 
+ratio changes or in actual differences) of the minimal cut set upper bound (or sequence 
+frequency, core damage frequency) if the interested basic event never occurred 
+(i.e., the basic event failure probability is 0.0). 
+The risk reduction importance measures are calculated with the following equations:
+RRR (or RRW)=F(x)/F(0)
+RRD=F(x)-F(0)
+where F(0) = value of all the minimal cut sets evaluated with the interested basic 
+event probability set to 0.0.
+The Birnbaum importance measure is an indication of the sensitivity of the minimal 
+cut set upper bound (or sequence frequency, core damage frequency) with respect to 
+the interested basic event. It is calculated by the following equation:
+B=F(1)-F(0)
+The Uncertainty Importance measure is an indication of the contribution of the 
+interested basic event’s uncertainty to the total output uncertainty. 
+This importance measure is not used in this paper and not discussed in further detail.
+
+\subsection{SAPHIRE LLOCA Model}
+
+
+\subsection{ET-FT Reformulation}
+
+While a typical PRA model could contain thousands of basic events in the 
+event trees/fault trees and hundreds of basic events in the importance measure 
+results, the RAVEN/RELAP5 simulation model could only handle about 20 variables 
+(or basic events) currently. To compare the importance measure results from the 
+classical PRA model to those from the RAVEN/RELAP5 simulation model for the same 
+set of basic events, either the capability of RAVEN/RELAP5 simulation model has 
+to be expanded to be able to handle more variables or the typical PRA model be 
+simplified significantly with much less basic events. With expanding the capability 
+of RAVEN/RELAP5 model be a long-term research goal, this paper introduces a 
+progressive process to simplify a typical classical PRA model and applies the 
+process to the typical LLOCA model for a generic 3-loop PWR. The reformulated 
+LLOCA PRA model is then quantified to obtain the risk importance measure results.
+
+Figure 1 shows a typical LLOCA event tree that one would find in a classical PRA model. 
+The LLOCA event tree has three top events: ACC for accumulator injection, LPI for 
+low pressure safety injection, and LPR-LL for low pressure safety injection during 
+recirculation phase. Each top event is modeled in one or more fault trees. 
+Figure 2 and Figure 3 show the fault trees for ACC and LPI. 
+The LLOCA model is quantified with a cutoff value of 1E-12. Its core damage frequency 
+(CDF) is 2.04E-8/year. There are 180 minimum cut sets. Of more than two hundreds basic 
+events in the LLOCA model, 60 basic events appear in the 180 minimum cut sets and thus 
+have importance measures. The reported importance measures include Fussell-Vesely, RAW, 
+RRW, and Birnbaum. 41 out of the 60 basic events can be regarded as risk significant using the 
+ASME/ANS PRA Standard [2] definition, i.e., FV >= 5E-3 or RAW >= 2. 
+
+To analyze the LLOCA model under the RAVEN/RELAP5 environment, the number of basic events to be simulated is expected to be reduced to less than 20 in order for successful simulation runs. To compare the results from classical PRA with those from simulations, the traditional LLOCA model above has to be simplified significantly (with less than 20 unique basic events) while keep the PRA model fidelity as much as possible.
+The following three-stage progressive process is used in this paper to simplify a traditional PRA model:
+•	Stage 1, simplify the traditional PRA model by keeping only the cut set basic events (the basic events appear at least once in the minimum cut sets) in the model. All other basic events and subtrees that do not include any such cut set basic events are removed from the model. The simplified Stage 1 model should have the same quantification results (CDF, minimum cut sets, and importance measures) as the original model.
+•	Stage 2, further simplify Stage 1 model by keeping only the risk significant basic events (FV >= 5E-3 or RAW >= 2) in the model. Other non-significant basic events are removed from the model. Stage 2 model would produce different quantification results (CDF, minimum cut sets, and importance measures), however, the differences should not be large.
+•	Stage 3, simplify Stage 2 model by combining the risk significant basic events to reduce the total basic event number to the expected level. In general, the original basic events could be combined into the following super basic events:
+¬	System/train or inter-system level failure on demand super basic events, which may include pump fails to start, valve fails to open, etc.
+¬	System/train or inter-system level failure to run super basic events, which may include pump fails to run, heat exchanger fails to transfer heat, containment sump failures, etc.
+¬	System/train or inter-system level unavailable due to test or maintenance super basic events
+¬	Operator action failure super basic events
+¬	Common cause failure on demand super basic event
+¬	Common cause failure to run super basic event
+This would create new basic events that group and replace the original basic events and different quantification results with different cut set basic events. The new basic events are used as inputs to the RAVEN/RELAP5 simulation model, and the SAPHIRE results can be compared directly with those from the simulation model. 
+The process is applied to the traditional LLOCA model as described in the following sections. Due to the relative simplicity of the LLOCA model, Stage 2 of the above process (i.e., removing non risk significant basic events from the model) is deemed not necessary. The 60 LLOCA cut set basic events are combined into super basic events directly, and the process is reduced from 3 stages to 2 stages.
+
+\subsubsection{Simplifying LLOCA PRA Model – Stage 1}
+
+In Stage 1 of the simplifying LLOCA PRA model process, all basic events not reside in any of the minimum cut sets/importance measure results are removed from the fault tree logic. All subtrees are also deleted if they include no cut set basic events. Figure 4 shows an example of such process, in which LPI fault tree is simplified to include only the cut set basic event ESF-VCF-CF-TRNAB and sub-trees RHR-MDPA and RHR-MDPB. All other basic events (LPI-CKV-CC-001, LPI-CKV-CC-002, LPI-CKV-CF-SUCTN, LPI-MOV-OC-8809A, and LPI-MOV-OC-8809B) are removed from the logic. Subtree LPI-DIS is also removed from the logic. Note that LPI-DIS actually includes cut set basic events, RCS-CKV-CC-083, RCS-CKV-CC-084, and RCS-CKV-CC-085, however, these basic events appear in the cut sets from the ACC logic instead of LPI/LPI-DIS logic. As such, the basic events and the subtree could be removed with no impact on the quantification results. Other subtrees that are removed from the logic include AC and DC related subtrees such as ACP-1AA02, DCP-PNL1AD11 under the LPR-LL main fault tree.
+
+\subsubsection{Simplifying LLOCA PRA Model – Stage 2}
+
+In Stage 2 (or Stage 3 in a three-stage process) of the simplifying LLOCA PRA model process, the 60 cut set basic events retained in Stage 1 model are combined into the following super basic events:
+•	System/train or inter-system level failure on demand super basic events, which may include pump fails to start, valve fails to open, etc.
+•	System/train or inter-system level failure to run super basic events, which may include pump fails to run, heat exchanger fails to transfer heat, containment sump failures, etc.
+•	System/train or inter-system level unavailable due to test or maintenance super basic events
+•	Operator action failure super basic events
+•	Common cause failure on demand super basic event
+•	Common cause failure to run super basic event
+In ACC fault tree, ACC-CKV-CC-079 and RCS-CKV-CC-083 are grouped into ACC-CKV-CC-CL1 for Accumulator 1 failure to inject. ACC-CKV-CC-080 and RCS-CKV-CC-084 are grouped into ACC-CKV-CC-CL2 for Accumulator 2 failure. ACC-CKV-CC-081 and RCS-CKV-CC-084 are grouped into ACC-CKV-CC-CL3 for Accumulator 3 failure. Figure 5 presents the simplified Stage 2 ACC fault tree.
+In LPI fault tree (including its subtrees), low pressure injection motor-driven pump A fails to start (LPI-MDP-FS-1A), operator fails to restore LPI MDP A after test maintenance (LPI-XHE-XR-P1A), and LPI Train A minimum recirculation valve fails to close (LPI-MOV-OO-F0610) are grouped into one super basic event, LPI-SYS-DEM-TRNA for LPI Train A fails on demand. Super basic event LPI-SYS-CF-DEM (LPI system common cause failures on demand) consists the following cut set basic events from the original or Stage 1 model:
+•	LPI-MDP-CF-START, Both LPI pumps A and B fail from common cause to start
+•	LPI-MOV-CF-F061011, Both LPI minimum circulation valves fail from common cause to close
+•	ESF-VCF-CF-TRNAB, Common cause failure of both trains of engineering safety features (ESF) actuation signals
+A list of LPI super basic events is provided below: 
+•	LPI-SYS-DEM-TRNA, LPI Train A fails on demand 
+•	LPI-SYS-DEM-TRNB, LPI Train B fails on demand
+•	LPI-SYS-RUN-TRNA, LPI Train A fails to run
+•	LPI-SYS-RUN-TRNB, LPI Train B fails to run
+•	LPI-SYS-TM-TRNA, LPI Train A unavailable due to test or maintenance
+•	LPI-SYS-TM-TRNB, LPI Train B unavailable due to test or maintenance
+•	LPI-SYS-CF-DEM, LPI system common cause failures on demand 
+•	LPI-SYS-CF-RUN, LPI system common cause failures to run
+•	NSW-SYS-TM-TRNA, NSW Train A unavailable due to test or maintenance
+•	NSW-SYS-TM-TRNB, NSW Train B unavailable due to test or maintenance
+•	NSW-SYS-CF-DEM, NSW system common cause failures on demand
+Note that in order to further reduce the final number of basic events in Stage 2 model to be less than 20, NSW-SYS-TM-TRNA and NSW-SYS-TM-TRNB are removed from the model due to their low risk significance. Figure 6 presents the simplified Stage 2 LPI fault tree. 
+Similarly, LPR-LL fault tree (and its subtrees) is simplified to include the following new super basic events, as well as some of the previous LPI super basic events: 
+•	LPR-SYS-DEM-TRNA, LPR Train A fails on demand 
+•	LPR-SYS-DEM-TRNB, LPR Train B fails on demand
+•	LPR-SYS-RUN-TRNA, LPR Train A fails to run
+•	LPR-SYS-RUN-TRNB, LPR Train B fails to run
+•	LPR-SYS-TM-TRNA, LPR Train A unavailable due to test or maintenance
+•	LPR-SYS-TM-TRNB, LPR Train B unavailable due to test or maintenance
+•	LPR-SYS-CF-DEM, LPR system common cause failures on demand 
+•	LPR-SYS-CF-RUN, LPR system common cause failures to run
+•	LPR-XHE-XM-ERROR, Operator fails to initiate recirculation or hot leg recirculation
+Figure 7 presents the simplified Stage 2 LPR fault tree. Again, in order to reduce the final number of basic events in Stage 2 model to be less than 20, LPR-SYS-RUN-TRNA and LPR-SYS-RUN-TRNB are removed from the model due to their low risk significance.
+
+\subsection{PRA Model Quantification Results}
+
+The simplified Stage 1 and Stage 2 LLOCA models are quantified in SAPHIRE with the same cutoff value of 1E-12. As expected, Stage 1 model has exactly the same results with the original LLOCA model: same CDF value (2.04E-8/year), same number of minimum cut sets, same number of basic events in minimum cut sets, and same risk significant basic events.
+Stage 2 model has a CDF of 2.03E-8/year (less than 0.5\% difference from the original model). The number of minimum cut sets is reduced from 180 to 32. The number of cut set basic events is reduced from 60 to 23. Excluding the initiating event (IE-LLOCA) and flag events (LOCA-CL1, LOCA-CL2, and LOCA-CL3), 19 basic events in Stage 2 model could be used in the RAVEN/RELAP5 simulation model as the manageable variables. Table 1 presents the quantification results for each accident sequence and the total CDF of LLOCA in the original, Stage 1, and Stage 2 models. The conditional core damage probabilities for the sequences are also obtained by quantifying the models with the LLOCA initiating event frequency is set to 1. Table 2 shows CCDP of accident sequences in the original, Stage 1, and Stage 2 LLOCA models. Table 3 shows the risk importance measure results for Stage 2 LLOCA model. 
+
+\begin{table}
+  \centering
+  \begin{tabular}{c | c | c | p{7cm}} 
+    \hline 
+     no. & Name           & Probability  & Description \\ 
+    \hline 
+     1 & IE-LLOCA         & 2.50 E-6     & LARGE LOCA \\
+     2 & LPR-XHE-XM-ERROR & 7.01 E-3     & OPERATOR FAILS TO INITIATE LOW PRESSURE RECIRCULATION OR HOT LEG RECIRCULATION \\
+     3 & LPI-SYS-CF-DEM   & 7.16 E-4     & LPI SYSTEM COMMON CAUSE FAILURES ON DEMAND (LPI-MDP, LPI-MOV, ESF) \\
+     4 & LPR-SYS-CF-DEM   & 5.41 E-5     & LPR SYSTEM COMMON CAURE FAILURES ON DEMAND (LPI-AOV, LPI-MOV, CSS-MOV) \\
+     5 & LPI-SYS-CF-RUN   & 1.04 E-5     & LPI SYSTEM COMMON CAUSE FAILURES TO RUN (LPI-MDP) \\
+     6 & LPR-SYS-CF-RUN   & 4.27 E-6     & LPR SYSTEM COMMON CAURE FAILURES TO RUN (LPI-HTX, CCW-HTX, CSS-SMP) \\
+     7 & NSW-SYS-CF-DEM   & 4.00 E-6     & NSW SYSTEM COMMON CAUSE FAILURE ON DEMAND (NSW-FAN) \\
+     8 & ACC-CKV-CC-CL1   & 2.40 E-5     & ACCUMLATOR 1 DISCHARGE CKV 079 OR 083 FAILS TO OPEN \\
+     9 & ACC-CKV-CC-CL2   & 2.40 E-5     & ACCUMLATOR 2 DISCHARGE CKV 080 OR 084 FAILS TO OPEN \\
+    10 & ACC-CKV-CC-CL3   & 2.40 E-5     & ACCUMLATOR 3 DISCHARGE CKV 081 OR 085 FAILS TO OPEN \\
+    11 & LPI-SYS-DEM-TRNA & 3.50 E-3     & LPI TRAIN A FAILS ON DEMAND (LPI-MDP, LPI-XHE, LPI-MOV) \\
+    12 & LPI-SYS-DEM-TRNB & 3.50 E-3     & LPI TRAIN B FAILS ON DEMAND (LPI-MDP, LPI-XHE, LPI-MOV) \\
+    13 & LPR-SYS-DEM-TRNA & 4.20 E-3     & LPR TRAIN A FAILS ON DEMAND (LPI-AOV, LPI-MOV, CSS-OV) \\
+    14 & LPR-SYS-DEM-TRNB & 4.20 E-3     & LPR TRAIN B FAILS ON DEMAND (LPI-AOV, LPI-MOV, CSS-OV) \\
+    15 & LPI-SYS-RUN-TRNA & 5.38 E-4     & LPI TRAIN A FAILS TO RUN (LPI-MDP) \\
+    16 & LPI-SYS-RUN-TRNB & 5.38 E-4     & LPI TRAIN B FAILS TO RUN (LPI-MDP) \\
+    17 & LPI-SYS-TM-TRNA  & 8.00 E-3     & LPI TRAIN A UNAVAILABLE DUE TO TEST OR MAINTENANCE (LPI-MDP) \\
+    18 & LPI-SYS-TM-TRNB  & 8.00 E-3     & LPI TRAIN B UNAVAILABLE DUE TO TEST OR MAINTENANCE (LPI-MDP) \\
+    19 & LPR-SYS-TM-TRNA  & 5.00 E-3     & LPR TRAIN A UNAVAILABLE DUE TO TEST OR MAINTENANCE (LPI-HTX) \\
+    20 & LPR-SYS-TM-TRNB  & 5.00 E-3     & LPR TRAIN B UNAVAILABLE DUE TO TEST OR MAINTENANCE (LPI-HTX) \\
+    \hline 
+  \end{tabular}
+\end{table}
+
+

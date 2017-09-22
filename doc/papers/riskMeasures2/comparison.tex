@@ -1,8 +1,64 @@
-\section{Comparison of Results [diego with zhegang and carlo contribution and checks]}
-\label{sec:introduction}
+\section{Comparison of Results }
+\label{sec:comparison}
 
-[text]
+The comparison between the two PRA analyses has been performed on three different steps by considering:
+\begin{enumerate}
+	\item CD probability
+	\item Probability associated to each accident progression sequence
+	\item Importance measure (FV and RAW) associate to each macro basic event
+\end{enumerate}
+Note how the three steps have an increasing level of detail from coarse (i.e., first step) to very fine 
+(i.e., importance measures).
+This approach allows us to progressively measure the differences between classical and Dynamic PRA methods.
+
+Regrading the first step 
+
+\begin{table}
+  \caption{Comparison of results: analysis of $P_{CD}$}
+  \begin{tabular}{c | c | c } 
+    \hline 
+             & SAPHIRE & RAVEN \\ 
+    \hline 
+    $P_{CD}$ & 66.9    & 66.9 \\
+    \hline 
+  \end{tabular}
+\end{table}
+
+
+\begin{table}
+	\centering
+	\caption{Comparison of results.}
+	\begin{tabular}{*5c}
+		\hline
+		BE &  \multicolumn{2}{c}{SAPHIRE}     & \multicolumn{2}{c}{RAVEN}\\
+		{}               &  FV        &  RAW       &  FV        &  RAW        \\
+		\hline
+	    IE-LLOCA         &  1.        &  4.00 E+5  &  FV  & RAW  \\ 
+	    LPR-XHE-XM-ERROR &  8.63 E-1  &  123       &  FV  & RAW  \\
+	    LPI-SYS-CF-DEM   &  8.82 E-2  &  123       &  FV  & RAW  \\ 
+	    LPR-SYS-CF-DEM   &  6.67 E-3  &  123       &  FV  & RAW  \\ 
+	    LPI-SYS-CF-RUN   &  1.29 E-3  &  123       &  FV  & RAW  \\
+	    LPR-SYS-CF-RUN   &  5.25 E-3  &  123       &  FV  & RAW  \\
+	    NSW-SYS-CF-DEM   &  4.92 E-4  &  123       &  FV  & RAW  \\
+	    ACC-CKV-CC-CL1   &  1.97 E-3  &  68.9      &  FV  & RAW  \\
+	    ACC-CKV-CC-CL2   &  1.97 E-3  &  68.9      &  FV  & RAW  \\
+	    ACC-CKV-CC-CL3   &  1.97 E-3  &  68.9      &  FV  & RAW  \\
+	    LPI-SYS-DEM-TRNA &  9.15 E-3  &  3.57      &  FV  & RAW  \\
+	    LPI-SYS-DEM-TRNB &  9.15 E-3  &  3.57      &  FV  & RAW  \\
+	    LPR-SYS-DEM-TRNA &  1.10 E-2  &  3.56      &  FV  & RAW  \\
+	    LPR-SYS-DEM-TRNB &  1.10 E-2  &  3.56      &  FV  & RAW  \\
+	    LPI-SYS-RUN-TRNA &  1.37 E-3  &  3.51      &  FV  & RAW  \\
+	    LPI-SYS-RUN-TRNB &  1.37 E-3  &  3.51      &  FV  & RAW  \\
+	    LPI-SYS-TM-TRNA  &  8.12 E-3  &  2.00      &  FV  & RAW  \\
+	    LPI-SYS-TM-TRNB  &  8.12 E-3  &  2.00      &  FV  & RAW  \\
+	    LPR-SYS-TM-TRNA  &  5.07 E-3  &  2.00      &  FV  & RAW  \\
+	    LPR-SYS-TM-TRNB  &  5.07 E-3  &  2.00      &  FV  & RAW  \\
+		\hline
+	\end{tabular}
+\end{table}
+
 
 \subsection{LLOCA success criteria [Carlo]}
 
 [text]
+
