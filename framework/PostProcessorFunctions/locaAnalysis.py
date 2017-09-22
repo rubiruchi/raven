@@ -68,6 +68,7 @@ class locaAnalysis(PostProcessorInterfaceBase):
     inputWeights = inp['metadata']['ProbabilityWeight']
     pb_branch = np.zeros(4)
     inp['data']['output']['label']=np.zeros(inputWeights.size)
+    inp['data']['output']['probability']=np.zeros(inputWeights.size)
 
     for i in range(inputWeights.size):
         inp['data']['output']['probability'][i]=inputWeights[i]
