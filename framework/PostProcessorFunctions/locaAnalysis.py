@@ -64,7 +64,7 @@ class locaAnalysis(PostProcessorInterfaceBase):
      @ In, inputDic, list, list of dictionaries which contains the data inside the input DataObjects
      @ Out, outputDic, dict, dictionary which contains the risk measures
     """
-    inp = inputDic[0]
+    inp = copy.deepcopy(inputDic[0])
     inputWeights = inp['metadata']['ProbabilityWeight']
     pb_branch = np.zeros(4)
     inp['data']['output']['label']=np.zeros(inputWeights.size)
