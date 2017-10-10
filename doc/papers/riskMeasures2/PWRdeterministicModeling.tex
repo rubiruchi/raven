@@ -1,4 +1,172 @@
-\section{PWR deterministic modeling [carlo]}
+\section{PWR Deterministic Modelling}
 \label{sec:PWRdeterministicModeling}
 
-[text]
+SAPHIRE code Standardized Plan Analysis Risk (SPAR) used for static PRA analysis is based on a generic 3-loops Westinghouse PWR model. Dynamic PRA calculations were executed by RELAP5-3D/RAVEN, so a RELAP5-3D system code model for a generic 3-loops Westinghouse PWR has been developed. The description of this model is reported hereafter.
+
+
+\subsection{RELAP5-3D Model for 3 Loops PWR}
+
+The RELAP5-3D model is based on the so-called INL Generic PWR (IGPWR) model used for calculations of different LWRS/RISMC tasks. 
+The RELAP5-3D input deck is modeling a ~2.5 GWth Westinghouse 3-loops PWR, including the reactor pressure vessel (RPV), the 3 loops and the primary and secondary sides of the steam generators (SG) (see Figure~\ref{fig:rpv} and Figure~\ref{fig:mcc}).  
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.9]{RPV.png}
+    \caption{RELAP5-3D RPV Model.}
+    \label{fig:rpv}
+\end{figure} 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.9]{MCC.png}
+    \caption{RELAP5-3D MCC and SG Model.}
+    \label{fig:mcc}
+\end{figure} 
+
+Four independent channels are used for representing the reactor core. Three channels model the active core and one channel models the core bypass. Different power values are assigned to the three core channels in order to take into account the radial power distribution. Passive and active heat structures simulate the heat transfer between the coolant and fuel, the structures and the secondary side of the IGPWR.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=1.0]{CORE_POW.png}
+    \caption{RELAP5-3D Core Model.}
+    \label{fig:CORE_POW}
+\end{figure} 
+
+Table~\ref{tab:dataRelap5} reports the steady state values obtained for the RELAP5-3D model and the comparison with reference values, showing that the agreement is good. 
+
+\begin{table}
+  \centering
+  \begin{tabular}{c | c | c | c} 
+    \hline 
+     Parameter & Reference value & RELAP5-3D value & Deviation (\%) \\
+    \hline 
+     Reactor Power (W) & 2,546 & 2,546 & imposed \\
+     PRZ Pressure (MPa) & 15.5 & 15.57 & imposed \\
+     Total RCS Coolant Loop Flowrate (Kg/s) & 12,738 & 12,738 & 0.0 \\
+     CL Temperature (K) & 555.6 & 557.3 & 0.3 \\
+     HL Temperature (K) & 591.8 & 593.1 & 0.2 \\
+     Feed-water Temperature (K) & 501.5 & 501.5 & imposed \\
+     Steam Flowrate per SG1 (K) & 473. & 470.1 & -0.6 \\
+     Steam Flowrate per SG2 (K) & 473. & 470.7 & -0.5 \\
+     Steam Flowrate per SG3 (K) & 473. & 471.0 & -0.4 \\
+     Steam Pressure at the Outlet Nozzle (MPa) & 5.405 & 5.405 & imposed \\
+     Liquid Mass per SG (Kg) & 41,639 & 41,640 & 0.0 \\
+     Steam Temperature (K) & 542 & 542 & 0.0 \\
+    \hline 
+  \end{tabular}
+  \caption{RELAP5-3D LBLOCA steady state values.}
+  \label{tab:dataRelap5}
+\end{table}
+
+For the transient calculation, a horizontal LBLOCA on the cold-leg RPV nozzle was considered. The break was supposed to happen on the pressurizer loop. Several LBLOCA cases were run, including some considered by Westinghouse for LBLOCA spectrum analysis (U.S. NRC 2011):
+\begin{itemize}
+	\item 2A, Double-Ended Guillotine Break (DEGB);
+	\item 1A;
+	\item 10 inches diameter;
+	\item 8 inches diameter;
+	\item 6 inches diameter.
+\end{itemize}
+
+For the LBLOCA DEGB, the total break area was 2x0.383 m2 (2x4.125 ft2), corresponding to a 0.7 m (27.56 inches) diameter pipe. The RELAP5-3D model of the break is reported in Figure~\ref{fig:debg}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{DEGB.png}
+    \caption{RELAP5-3D LBLOCA DEGB model scheme.}
+    \label{fig:debg}
+\end{figure} 
+
+For the other 4 cases, the total break area was:
+\begin{itemize}
+	\item case 1A: 0.383 m2 (4.125 ft2), or 0.7 m (27.5 inches) diameter break;
+	\item case 10 inches: 0.0506 m2 (0.545 ft2), or 0.254 m (10 inches) diameter break;
+	\item case 8 inches: 0.0324 m2 (0.349 ft2), or 0.203 m (8 inches) diameter break;
+	\item case 6 inches: 0.0182 m2 (0.196 ft2), or 0.152 m (6 inches) diameter break.
+\end{itemize}
+
+The scheme of the break is reported in Figure 5.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.6]{1AandOthers.png}
+    \caption{RELAP5-3D LBLOCA 1A/10-8-6 inches model scheme.}
+    \label{fig:1AandOthers}
+\end{figure} 
+
+The Emergency Core Cooling Injection System (ECCS) model is based on the information provided by (U.S. NRC 2011), (NRC 2013), (Dominion 2007). The main characteristics of it are reported in Table~\ref{tab:dataRelap5_ECCS}, Table~\ref{tab:dataRelap5_RWST} and Table~\ref{tab:dataRelap5_cont}. 
+
+\begin{table}
+  \caption{RELAP5-3D ECCS main parameters.}
+  \centering
+  \begin{tabular}{c | c | c} 
+    \hline 
+     ECCS Parameters & Value (SI) & Value (Imperial) \\
+    \hline 
+    Accumulator Water Volume [m3 / ft3] & 3 x 28.32 & 3 x 1000 \\
+    Accumulator Gas Pressure [MPa / psig] & 4.00 & 580 \\
+    Accumulator Water Temperature [C / F] & 40.6 & 105.0 \\
+    HPI volumetric flow [m3/s /gpm] & 3 x 0.0708 (at 1,767 m) & 3 x 150 (at 5,800 ft) \\
+    HPI design head [MPa / psi] & 17.34 & 2515.3 \\
+    LPI volumetric flow [m3/s /gpm] & 2 x 1.416 (at 68.6 m) & 2 x 3,0007 (at 225 ft) \\
+    LPI design head [MPa / psi] & 6.728 & 97.58 \\
+    \hline 
+  \end{tabular}
+  \label{tab:dataRelap5_ECCS}
+\end{table}
+
+\begin{table}
+  \caption{RWST main parameters.}
+  \centering
+  \begin{tabular}{c | c | c} 
+    \hline 
+    Parameters & Value (SI) & Value (Imperial) \\
+    \hline 
+    Max Water Volume [m3 / gal] & 1514.2 & 400,000 \\
+    Required Minimum Water Volume [m3 / gal] & 1465.3 & 387,000 \\
+    Minimum Water Volume  [m3 / gal] & 53.0 & 14,000 \\
+    Water Temperature [C / F] & 7.2 & 45.0\\
+    RWST / Containment sump switch time (s) & 150.0 & \\
+    \hline 
+  \end{tabular}
+  \label{tab:dataRelap5_RWST}
+\end{table}
+
+\begin{table}
+  \caption{Containment main parameters.}
+  \centering
+  \begin{tabular}{c | c | c} 
+    \hline 
+    Parameters & Value (SI) & Value (Imperial) \\
+    \hline 
+    Volume [m3 / ft3] & 49,000 & 1,730,000 \\
+    Design Pressure [MPa /psig] & 0.31 & 45 \\
+    Operating Pressure [MPa /psia] & 0.062 to 0.071 & 9 to 10.3 \\
+    Operating Temperature [C / F] & 24 to 52 & 75 to 125 \\
+    Containment sprays mass flow [m3/s /gpm] & 2 x 0.183 & 2 x 2900 \\
+    \hline 
+  \end{tabular}
+  \label{tab:dataRelap5_cont}
+\end{table}
+
+The actuation signals for the ECCS and the containment sprays are reported in Table~\ref{tab:dataRelap5_signals}.
+
+\begin{table}
+  \caption{ECCS and Containment Spray actuation signals.}
+  \centering
+  \begin{tabular}{c | c | c} 
+    \hline 
+    Parameters & Value (SI) & Value (Imperial) \\
+    \hline 
+    Low pressure signal in PRZ [MPa/psig]  & $<12.3$ & $<1789.7$ \\
+    Low-low pressure signal in PRZ [MPa/psig] & $<12.2$ & $<1775.$ \\
+    High Containment Pressure [MPa/psia] & $>0.122$ & $>17.7$ \\
+    High Steamline Delta Pressure [MPa/psid] & $>0.827$ & $>120.$ \\
+    Spray signal for Containment Pressure [MPa/psig] & $>0.172$ & $>25$ \\
+    Spray OFF for Containment Pressure [MPa/psig] & $<0.082$ & $<12$ \\
+    \hline 
+  \end{tabular}
+  \label{tab:dataRelap5_signals}
+\end{table}
+
+The operators and the emergency crew actions were limited to few actions. The initial ECCS and containment sprays actuations were supposed to be automatically performed by the reactor protection system. 
+

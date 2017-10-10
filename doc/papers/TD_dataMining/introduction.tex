@@ -1,0 +1,57 @@
+\section{Introduction}
+\label{sec:introduction}
+
+In the past decades, several numerical simulation codes have been employed to simulate accident 
+dynamics (e.g., RELAP5-3D~\cite{relap5}, MELCOR~\cite{Melcor}). In order to evaluate the impact of uncertainties 
+into accident dynamics, several stochastic methodologies have been coupled with these codes. 
+These stochastic methods range from classical Monte-Carlo and Latin Hypercube sampling to 
+stochastic polynomial methods~\cite{}. 
+
+Similar approaches have been introduced into the risk and 
+safety community where stochastic methods (e.g., RAVEN~\cite{RAVEN_PSAM_2014}, 
+ADAPT~\cite{adapt}, MCDET~\cite{MCdet} and ADS~\cite{ADS}) have been 
+coupled with safety analysis codes in order to evaluate the safety impact of timing and sequencing 
+of events on the accident progression. These approaches are usually called Dynamic PRA methods. 
+These simulation-based uncertainties and safety methods usually generate a large number of 
+simulation runs which are typically discarded once coarse averaging coefficients (e.g., core 
+damage frequency or sensitivity coefficients) are determined. 
+
+The scope of this paper is to 
+present a field guide of data mining methods and algorithms that can be used to analyze 
+and extract useful information from large data sets containing time dependent data. In this 
+context, extracting information means constructing input-output correlations, finding 
+commonalities. 
+
+These tools can be effectively employed to improve the quality of the data generated.
+When thousands of different scenarios are being generated, the step that tests that no errors in
+the input files (of both system code and the stochastic method) have been introduced requires
+the exploration of unexpected patterns that might bias the analysis.
+Furthermore, the response of a system code might generate unexpected behavior 
+generate 
+ and identifying outliers. 
+
+Data mining is a fairly generic concept that 
+entails the generation of information and knowledge from data sets. The process of generation 
+of information/knowledge can be performed in various ways depending on the type of application 
+but it possible to classify data analysis approaches into three categories: 
+\begin{itemize}
+  \item Reduced Order Modeling: algorithms that reduce to the complexity of the data by finding a 
+        mathematical objects that emulate the behavior of the data by learning its input/output 
+        relations and reconstructing such relations through a regression/interpolation approach
+  \item Dimensionality reduction: this category includes all methods than aim to reduce the 
+        dimensionality of the data set and project the original data into a reduced space
+  \item Clustering: algorithms in this category partition the data based on a set of defined 
+        similarity measure (i.e., a distance metric)
+\end{itemize}
+
+This paper focuses on the latter category applied in particular to the analysis of time dependent 
+data, i.e., simulated accident transients. By grouping simulated transients, provided a set of 
+similarity laws, it is possible to identify commonalities regarding initial and boundary conditions 
+(i.e., timing and sequencing of events)
+on accident progression.
+We describe several aspects that orbit around data mining of Dynamic PRA data such as:
+\begin{itemize}
+\item Data pre-processing: how the data can be pre-processed prior behind analyzed
+\item Data representation format: how each transient is represented from a mathematical point of view
+\item Similarity metrics: how distance among transient is measured and calculated
+\end{itemize} 

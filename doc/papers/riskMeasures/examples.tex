@@ -60,15 +60,15 @@ a Bernoulli distribution) would be equal to $2^M$. Thus this strategy can be emp
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[scale=0.3]{andGate.pdf}
-    \label{fig:ABsystem}
+    \label{fig:andGate}
   \end{subfigure}
-  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree [FIX THE FIGURE???] (right).}
+  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
   \label{fig:ABsystem}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.3]{2D.pdf}
+    \includegraphics[scale=0.6]{2D.pdf}
     \caption{}
     \label{fig:2Danalogy}
 \end{figure} 
@@ -133,7 +133,7 @@ probability weights $w_i^0$ and $w_i^1$ values associated to each sample coordin
   \item $s_i=1.0$: $w_i^1=prob(s_i \in [0.5,+\infty])$
 \end{itemize}
 Following this grid sampling strategy, only $2^3=8$ are needed.
-Below, the FV and RAW importance values for all three components obtained by RAVEN (using a 
+Table~\ref{tab:example1}, the FV and RAW importance values for all three components obtained by RAVEN (using a 
 Grid sampling strategy) are shown compared with the analytical ones.
 
 \begin{table}
@@ -150,7 +150,7 @@ Grid sampling strategy) are shown compared with the analytical ones.
         $FV_C$ & 0.33 & 0.34 & 0.33   \\
         \hline 
       \end{tabular}
-    \end{minipage}\\
+    \end{minipage} \\[2ex] 
     \begin{minipage}{.5\linewidth}
       \centering
       \begin{tabular}{c | c | c | c} 
@@ -163,6 +163,7 @@ Grid sampling strategy) are shown compared with the analytical ones.
         \hline 
       \end{tabular}
     \end{minipage} 
+    \label{tab:example1}
 \end{table}
 
 % 
@@ -240,6 +241,7 @@ Table~\ref{tab:example2} are shown the FV importance for all three components ob
 sampling strategy) compared with the analytical ones.
 
 \begin{table}
+    \centering
     \caption{Results obtained for Example 2.}
     \begin{minipage}{.5\linewidth}
       \centering
@@ -252,7 +254,7 @@ sampling strategy) compared with the analytical ones.
         $FV_{pump2}$ & 0.26 & 0.82 & 0.26 \\
         \hline 
       \end{tabular}
-    \end{minipage} \\
+    \end{minipage} \\[2ex]
     \begin{minipage}{.5\linewidth}
       \centering
       \begin{tabular}{c | c | c | c} 
@@ -294,6 +296,7 @@ Table~\ref{tab:example3} are shown the FV importance for all three components ob
 sampling strategy) compared with the analytical ones.
 
 \begin{table}
+    \centering
     \caption{Results obtained for Example III.}
     \begin{minipage}{.5\linewidth}
       \centering
@@ -307,7 +310,7 @@ sampling strategy) compared with the analytical ones.
         $FV_{pump3}$ & 0.076 & 0.94 & 0.081  \\ 
         \hline 
       \end{tabular}
-    \end{minipage} \\
+    \end{minipage} \\[2ex]
     \begin{minipage}{.5\linewidth}
       \centering
       \begin{tabular}{c | c | c | c} 
@@ -439,7 +442,7 @@ progresses. Note that the code is evaluated in a safety strategic area: the limi
 
 \begin{figure}
     \centering
-    \centerline{\includegraphics[scale=0.4]{adaptiveSampling.pdf}}
+    \centerline{\includegraphics[scale=0.55]{adaptiveSampling.pdf}}
     \caption{Example of adaptive sampling}
     \label{fig:adaptiveSampling}
 \end{figure}

@@ -1,4 +1,4 @@
-\section{Comparison of Results }
+\section{Comparison of Results}
 \label{sec:comparison}
 
 The comparison between the two PRA analyses has been performed on three different steps by considering:
@@ -27,7 +27,7 @@ LOCA ET as follows:
         the ET requires a review (e.g., additional branches/branching conditions)
 \end{itemize}
 
-Figure~\ref{} shows a summary of this analysis where, for each ET branch, the corresponding branch probability 
+Figure~\ref{fig:et_comp} shows a summary of this analysis where, for each ET branch, the corresponding branch probability 
 has been calculated using SAPHIRE and RAVEN/RELAP5-3D.
 The major difference in this analysis is located in the probability associated to branch 4 
 
@@ -39,10 +39,31 @@ The major difference in this analysis is located in the probability associated t
     \hline 
              & SAPHIRE & RAVEN \\ 
     \hline 
-    $P_{CD}$ & 1.0     & 1.0   \\
+    $P_{CD}$ & 8.13 E-3    & 8.24 E-3  \\
     \hline 
   \end{tabular}
 \end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{et_comp.pdf}
+    \caption{ET branch probabilities comparison.}
+    \label{fig:et_comp}
+\end{figure} 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{hist.pdf}
+    \caption{Histogram of PCT for branch 4 (RAVEN/RELAP5 case)}
+    \label{fig:hist_temp}
+\end{figure} 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{newET.pdf}
+    \caption{Udate ET structure given RAVEN/RELAP5 data.}
+    \label{fig:newET}
+\end{figure} 
 
 
 \begin{table}
@@ -54,16 +75,16 @@ The major difference in this analysis is located in the probability associated t
 		BE &  \multicolumn{2}{c}{SAPHIRE}     & \multicolumn{2}{c}{RAVEN}\\
 		{}               &  FV        &  RAW       &  FV        &  RAW        \\
 		\hline
-	    IE-LLOCA         &  1.        &  4.00 E+5  &  FV        & RAW  \\ 
-	    LPR-XHE-XM-ERROR &  8.63 E-1  &  123       &  8.50      & 121  \\
-	    LPI-SYS-CF-DEM   &  8.82 E-2  &  123       &  8.62 E-2  & 121  \\ 
-	    LPR-SYS-CF-DEM   &  6.67 E-3  &  123       &  1.25 E-3  & 121  \\ 
-	    LPI-SYS-CF-RUN   &  1.29 E-3  &  123       &  1.25 E-3  & 121  \\
-	    LPR-SYS-CF-RUN   &  5.25 E-3  &  123       &  1.25 E-3  & 121  \\
-	    NSW-SYS-CF-DEM   &  4.92 E-4  &  123       &  4.8 E-4   & 121  \\
-	    ACC-CKV-CC-CL1   &  1.97 E-3  &  68.9      &  0         & 1  \\
-	    ACC-CKV-CC-CL2   &  1.97 E-3  &  68.9      &  0         & 1  \\
-	    ACC-CKV-CC-CL3   &  1.97 E-3  &  68.9      &  0         & 1  \\
+	    IE-LLOCA         &  1.        &  4.00 E+5  &  1.        & 4.00 E+5  \\ 
+	    LPR-XHE-XM-ERROR &  8.63 E-1  &  123       &  8.50      & 121   \\
+	    LPI-SYS-CF-DEM   &  8.82 E-2  &  123       &  8.62 E-2  & 121   \\ 
+	    LPR-SYS-CF-DEM   &  6.67 E-3  &  123       &  1.25 E-3  & 121   \\ 
+	    LPI-SYS-CF-RUN   &  1.29 E-3  &  123       &  1.25 E-3  & 121   \\
+	    LPR-SYS-CF-RUN   &  5.25 E-3  &  123       &  1.25 E-3  & 121   \\
+	    NSW-SYS-CF-DEM   &  4.92 E-4  &  123       &  4.8 E-4   & 121   \\
+	    ACC-CKV-CC-CL1   &  1.97 E-3  &  68.9      &  0.        & 1.    \\
+	    ACC-CKV-CC-CL2   &  1.97 E-3  &  68.9      &  0.        & 1.    \\
+	    ACC-CKV-CC-CL3   &  1.97 E-3  &  68.9      &  0.        & 1.    \\
 	    LPI-SYS-DEM-TRNA &  9.15 E-3  &  3.57      &  8.72 E-3  & 3.48  \\
 	    LPI-SYS-DEM-TRNB &  9.15 E-3  &  3.57      &  8.72 E-3  & 3.48  \\
 	    LPR-SYS-DEM-TRNA &  1.10 E-2  &  3.56      &  1.04 E-2  & 3.48  \\
@@ -79,7 +100,62 @@ The major difference in this analysis is located in the probability associated t
 \end{table}
 
 
-\subsection{LLOCA success criteria [Carlo]}
+\subsection{Consistency check SAPHIRE vs. RAVEN-RELAP5-3D models}
 
-[text]
+Since all the investigated cases were LBLOCA, a combination of ACCs and LPIS was activated at each RELAP5-3D run. In order to determine if the acceptance criteria used by the SAPHIRE model were consistent with the ones derived by RELAP5-3D/RAVEN, several reference LB-LOCA calculations were performed, changing at each run the actuation time and the availability of the ECCS components. 
 
+Results from the set of LB-LOCA-DEGB calculations are reported in Table~\ref{tab:LBLOCA_DEGB}. 
+
+\begin{table}
+  \caption{LBLOCA DEGB results }
+  \label{tab:LBLOCA_DEGB}
+  \centering
+  \begin{tabular}{c | c | c | c | c | c} 
+   \hline 
+     ACCs & LPIs & 1st PCT (K)  & 2nd PCT (K) & 1st Margin & 2nd Margin \\ 
+    \hline 
+        0 & 1 & 1044.9 & 1218.8 & 432.1 & 258.2 \\
+        1 & 1 & 1044.9 & 1002.2 & 432.1 & 474.8 \\
+        2 & 1 & 1044.9 & 913.1  & 432.1 & 563.9 \\
+        0 & 2 & 1044.9 & 1084.5 & 432.1 & 392.5 \\
+        1 & 2 & 1044.9 & 958.1  & 432.1 & 518.9 \\
+        2 & 2 & 1044.9 & 904.6  & 432.1 & 572.4 \\
+    \hline 
+  \end{tabular}
+\end{table}
+
+The trend of the RPV water level and the PCT for the transients reported in Table 6 are show in 
+Figure~\ref{fig:r5_plots}. No core damage conditions (PCT>2200 F or 1477 K) were found for the investigated cases.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \centerline{\includegraphics[scale=0.3]{PCT_LBLOCA_DEGB_B2.jpg}}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \centerline{\includegraphics[scale=0.3]{LEVEL_RPV_DEGB2.jpg}}
+  \end{subfigure}
+  \caption{LBLOCA DEGB cases. PCT (left), RPV level (right).}
+  \label{fig:r5_plots}
+\end{figure}
+
+The trends of the RPV water level and the PCT for the transients are show in Figure~\ref{fig:r5_plots_otherCases}. 
+No core damage condition (PCT>2200 F) was found for the investigated cases. 
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \centerline{\includegraphics[scale=0.3]{PCT_Spectrum.jpg}}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \centerline{\includegraphics[scale=0.3]{LEVEL_RPV_SPECTRUM.jpg}}
+  \end{subfigure}
+  \caption{LBLOCA DEGB cases. PCT (left), RPV level (right).}
+  \label{fig:r5_plots_otherCases}
+\end{figure}
+
+The RELAP5-3D analyses demonstrated that the acceptance criterion for LBLOCA is the availability of at least one LPIS pump.  Instead the SAPHIRE SPAR model success criterion for LB-LOCA requires the availability of at least one LPIS pump and one accumulator. 

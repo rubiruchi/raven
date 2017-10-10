@@ -18,7 +18,7 @@ set we include elements such as:
 \end{figure}
 
 Note that deterministic modeling of the plant or external events can be performed by employing specific 
-simulator codes but also surrogate models~\cite{ROM}, known as reduced order models (ROM). ROMs would 
+simulator codes but also surrogate models~\cite{ROM_Khalik}, known as reduced order models (ROM). ROMs would 
 be employed 
 in order to decrease the high computational costs of high fidelity codes. In addition, multi-fidelity codes 
 can be employed to model the same system; the idea is to switch from low-fidelity to high-fidelity code 
@@ -28,7 +28,7 @@ code for transient conditions)
 In the stochastic modeling we include all stochastic parameters that are of interest in the PRA analysis 
 such as uncertain parameters and stochastic failure of system/components.
 As mentioned earlier, the RISMC approach relies on multi-physics system simulator codes 
-(e.g., RELAP5-3D~\cite{relap5}) coupled with stochastic analysis tools (e.g., RAVEN~\cite{raven}).  
+(e.g., RELAP5-3D~\cite{relap5}) coupled with stochastic analysis tools (e.g., RAVEN~\cite{alfonsiEsrel2014}).  
 From a PRA point of view, this type of simulation can be described by using two sets of variables:
 \begin{itemize}
   \item $\boldsymbol c = \boldsymbol c(t)$ represents the status of components and systems of the simulator 
@@ -62,13 +62,13 @@ the simulator determine at each
 time step the temporal evolution of $\boldsymbol \theta (t)$. At the same time, the system control logic  
 determines the status of the system and components $\boldsymbol c(t)$.
  
-By using the RISMC approach, the PRA analysis is performed by~\cite{}:
+By using the RISMC approach, the PRA analysis is performed by~\cite{mandelliPSA2015}:
 \begin{enumerate}
   \item Associating a probabilistic distribution function (pdf) to the set of parameters 
         $\boldsymbol s$ (e.g., timing of events)
   \item Performing stochastic sampling of the pdfs defined in Step 1
   \item Performing a simulation run given $\boldsymbol s$ sampled in Step 2, i.e., solve the 
-        system of equations~\ref{??}
+        system of equations~\ref{eq:trajectory}
   \item Repeating Steps 2 and 3 $M$ times and evaluating user defined stochastic parameters such 
         as core damage (CD) probability ($P_{CD}$).
 \end{enumerate}
@@ -129,7 +129,7 @@ This criteria are determined by the analysis and might be backed up by a set of 
 
 \begin{figure}
     \centering
-    \centerline{\includegraphics[scale=0.5]{ET_LLOCA.pdf}} 
+    \centerline{\includegraphics[scale=0.6]{ET_LLOCA.pdf}} 
     \caption{Large LOCA ET.}
     \label{fig:LLOCA_ET}
 \end{figure}
@@ -163,7 +163,7 @@ In a classical PRA framework, the distribution of $T_B$ (i.e., $pdf_{A+B}(t)$) c
 determined by solving the convolution integral:   
 \begin{equation}
   pdf_{A+B}(t) = \int_{-\infty}^{\infty} pdf_B(t-\tau) pdf_A(\tau) d\tau
-  \label{eq:trajectory}
+  \label{eq:pdf_{A+B}}
 \end{equation}
 This convolution integral get more complex when accident progression include a large number of events and 
 system dynamics affect timing of events.

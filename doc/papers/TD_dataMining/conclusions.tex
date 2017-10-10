@@ -1,0 +1,54 @@
+\section{Conclusions}
+\label{sec:conclusions}
+
+This report summarizes the R&D activities performed during the FY2016 regarding 
+data mining to time-dependent data. We have structured this development to 
+leverage the existing RAVEN capabilities (i.e., data mining of static data) and 
+include new algorithms and methods ad-hoc to analyze time-dependent data.
+
+We have indicated several data analysis directions that can be employed to analyze 
+time-dependent data. It is important to highlight that these directions are not valid 
+only for RISMC type of applications. Regarding RISMC type of applications we have shown 
+several test cases that employed both analytical models but also nuclear industry codes 
+such as RELAP5-3D and MAAP.
+The objective of these test cases was to provide possible analysis direction when 
+dealing with nuclear transients. We have shown how it was possible to create a mapping 
+between:
+\begin{itemize}
+  \item simulation temporal profile
+  \item simulation outcome
+  \item timing and sequencing of events. 
+\end{itemize}
+
+This is the kind of information that is relevant from a PRA point of view (and thus 
+also a RISMC one).
+It is relevant to highlight that, even though it was not explicitly shown in this report, 
+such analysis methods and algorithms were successfully employed to detect and resolve 
+issues and errors located in the model and in the data generation step. 
+Some of these issues that could have not been detected with classical data analysis methods 
+were for example:
+\begin{itemize}
+  \item Erroneous implementation of the system dynamic (e.g., wrong simulation time step)
+  \item Erroneous implementation of the system control logic (e.g., wrong activation threshold 
+        of components)
+  \item Wrong implementation of the data management of the statistical framework during the 
+        data generation phase (e.g., Monte-Carlo sampling or Dynamic Event Tree)
+\end{itemize}
+
+Thus, such analysis greatly improved the quality and the understanding of the data generated. 
+Classical methods to perform data analysis would have not been able to reach such a level of 
+data exploration.
+In this report we have also shown how it was possible to measure reliability importance of 
+components in a simulation based PRA environment (such as RISMC). The analyses presented 
+in this report resemble the ones performed using risk-importance measures in a classical 
+PRA environment (such as SPAR models). In our case we focused the attention more the link 
+between timing/sequencing of events and sampled variables with simulation temporal profile 
+without explicitly considering any probabilistic type of information.
+In conclusion, the development of the RAVEN code during FY16 has provide precious capabilities 
+to the code itself in terms of time-dependent data mining that no other software product 
+(commercial or open-source) can offer. These capacities must be looked not only from a RISMC 
+(or in general simulation-based PRA) perspective but also to a more broad engineering 
+perspective that includes: scenario forecasting (predictive capabilities), code calibration 
+on time-dependent data etc. 
+
+

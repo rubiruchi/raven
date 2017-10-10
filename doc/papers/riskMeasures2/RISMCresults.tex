@@ -2,13 +2,7 @@
 \label{sec:RISMCanalysis}
 
 The Dynamic PRA analysis have been performed using RAVEN and RELAP5-3D and employing 
-both desktop and High Performing Computing (HPC) systems. The analyses performed for 
-Case 1 and 2 were different in structure and they are described in detail in 
-Sections~\label{sec:RISMC_1_analysis} and~\label{sec:RISMC_2_analysis} respectively.
-
-
-\section{Case 1 Analysis}
-\label{sec:RISMC_1_analysis}
+both desktop and High Performing Computing (HPC) systems. 
 
 Case 1 has been performed by following these steps:
 \begin{enumerate}
@@ -29,14 +23,14 @@ Case 1 has been performed by following these steps:
 	      (OK or CD) and maximum clad temperature given a combination of the six input 
 	      variables listed above
 	\item Perform a RAVEN analysis using the ROM determined in Step 2. The set of input 
-	      variables are the ones listed in Table~\ref{}: the 18 macro basic events defined also 
+	      variables are the ones listed in Table~\ref{tab:BE}: the 18 macro basic events defined also 
 	      in the SAPHIRE LLOCA ET/FT model. 
 	      In order to create a connection between the 18 sampled variables and the 6 input 
 	      variables of the ROM, a set of six RAVEN functions have been introduced in the analysis
 	      so that, for each combination of the 18 sampled variables, the corresponding combination
 	      of the six ROM input variables is determined.
 	      Since the sampled variables are discrete in nature (True or False, 0 or 1), all possible
-	      combinations (i.e., $2^18=262,144$) of the sampled variables have been simulated 
+	      combinations (i.e., $2^{18}=262,144$) of the sampled variables have been simulated 
 	      (using a Grid sampling strategy).
 	      Note that the outcome of each combination is determined by evaluating the ROM instead 
 	      of RELAP5-3D and, thus, computational time is strongly reduced. 
@@ -44,14 +38,27 @@ Case 1 has been performed by following these steps:
 	      measure for each sampled variable.
 \end{enumerate}
 
-\section{Case 2 Analysis}
-\label{sec:RISMC_2_analysis}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{rismc.pdf}
+    \caption{RAVEN/RELAP5-3D workflow overiew.}
+    \label{fig:rismc}
+\end{figure} 
 
-Case 2 has been performed by directly sampling RELAP5-3D using RAVEN without employing ROM. 
-In addition to the 18 stochastic variables listed in Table~\ref{} an additional set of time-dependent
-variables were added as indicated in Table~\ref{tab:case2NewVars}.
-In this case, a Monte-Carlo sampling strategy have been used and a total of XXX RELAP5-3D runs were 
-generated
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{rismc_ROM.pdf}
+    \caption{Detailed workflow of RAVEN/RELAP5-3D analysis.}
+    \label{fig:rismc_det}
+\end{figure} 
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{rismc_PP.pdf}
+    \caption{Data analysis of RAVEN/RELAP5-3D data sets.}
+    \label{fig:rismc_PP}
+\end{figure} 
+
 
 
 

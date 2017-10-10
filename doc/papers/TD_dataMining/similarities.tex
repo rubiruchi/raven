@@ -1,0 +1,77 @@
+\section{Measuring similarities}
+\label{sec:similarities}
+
+An important modeling choice when dealing with time series is the type of similarity 
+metric employed to measure similarity among time series: a distance metric. 
+Similarly to any distance metric defined in an euclidean space, 
+a distance metric $d(S,Q)$ between two time series $S$ and $Q$ must obey the following rules:
+\begin{equation}
+  \begin{cases}
+    d(S,S) = 0 \\
+    d(S,Q) = d(Q,S) \\ 
+    d(S,Q) = 0  \Longleftrightarrow  S=Q \\ 
+    d(S,Q) \leq d(S,K) + d(K,Q) 
+  \end{cases}
+  \label{eq:distanceRules}
+\end{equation}
+
+When dealing with time series, the two metrics are the most commonly used: Euclidean and 
+Dynamic Time Warping (DTW) distance. These distances are described in the next two subsections for
+the univariate case, i.e., two time series Q and S where their continuous part has $M=1$. 
+The more generic case, i.e., multivariate case, can be easily expanded from what is shown below.
+
+\subsection{Euclidean Distance}
+\label{sec:euclidean}
+
+Given two univariate time series S and Q having identical length (i.e., $T_S=T_Q$) the Euclidean 
+distance $d_2(S,Q)$ is defined as:
+\begin{equation}
+  d_2(S,Q) = \sqrt{ \sum_{t=0}^{T_s} (x_1^S(t)-x_1^Q(t))}
+  \label{eq:euclidean}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.3]{L2.pdf}
+    \caption{}
+    \label{fig:2Danalogy}
+\end{figure} 
+
+Note that this distance metric requires identical 
+
+\subsection{DTW Distance}
+\label{sec:dtw}
+
+
+This distance can be viewed as a natural extension of the Euclidean distance applied to time series~\cite{}. 
+Given two univariate time series $S$ and $Q$ having length $T_S$ and $T_Q$ respectively, the distance value 
+$d_DTW (S,Q)$ is calculated by following these two steps:
+\begin{enumerate}
+  \item Create a matrix $D=[d(i,j)]$ having dimensionality $T_S \times T_Q$ where each element of $D$ (see Fig.~\ref{} for 
+        the time series shown in Fig.~\ref{}) is calculated as $d(i,j)=(x_1^S[i]-x_1^Q[j])^2$ for
+        $i=1,\ldots,T_S$ and $j=1,\ldots,T_Q$.
+  \item Search a continuous path $w_k|_1^K$ in the matrix $D$ that, starting from $(i,j)=(0,0)$, it ends at 
+        $(i,j)=(T_S,T_Q)$ and it minimizes the sum of all the $K$ elements $w_k=(d(i,j))_k$ of this
+       path (see blue line in Fig.~\ref{}):
+      \begin{equation}
+        d_DTW(S,Q) = min⁡(\sum_{k=1}^{K} w_k)
+        \label{eq:dtw}
+      \end{equation}       
+       Each element of the path corresponds to a specific black segment in Fig.~\ref{}. This metric can capture 
+       similarities between time series that are shifted in time.
+\end{enumerate}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.25]{DTW_path.pdf}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.25]{DTW.pdf}
+  \end{subfigure}
+  \caption{.}
+  \label{fig:DTW}
+\end{figure}
+

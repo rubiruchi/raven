@@ -1,0 +1,170 @@
+\section{Data Mining}
+\label{sec:dataMining}
+
+Data mining is a fairly generic concept that entails the generation of information/knowledge 
+from data sets.  The process of generation of information/knowledge can be performed in various 
+ways depending on the type of application but it possible to classify all data analysis approaches 
+into four categories:
+\begin{itemize}
+  \item ROM: ROM algorithms aim to reduce to the complexity of the data by 
+        finding a mathematical objects that emulate the behavior of the data by learning its input/output 
+        relations and reconstructing such relations through a regression/interpolation based approach
+  \item Dimensionality reduction: this category includes all methods than aim to reduce the dimensionality 
+        of the data set and project the original data into a reduced space
+  \item Clustering: algorithms in this category partition the data based on a set of defined similarity measures
+  \item Data searching: identify the closest data point in a database given a reference point. Once that 
+        point has been found it is possible to infer properties of the reference point
+\end{itemize} 
+
+The range of applications that are of interest from an engineering point of view (and, hence, not 
+limited to a typical RISMC application) are the following:
+\begin{itemize}
+  \item Analysis of data input-output relationship: this is the most relevant application within the RISMC 
+        project, i.e., the identification of the connection between input parameters (which are stochastically 
+        sampled) and the full temporal profile of the simulation. Using the system of equation (??), we want 
+        to create a correlation between s and θ(t). While it is trivial to make a connection
+        between input sampled parameters and static output parameters, such as max clad temperature or 
+        average fluid speed, it gets tougher when we want to consider the full temporal profile of the 
+        simulation
+  \item Outlier identification: due to numerical limitations of system simulator codes (e.g., range of 
+        validity for correlations), the outcome of a subset of simulation runs may contain wrong results. 
+        When these limitations are reached, the temporal profile may contain anomalous behaviors. The
+        objective of data mining would be to identify these anomalous behaviors, i.e. outliers. This would 
+        dramatically increase the quality of the data being generated/analyzed
+  \item Diagnosis/prognosis: while this application is not referenced in detail in this work, it is worth 
+        highlighting that all data mining methods presented in this work can be used in an operating environment 
+        to assist reactor operators to assess plant conditions and possible plant evolutions
+        during an accident scenario. The basic idea would be use a large set of simulations generated for different 
+        accident conditions as a database with the objective to constantly match the actual plant status. 
+        Once a match has been established (i.e., a set of simulated scenarios match closely enough the actual and 
+        past plant status) the operators can now:
+        \begin{itemize}
+          \item identify the possible causes that is generating the abnormal behavior in the plant (diagnosis)
+          \item predict possible future evolutions of the accident scenarios (prognosis)
+        \end{itemize} 
+\end{itemize} 
+
+In order to maintain the same standard throughout the paper, we introduce here the set of mathematical symbols 
+and terminology. The types of data that are considered in this report are exclusively numerical data, i.e., 
+data which consists of numbers of any format (either integer or double)
+\footnote{This paper does not consider symbolic data sets, i.e., data which consists of symbols (e.g., text data)}. 
+Given this,
+we can represent a generic data set $\Xi$ as a collection of $N$ objects:
+\begin{equation}
+  \Xi = \{ H_1,\ldots,H_N \}  
+  \label{eq:collection}
+\end{equation}
+Each object $H_n$ $(n=1,\ldots,N)$ lies in a multi-dimensional space $\Pi$: $H_n \in \Pi$ and $\Xi \subset \Pi$. 
+From now on we will consider $\Pi$ 
+as a metric space~\cite{}: $\Pi$ is a space where it is possible to define an arbitrary distance function, i.e., a 
+metric.
+Since we are dealing with numerical data in a multi-dimensional space we can say that $\Xi \subset \mathbb{R}$ 
+where $D$ is the dimensionality of the space:
+\begin{equation}
+  H_n=[H_n^1,\ldots,H_n^d,\ldots,H_n^D ]
+  \label{eq:collection_upd}
+\end{equation}
+We indicate with $x^d  (d=1,\ldots,D)$ each coordinate $d$ of $\Xi \subset \mathbb{R}$. 
+Thus, each element $H_n^d$ of $H_n$ is the 
+$d$ coordinate, i.e. dimension $x^d (d=1,\ldots,D)$, of the data point $H_n$.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.3]{hier_1.png}
+    \label{fig:sub1}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.3]{hier_3.png}
+    \label{fig:ABsystem}
+  \end{subfigure}
+  \caption{Components A and B in a series configuration (left) and its associated Fault-Tree (right).}
+  \label{fig:ABsystem}
+\end{figure}
+
+\section{Clustering Algorithms}
+\label{sec:clusteringAlgorithms}
+
+From a mathematical viewpoint, clustering~\cite{SurveyClustering} aims is to find a partition
+\begin{math} \mathbf{C}=\{C_{1},\ldots,C_{l},\ldots,{C_{L}}\}\end{math}
+of $\Xi$ where each $C_{l}$ $(l=1,\ldots,L)$ is called a cluster. The partition
+    $ \mathbf{C} $ of $ \mathbf{X} $
+is such that:
+    \begin{equation}\label{eq: ClassRequier}
+        \begin{cases} \mathbf{C}_{l}\neq\varnothing, l=1,\ldots,L \\
+                        \\
+                     \bigcup_{l=1}^{L}\mathbf{C}_{l}= \Xi \\
+        \end{cases}
+    \end{equation}
+
+Even though the number of clustering algorithms available in the literature is large, usually the most 
+used ones when applied to time series are the following: Hierarchical~\cite{}, 
+K-Means~\cite{} and Mean-shift~\cite{}.
+Hierarchical algorithms build a hierarchical tree from the individual points (leaves) by progressively 
+merging them into clusters until all points are inside a single cluster (root). 
+Clustering algorithms such as K-Means and Mean-Shift, on the other hand, seek a single partition of 
+the data sets instead of a nested sequence of partitions obtained by hierarchical methodologies. 
+
+\subsection{Hierarchical}
+\label{sec:hierarchical}
+
+The hierarchical clustering is, along with the K-Means one (see Section~\ref{sec:kmeans}), the most basic 
+clustering algorithms available in literature. Hierarchical algorithms organize data into a 
+structure according to a proximity matrix in which each element $(j,k)$ is some measure of the 
+similarity (or distance) between the items to which row $j$ and column $k$ correspond. 
+Usually, the final result of these algorithms is a binary tree, also called dendrogram, 
+in which the root of the tree represents the whole data set and each leaf is a data point. 
+To show how hierarchical clustering works we will employ the data set pictured in 
+Figure~\ref{}, i.e., a data set containing about one hundred points in a 2-dimensional space. 
+
+Given a set of $N$ items to be clustered, and a $N \times N$ distance (or dissimilarity) matrix $\Delta$, 
+the basic steps 
+behind hierarchical clustering are the following:
+\begin{enumerate}
+  \item Assign each data point to a cluster, i.e., from $N$ data points, $N$ clusters are initialized, 
+        each cluster contains just one data point. The distances among each cluster is the same as the
+        distances between the data points they contain
+  \item Determine the closest pair of clusters and merge them into a single cluster
+  \item Determine the distances between the new cluster (obtained in Step 2) and the remaining clusters
+  \item Repeat steps 2 and 3 until all items are clustered into a single cluster of size $N$
+\end{enumerate}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.2]{hier_2.png}
+    \caption{}
+    \label{fig:2Danalogy}
+\end{figure}
+  
+\subsection{K-Means}
+\label{sec:kMeans}  
+  
+The K-Means algorithm~\cite{} is probably the most simple clustering algorithm. The basic idea is to 
+determine $K$ centers ($K$ is provided as an input variable) $\chi_k (k=1,\ldots,K)$: one center for each cluster.
+At the beginning these centers are placed randomly in the feature space. The  next  step is to take 
+each point of the data set and associate it to the nearest center $\chi_k$. At this point the centers $\chi_k$ 
+are re-calculated as average of the data points associated to $\chi_k$. This data points and centers average 
+step is repeated. As a result of this loop, the K centers change their location step by step until no 
+more changes are done or, in other words, centers do not move any more. 
+
+\subsection{Mean-Shift}
+\label{sec:meanShift}
+
+Mode-seeking approaches~\cite{} look at the density distribution of data points lying in a metric space. 
+Clusters are viewed as regions of the space with high point density separated by regions of low
+point density. Clusters can be identified by searching for regions of high density, called modes. 
+For the comparison a Mode-seeking algorithm referred to as the Mean-Shift.
+
+The Mean-Shift algorithm~\cite{} is a non-parametric iterative procedure that can be used to assign each 
+point to one cluster center through a set of local averaging operations. The local averaging operations 
+provide empirical cluster centers within the locality and define the vector which denotes the direction 
+of increase for the underlying unknown density function.
+
+The main idea is to consider each data point ??? of the dataset as an empirical 
+distribution density function, or kernel, $K(\vec{x})$ distributed in a multidimensional space where 
+regions with high data density (i.e., modes) correspond to local maxima of the multivariate kernel 
+density estimate $f_{I}(\vec{x})$ \cite{CacoullosEstimation} (see Fig.~\ref{fig:densityfunc}).
+
+
