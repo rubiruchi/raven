@@ -205,35 +205,52 @@ def historySnapShoots(valueDict, numberOfTimeStep):
     outDict.append(realizationSnap)
   return outDict
 
-# def historySetWindow(vars,numberOfTimeStep):
-#   """
-#     Method do to compute the temporal slices of each history
-#     @ In, vars, HistorySet, is an historySet
-#     @ In, numberOfTimeStep, int, number of time samples of each history
-#     @ Out, outDic, list, it contains the temporal slice of all histories
-#   """
-#
-#   outKeys = vars.getParaKeys('outputs')
-#   inpKeys = vars.getParaKeys('inputs')
-#
-#   outDic = []
-#
-#   for t in range(numberOfTimeStep):
-#     newVars={}
-#     for key in inpKeys+outKeys:
-#       newVars[key]=np.zeros(0)
-#
-#     hs = vars.getParametersValues('outputs')
-#     for history in hs:
-#       for key in inpKeys:
-#         newVars[key] = np.append(newVars[key],vars.getParametersValues('inputs')[history][key])
-#
-#       for key in outKeys:
-#         newVars[key] = np.append(newVars[key],vars.getParametersValues('outputs')[history][key][t])
-#
-#     outDic.append(newVars)
-#
-#   return outDic
+def variance_inflation_factor(exog, exog_idx):
+  '''variance inflation factor, VIF, for one exogenous variable
+
+  The variance inflation factor is a measure for the increase of the
+  variance of the parameter estimates if an additional variable, given by
+  exog_idx is added to the linear regression. It is a measure for
+  multicollinearity of the design matrix, exog.
+
+  One recommendation is that if VIF is greater than 5, then the explanatory
+  variable given by exog_idx is highly collinear with the other explanatory
+  variables, and the parameter estimates will have large standard errors
+  because of this.
+
+  Parameters
+  ----------
+  exog : ndarray, (nobs, k_vars)
+      design matrix with all explanatory variables, as for example used in
+      regression
+  exog_idx : int
+      index of the exogenous variable in the columns of exog
+
+  Returns
+  -------
+  vif : float
+      variance inflation factor
+
+  Notes
+  -----
+  This function does not save the auxiliary regression.
+
+  See Also
+  --------
+  xxx : class for regression diagnostics  TODO: doesn't exist yet
+
+  References
+  ----------
+  http://en.wikipedia.org/wiki/Variance_inflation_factor
+
+  '''
+  k_vars = exog.shape[1]
+  x_i = exog[:, exog_idx]
+  mask = np.arange(k_vars) != exog_idx
+  x_noti = exog[:, mask]
+  r_squared_i = OLS(x_i, x_noti).fit().rsquared
+  vif = 1. / (1. - r_squared_i)
+  return vif
 
 def normalizationFactors(values, mode='z'):
   """
