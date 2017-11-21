@@ -915,7 +915,10 @@ class BasicStatistics(PostProcessor):
         inpSamples = np.atleast_2d(np.asarray(list(input['targets'][f] for f in features if f!=target))).T
         useFeatures = list(f for f in features if f != target)
         #use regressor coefficients as sensitivity
-        regressDict = dict(zip(useFeatures, LinearRegression().fit(inpSamples,targetVals).coef_))
+        regressor = LinearRegression()
+        regressor.fit(inpSamples,targetVals)
+        r2 = 1. - np.float(regressor._residues) / (targetVals.size * targetVals.var())
+        regressDict = dict(zip(useFeatures, regressor.coef_))
         for f,feature in enumerate(features):
           calculations[metric][target][feature] = 1.0 if feature==target else regressDict[feature]
     #
