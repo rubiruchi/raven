@@ -109,6 +109,7 @@ class BasicStatistics(PostProcessor):
                        'kurtosis',
                        'samples']
     self.vectorVals = ['sensitivity',
+                       'sensitivityRidge',
                        'covariance',
                        'pearson',
                        'NormalizedSensitivity',
@@ -713,6 +714,12 @@ class BasicStatistics(PostProcessor):
     needed['expectedValue'].update(needed.get('variance',set()))
     needed['expectedValue'].update(needed.get('skewness',set()))
     needed['expectedValue'].update(needed.get('kurtosis',set()))
+    if 'sensitivityRidge' in needed.keys():
+      needed['pearson']['targets'].update(needed['sensitivityRidge']['targets'])
+      needed['pearson']['features'].update(needed['sensitivityRidge']['features'])    
+    if 'sensitivity' in needed.keys():
+      needed['pearson']['targets'].update(needed['sensitivity']['targets'])
+      needed['pearson']['features'].update(needed['sensitivity']['features'])
     if 'NormalizedSensitivity' in needed.keys():
       needed['expectedValue'].update(needed['NormalizedSensitivity']['targets'])
       needed['expectedValue'].update(needed['NormalizedSensitivity']['features'])
@@ -720,12 +727,16 @@ class BasicStatistics(PostProcessor):
       needed['covariance']['features'].update(needed['NormalizedSensitivity']['features'])
       needed['VarianceDependentSensitivity']['targets'].update(needed['NormalizedSensitivity']['targets'])
       needed['VarianceDependentSensitivity']['features'].update(needed['NormalizedSensitivity']['features'])
+      needed['pearson']['targets'].update(needed['NormalizedSensitivity']['targets'])
+      needed['pearson']['features'].update(needed['NormalizedSensitivity']['features'])      
     if 'pearson' in needed.keys():
       needed['covariance']['targets'].update(needed['pearson']['targets'])
       needed['covariance']['features'].update(needed['pearson']['features'])
     if 'VarianceDependentSensitivity' in needed.keys():
       needed['covariance']['targets'].update(needed['VarianceDependentSensitivity']['targets'])
       needed['covariance']['features'].update(needed['VarianceDependentSensitivity']['features'])
+      needed['pearson']['targets'].update(needed['VarianceDependentSensitivity']['targets'])
+      needed['pearson']['features'].update(needed['VarianceDependentSensitivity']['features'])      
     #
     # BEGIN actual calculations
     #
@@ -901,26 +912,6 @@ class BasicStatistics(PostProcessor):
           self.skipped[metric] = {}
         self.skipped[metric].update(needed[metric])
       return targets,features,skip
-
-    metric = 'sensitivity'
-    targets,features,skip = startVector(metric)
-    #NOTE sklearn expects the transpose of what we usually do in RAVEN, so #samples by #features
-    if not skip:
-      #for sensitivity matrix, we don't use numpy/scipy methods to calculate matrix operations,
-      #so we loop over targets and features
-      for t,target in enumerate(targets):
-        calculations[metric][target] = {}
-        targetVals = input['targets'][target]
-        #don't do self-sensitivity
-        inpSamples = np.atleast_2d(np.asarray(list(input['targets'][f] for f in features if f!=target))).T
-        useFeatures = list(f for f in features if f != target)
-        #use regressor coefficients as sensitivity
-        regressor = LinearRegression()
-        regressor.fit(inpSamples,targetVals)
-        r2 = 1. - np.float(regressor._residues) / (targetVals.size * targetVals.var())
-        regressDict = dict(zip(useFeatures, regressor.coef_))
-        for f,feature in enumerate(features):
-          calculations[metric][target][feature] = 1.0 if feature==target else regressDict[feature]
     #
     # covariance matrix
     #
@@ -1018,6 +1009,29 @@ class BasicStatistics(PostProcessor):
         for f,feature in enumerate(reducedParams):
           expValueRatio = calculations['expectedValue'][feature]/calculations['expectedValue'][param]
           calculations[metric][param][feature] = calculations['VarianceDependentSensitivity'][param][feature]*expValueRatio
+
+    metric = 'sensitivity'
+    targets,features,skip = startVector(metric)
+    #NOTE sklearn expects the transpose of what we usually do in RAVEN, so #samples by #features
+    if not skip:
+      #for sensitivity matrix, we don't use numpy/scipy methods to calculate matrix operations,
+      #so we loop over targets and features
+      for t,target in enumerate(targets):
+        calculations[metric][target] = {}
+        targetVals = input['targets'][target]
+        #don't do self-sensitivity
+        inpSamples = np.atleast_2d(np.asarray(list(input['targets'][f] for f in features if f!=target))).T
+        useFeatures = list(f for f in features if f != target)
+        #use regressor coefficients as sensitivity
+        regressor = LinearRegression()
+        regressor.fit(inpSamples,targetVals)
+        conditionNumber = np.linalg.cond(calculations['pearson']['matrix'])
+        if conditionNumber >=15.0:
+          self.raiseAWarning("condition number is > 15.0. This indicates that there are multicollinearity problems and the sensitivity coefficients might not be accurate.")
+        r2 = 1. - np.float(regressor._residues) / (targetVals.size * targetVals.var())
+        regressDict = dict(zip(useFeatures, regressor.coef_))
+        for f,feature in enumerate(features):
+          calculations[metric][target][feature] = 1.0 if feature==target else regressDict[feature]
 
     #collect only the requested calculations
     outputDict = {}
