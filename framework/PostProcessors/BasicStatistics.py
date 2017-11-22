@@ -1023,6 +1023,13 @@ class BasicStatistics(PostProcessor):
         inpSamples = np.atleast_2d(np.asarray(list(input['targets'][f] for f in features if f!=target))).T
         useFeatures = list(f for f in features if f != target)
         #use regressor coefficients as sensitivity
+        # compute with formulas from the theory
+        #yhat = model.predict(X)
+        #SS_Residual = sum((y-yhat)**2)
+        #SS_Total = sum((y-np.mean(y))**2)
+        #r_squared = 1 - (float(SS_Residual))/SS_Total
+        #adjusted_r_squared = 1 - (1-r_squared)*(len(y)-1)/(len(y)-X.shape[1]-1)
+        
         regressor = LinearRegression()
         regressor.fit(inpSamples,targetVals)
         conditionNumber = np.linalg.cond(calculations['pearson']['matrix'])
