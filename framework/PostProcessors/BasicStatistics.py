@@ -690,22 +690,22 @@ class BasicStatistics(PostProcessor):
           needed[metric]['features'].update(entry['features'])
       else:
         self.raiseAWarning('Unrecognized format for metric "'+metric+'!  Expected "set" or "dict" but got',type(params))
-    # variable                     | needs                  | needed for
-    # --------------------------------------------------------------------
-    # skewness needs               | expectedValue,variance |
-    # kurtosis needs               | expectedValue,variance |
-    # median needs                 |                        |
-    # percentile needs             |                        |
-    # maximum needs                |                        |
-    # minimum needs                |                        |
-    # covariance needs             |                        | pearson,VarianceDependentSensitivity,NormalizedSensitivity
-    # NormalizedSensitivity        | covariance,VarDepSens  |
-    # VarianceDependentSensitivity | covariance             | NormalizedSensitivity
-    # sensitivity needs            |                        |
-    # pearson needs                | covariance             |
-    # sigma needs                  | variance               | variationCoefficient
-    # variance                     | expectedValue          | sigma, skewness, kurtosis
-    # expectedValue                |                        | variance, variationCoefficient, skewness, kurtosis
+    # variable                     | needs                         | needed for
+    # ----------------------------------------------------------------------------------------------------------------
+    # skewness needs               | expectedValue,variance        |
+    # kurtosis needs               | expectedValue,variance        |
+    # median needs                 |                               |
+    # percentile needs             |                               |
+    # maximum needs                |                               |
+    # minimum needs                |                               |
+    # covariance needs             |                               | pearson,VarianceDependentSensitivity,NormalizedSensitivity
+    # NormalizedSensitivity        | covariance,VarDepSens,pearson |
+    # VarianceDependentSensitivity | covariance,pearson            | NormalizedSensitivity 
+    # sensitivity needs            | pearson                       |
+    # pearson needs                | covariance                    | (collinearity) sensitivity, VarianceDependentSensitivity, NormalizedSensitivity
+    # sigma needs                  | variance                      | variationCoefficient
+    # variance                     | expectedValue                 | sigma, skewness, kurtosis
+    # expectedValue                |                               | variance, variationCoefficient, skewness, kurtosis
     needed['sigma'].update(needed.get('variationCoefficient'))
     needed['variance'].update(needed.get('sigma',set()))
     needed['expectedValue'].update(needed.get('sigma',set()))
@@ -731,7 +731,7 @@ class BasicStatistics(PostProcessor):
     #
     calculations = {}
     # do things in order to preserve prereqs
-    # TODO many of these could be sped up through vectorization
+    # TODO many of these could be speed up through vectorization
     # TODO additionally, this could be done with less code duplication, probably
     #################
     # SCALAR VALUES #
