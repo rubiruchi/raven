@@ -33,7 +33,7 @@ from functools import reduce
 
 #Internal Modules------------------------------------------------------------------------------------
 from .ForwardSampler import ForwardSampler
-from utils import utils,randomUtils
+from utils import utils,randomUtils,InputData
 distribution1D = utils.find_distribution1D()
 #Internal Modules End--------------------------------------------------------------------------------
 
@@ -43,6 +43,42 @@ class MonteCarlo(ForwardSampler):
   """
     MONTE CARLO Sampler
   """
+
+  @classmethod
+  def getInputSpecification(cls):
+    """
+      Method to get a reference to a class that specifies the input data for
+      class cls.
+      @ In, cls, the class for which we are retrieving the specification
+      @ Out, inputSpecification, InputData.ParameterInput, class to use for
+        specifying input of cls.
+    """
+    inputSpecification = super(MonteCarlo, cls).getInputSpecification()
+
+    samplerInitInput = InputData.parameterInputFactory("samplerInit")
+    limitInput = InputData.parameterInputFactory("limit", contentType=InputData.IntegerType)
+    samplerInitInput.addSub(limitInput)
+    initialSeedInput = InputData.parameterInputFactory("initialSeed", contentType=InputData.IntegerType)
+    samplerInitInput.addSub(initialSeedInput)
+    distInitInput = InputData.parameterInputFactory("distInit", contentType=InputData.StringType)
+    distSubInput = InputData.parameterInputFactory("distribution")
+    distSubInput.addParam("name", InputData.StringType)
+    distSubInput.addSub(InputData.parameterInputFactory("initialGridDisc", contentType=InputData.IntegerType))
+    distSubInput.addSub(InputData.parameterInputFactory("tolerance", contentType=InputData.FloatType))
+
+    distInitInput.addSub(distSubInput)
+    samplerInitInput.addSub(distInitInput)
+    samplingTypeInput = InputData.parameterInputFactory("samplingType", contentType=InputData.StringType)
+    samplerInitInput.addSub(samplingTypeInput)
+    reseedEachIterationInput = InputData.parameterInputFactory("reseedEachIteration", contentType=InputData.StringType)
+    samplerInitInput.addSub(reseedEachIterationInput)
+
+
+    inputSpecification.addSub(samplerInitInput)
+
+    return inputSpecification
+
+
   def __init__(self):
     """
       Default Constructor that will initialize member variables with reasonable
@@ -55,18 +91,20 @@ class MonteCarlo(ForwardSampler):
     self.samplingType = None
     self.limit = None
 
-  def localInputAndChecks(self,xmlNode):
+  def localInputAndChecks(self,xmlNode, paramInput):
     """
       Class specific xml inputs will be read here and checked for validity.
       @ In, xmlNode, xml.etree.ElementTree.Element, The xml element node that will be checked against the available options specific to this Sampler.
+      @ In, paramInput, InputData.ParameterInput, the parsed parameters
       @ Out, None
     """
+    #TODO remove using xmlNode
     ForwardSampler.readSamplerInit(self,xmlNode)
-    if xmlNode.find('samplerInit') != None:
+    if paramInput.findFirst('samplerInit') != None:
       if self.limit is None:
         self.raiseAnError(IOError,self,'Monte Carlo sampler '+self.name+' needs the limit block (number of samples) in the samplerInit block')
-      if xmlNode.find('samplerInit').find('samplingType')!= None:
-        self.samplingType = xmlNode.find('samplerInit').find('samplingType').text
+      if paramInput.findFirst('samplerInit').findFirst('samplingType')!= None:
+        self.samplingType = paramInput.findFirst('samplerInit').findFirst('samplingType').value
         if self.samplingType not in ['uniform']:
           self.raiseAnError(IOError,self,'Monte Carlo sampler '+self.name+': specified type of samplingType is not recognized. Allowed type is: uniform')
       else:
@@ -113,6 +151,7 @@ class MonteCarlo(ForwardSampler):
           self.inputInfo['SampledVarsPb'][key] = self.distDict[key].pdf(rvsnum)
           for kkey in varID.strip().split(','):
             self.values[kkey] = np.atleast_1d(rvsnum)[0]
+            self.inputInfo['ProbabilityWeight-' +kkey.strip()] = 1.
       elif totDim > 1:
         if reducedDim == 1:
           if self.samplingType is None:
@@ -133,6 +172,7 @@ class MonteCarlo(ForwardSampler):
             varDim = var[varID]
             for kkey in varID.strip().split(','):
               self.values[kkey] = np.atleast_1d(rvsnum)[varDim-1]
+              self.inputInfo['ProbabilityWeight-' +kkey.strip()] = 1.
       else:
         self.raiseAnError(IOError,"Total dimension for given distribution should be >= 1")
 
@@ -141,7 +181,10 @@ class MonteCarlo(ForwardSampler):
       if self.samplingType == 'uniform':
         self.inputInfo['ProbabilityWeight'  ] = weight
       else:
-        self.inputInfo['ProbabilityWeight' ] = 1.0 #MC weight is 1/N => weight is one
+        self.inputInfo['ProbabilityWeight' ] = 1. #MC weight is 1/N => weight is one
+
+    # reassign SampledVarsPb to fully correlated variables
+    self._reassignSampledVarsPbToFullyCorrVars()
     self.inputInfo['SamplerType'] = 'MonteCarlo'
 
   def _localHandleFailedRuns(self,failedRuns):
