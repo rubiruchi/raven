@@ -301,19 +301,9 @@ class ETImporter(PostProcessor):
       newRows = self.constructPointDFS(node, variables, values, etMap, pointSet, rowCounter)
       rowCounter += newRows
     outputDict = {}
-<<<<<<< HEAD
-    outputDict['inputs'] = {}
-    outputDict['outputs'] = {}
-    for index, var in enumerate(variables):
-      outputDict['inputs'][var] = pointSet[:, index]
-    outputDict['outputs']['sequence'] = pointSet[:, -1]
-=======
-    #outputDict['inputs'] = {}
-    #outputDict['outputs'] = {}
     for index, var in enumerate(variables):
       outputDict[var] = pointSet[:, index]
     outputDict['sequence'] = pointSet[:, -1]
->>>>>>> dataobject-rework
 
     return outputDict, variables
 
