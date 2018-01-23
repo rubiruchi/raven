@@ -28,12 +28,9 @@
 
     <PostProcessor name="DNBR" subType="BasicStatistics">
         <pivotParameter>time</pivotParameter>
-        <expectedValue>
-           cntrlvar_106
-        </expectedValue>
+        <expectedValue prefix="mean">cntrlvar_106</expectedValue>
     </PostProcessor> 
   </Models>
-
 
   <Distributions>
     <Normal name="power_2022">
@@ -57,31 +54,31 @@
 
   <Steps>
     <MultiRun name="testDummyStep" re-seeding="1">
-      <Input class="Files" type="">dummy.i</Input>
-      <Model class="Models" type="Code">MyRELAP</Model>
-      <Sampler class="Samplers" type="MonteCarlo">MC_samp</Sampler>
-      <Output class="Databases" type="HDF5">DataB_REL5_1</Output>
-      <Output class="DataObjects" type="PointSet" >samples</Output>
-      <Output class="DataObjects" type="HistorySet" >histories</Output>
-      <Output class="OutStreams" type="Print">test_dump</Output>
+      <Input   class="Files"       type=""            >dummy.i</Input>
+      <Model   class="Models"      type="Code"        >MyRELAP</Model>
+      <Sampler class="Samplers"    type="MonteCarlo"  >MC_samp</Sampler>
+      <Output  class="Databases"   type="HDF5"        >DataB_REL5_1</Output>
+      <Output  class="DataObjects" type="PointSet"    >samples</Output>
+      <Output  class="DataObjects" type="HistorySet"  >histories</Output>
+      <Output  class="OutStreams"  type="Print"       >test_dump</Output>
     </MultiRun>
     <IOStep name="io_test" pauseAtEnd="True">
-      <Input class="DataObjects" type="PointSet">samples</Input>
-      <Input class="DataObjects" type="HistorySet">histories</Input>
-      <Output class="OutStreams" type="Plot" >historyPlot</Output>
+      <Input  class="DataObjects"  type="PointSet"    >samples</Input>
+      <Input  class="DataObjects"  type="HistorySet"  >histories</Input>
+      <Output class="OutStreams"   type="Plot"        >historyPlot</Output>
     </IOStep>    
     <PostProcess name="syncronizeHistorySetStep" pauseAtEnd="True">
-      <Input class="DataObjects" type="HistorySet">histories</Input>
-      <Model class="Models" type="PostProcessor">syncronizeHistorySet</Model>
-      <Output class="DataObjects" type="HistorySet">HistorySetPostProcTestSyncronized</Output>
-      <Output class="OutStreams" type="Print">historiesSetPostProc_dump</Output>
-      <Output class="OutStreams" type="Print">historiesSetSyncronized_dump</Output>
+      <Input  class="DataObjects"  type="HistorySet"    >histories</Input>
+      <Model  class="Models"       type="PostProcessor" >syncronizeHistorySet</Model>
+      <Output class="DataObjects"  type="HistorySet"    >HistorySetPostProcTestSyncronized</Output>
+      <Output class="OutStreams"   type="Print"         >historiesSetPostProc_dump</Output>
+      <Output class="OutStreams"   type="Print"         >historiesSetSyncronized_dump</Output>
     </PostProcess>    
     <PostProcess name="post_proc" pauseAtEnd="True">
-      <Input class="DataObjects" type="HistorySet">HistorySetPostProcTestSyncronized</Input>
-      <Model class="Models" type="PostProcessor">DNBR</Model>
-      <Output class="Files" type="">outputDataMChistory.csv</Output>
-      <Output class="Files" type="">outputDataMChistory.xml</Output>
+      <Input  class="DataObjects" type="HistorySet"     >HistorySetPostProcTestSyncronized</Input>
+      <Model  class="Models"      type="PostProcessor"  >DNBR</Model>
+      <Output class="Files"       type=""               >outputDataMChistory.csv</Output>
+      <Output class="Files"       type=""               >outputDataMChistory.xml</Output>
     </PostProcess>    
   </Steps>
 
@@ -96,10 +93,16 @@
     <HistorySet name="histories">
       <Input>20220000:4</Input>
       <Output>time,cntrlvar_106</Output>
+      <options>
+        <pivotParameter>time</pivotParameter>
+      </options>
     </HistorySet>
     <HistorySet name="HistorySetPostProcTestSyncronized">
       <Input>20220000:4</Input>
       <Output>time,cntrlvar_106</Output>
+      <options>
+        <pivotParameter>time</pivotParameter>
+      </options>
     </HistorySet>
   </DataObjects>
 
@@ -112,7 +115,7 @@
         <type>csv</type>
         <source> histories </source>
     </Print>
- <Print name="test_dump">
+    <Print name="test_dump">
          <type>csv</type>
          <source> histories </source>
      </Print>

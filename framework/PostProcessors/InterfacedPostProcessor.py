@@ -196,3 +196,4 @@ class InterfacedPostProcessor(PostProcessor):
       self.raiseAnError(RuntimeError, "No available output to collect (run possibly not finished yet)")
     evaluation = evaluations[1]
     output.load(evaluation['data'], style='dict', dims=evaluation['dims'])
+    output.addVariable('ProbabilityWeight',evaluation['data']['ProbabilityWeight'],classify='meta')
