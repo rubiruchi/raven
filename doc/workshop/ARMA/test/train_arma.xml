@@ -1,0 +1,69 @@
+<Simulation verbosity="debug" color="true">
+  <RunInfo>
+    <WorkingDir>rundir</WorkingDir>
+    <Sequence>readInData,typicalHistory,train,serialize</Sequence>
+  </RunInfo>
+
+  <Steps>
+    <IOStep name="readInData">
+      <Input  class="Files"       type=""             >rawDataFile</Input>
+      <Output class="DataObjects" type="HistorySet"   >raw_data</Output>
+    </IOStep>
+    <PostProcess name="typicalHistory">
+      <Input  class='DataObjects' type='HistorySet'   >raw_data</Input>
+      <Model  class='Models'      type='PostProcessor'>TypicalHistoryPP</Model>
+      <Output class='DataObjects' type='HistorySet'   >typical_data</Output>
+    </PostProcess>
+    <RomTrainer name="train">
+      <Input  class="DataObjects" type="HistorySet"   >typical_data</Input>
+      <Output class="Models"      type="ROM"          >ARMA</Output>
+    </RomTrainer>
+    <IOStep name="serialize">
+      <Input  class="Models"      type="ROM"          >ARMA</Input>
+      <Output class="Files"       type=""             >romfile</Output>
+    </IOStep>
+  </Steps>
+
+  <DataObjects>
+    <HistorySet name="raw_data">
+      <Input>scaling</Input>
+      <Output>Speed</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+    <HistorySet name="typical_data">
+      <Input>scaling</Input>
+      <Output>Speed</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+  </DataObjects>
+
+  <Files>
+    <Input name="rawDataFile">../raw_data/raw_data.csv</Input>
+    <Input name="romfile">ARMA_W.pk</Input>
+  </Files>
+
+  <Models>
+    <PostProcessor name="TypicalHistoryPP" subType="InterfacedPostProcessor">
+      <method>TypicalHistoryFromHistorySet</method>
+      <subseqLen>86400</subseqLen> <!-- 1 day -->
+      <outputLen>604800</outputLen> <!-- 1 week -->
+      <pivotParameter>Time</pivotParameter>
+    </PostProcessor>
+    <ROM name="ARMA" subType="ARMA">
+      <Target>Speed,Time</Target>
+      <Features>scaling</Features>
+      <pivotParameter>Time</pivotParameter>
+      <Pmax>2</Pmax>
+      <Pmin>2</Pmin>
+      <Qmax>1</Qmax>
+      <Qmin>1</Qmin>
+      <outTruncation>positive</outTruncation>
+      <Fourier>604800,86400</Fourier>
+      <FourierOrder>2,2</FourierOrder>
+    </ROM>
+  </Models>
+</Simulation>
