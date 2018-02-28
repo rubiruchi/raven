@@ -1,0 +1,77 @@
+<Simulation color="true">
+  <RunInfo>
+    <WorkingDir>rundir</WorkingDir>
+    <!-- TODO fill in the Sequence -->
+    <Sequence></Sequence>
+  </RunInfo>
+
+  <Steps>
+    <IOStep name="readInData">
+      <Input  class="Files"       type=""             ><!-- TODO replace with raw data file name --></Input>
+      <Output class="DataObjects" type="HistorySet"   >raw_data</Output>
+    </IOStep>
+    <PostProcess name="typicalHistory">
+      <Input  class='DataObjects' type='HistorySet'   >raw_data</Input>
+      <Model  class='Models'      type='PostProcessor'>TypicalHistoryPP</Model>
+      <Output class='DataObjects' type='HistorySet'   >typical_data</Output>
+    </PostProcess>
+    <RomTrainer name="train">
+      <Input  class="DataObjects" type="HistorySet"   >typical_data</Input>
+      <Output class="Models"      type="ROM"          >ARMA</Output>
+    </RomTrainer>
+    <IOStep name="serialize">
+      <Input  class="Models"      type="ROM"          >ARMA</Input>
+      <Output class="Files"       type=""             ><!-- TODO replace with serialized ROM file name --></Output>
+    </IOStep>
+  </Steps>
+
+  <DataObjects>
+    <HistorySet name="raw_data">
+      <!-- TODO fill in the Input, Output, and pivotParameter -->
+      <Input></Input>
+      <Output></Output>
+      <options>
+        <pivotParameter></pivotParameter>
+      </options>
+    </HistorySet>
+    <HistorySet name="typical_data">
+      <!-- TODO fill in the Input, Output, and pivotParameter -->
+      <Input></Input>
+      <Output></Output>
+      <options>
+        <pivotParameter></pivotParameter>
+      </options>
+    </HistorySet>
+  </DataObjects>
+
+  <Files>
+    <!-- TODO fill in the name for this data file -->
+    <Input name="">../raw_data/raw_data.csv</Input>
+    <!-- TODO fill in the name and location for the serialized ROM -->
+    <Input name=""></Input>
+  </Files>
+
+  <Models>
+    <PostProcessor name="TypicalHistoryPP" subType="InterfacedPostProcessor">
+      <method>TypicalHistoryFromHistorySet</method>
+      <!-- TODO fill in the subseqLen, outputLen, pivotParameter-->
+      <subseqLen></subseqLen>
+      <outputLen></outputLen>
+      <pivotParameter></pivotParameter>
+    </PostProcessor>
+    <ROM name="ARMA" subType="ARMA">
+      <!-- TODO fill in the Target, Features, and pivotParameter -->
+      <Target></Target>
+      <Features></Features>
+      <pivotParameter></pivotParameter>
+      <Pmax>2</Pmax>
+      <Pmin>2</Pmin>
+      <Qmax>1</Qmax>
+      <Qmin>1</Qmin>
+      <outTruncation>positive</outTruncation>
+      <Fourier>604800,86400</Fourier>
+      <FourierOrder>2,2</FourierOrder>
+    </ROM>
+  </Models>
+
+</Simulation>

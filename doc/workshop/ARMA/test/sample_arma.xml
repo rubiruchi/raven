@@ -1,0 +1,144 @@
+<Simulation verbosity="debug" color="true">
+  <RunInfo>
+    <WorkingDir>rundir</WorkingDir>
+    <Sequence>load,sample,output,stats,outstats</Sequence>
+    <batchSize>12</batchSize>
+    <maxQueueSize>20</maxQueueSize>
+  </RunInfo>
+
+  <Steps>
+    <IOStep name="load">
+      <Input   class="Files"       type=""            >romfile</Input>
+      <Output  class="Models"      type="ROM"         >rom</Output>
+    </IOStep>
+    <MultiRun name="sample">
+      <Input   class='DataObjects' type='PointSet'    >placeholder</Input>
+      <Model   class='Models'      type='ROM'         >rom</Model>
+      <Sampler class='Samplers'    type='MonteCarlo'  >mc</Sampler>
+      <Output  class='DataObjects' type='HistorySet'  >samples</Output>
+    </MultiRun>
+    <IOStep name="output" pauseAtEnd="True">
+      <Input  class="DataObjects" type="HistorySet"   >samples</Input>
+      <Output class="OutStreams"  type="Print"        >samples_dump</Output>
+      <Output class="OutStreams"  type="Plot"         >samples_plot</Output>
+    </IOStep>
+    <PostProcess name="stats">
+      <Input  class="DataObjects" type="HistorySet"   >samples</Input>
+      <Model  class="Models"      type="PostProcessor">stats_calc</Model>
+      <Output class="DataObjects" type="HistorySet"   >stats</Output>
+    </PostProcess>
+    <IOStep name="outstats" pauseAtEnd="True">
+      <Input  class="DataObjects" type="HistorySet"   >stats</Input>
+      <Output class="OutStreams"  type="Print"        >stats_out</Output>
+      <Output class="OutStreams"  type="Plot"         >stats_plot</Output>
+    </IOStep>
+  </Steps>
+
+  <DataObjects>
+    <PointSet name="placeholder">
+      <Input>scaling</Input>
+      <Output>OutputPlaceHolder</Output>
+    </PointSet>
+    <HistorySet name="samples">
+      <Input>scaling</Input>
+      <Output>Speed</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+    <HistorySet name="stats">
+      <Output>mean_Speed,percentile_5_Speed,percentile_95_Speed</Output>
+      <options>
+        <pivotParameter>Time</pivotParameter>
+      </options>
+    </HistorySet>
+  </DataObjects>
+
+  <Files>
+    <Input name="romfile">ARMA_W.pk</Input>
+  </Files>
+
+  <Samplers>
+    <MonteCarlo name="mc">
+      <samplerInit>
+        <limit>50</limit>
+        <initialSeed>31415</initialSeed>
+      </samplerInit>
+      <constant name='scaling'>1</constant>
+    </MonteCarlo>
+  </Samplers>
+
+  <Models>
+    <ROM name="rom" subType="pickledROM"/>
+    <PostProcessor name="stats_calc" subType="BasicStatistics">
+      <percentile percent='5' prefix='percentile'>Speed</percentile>
+      <percentile percent='95' prefix='percentile'>Speed</percentile>
+      <expectedValue prefix='mean'>Speed</expectedValue>
+      <pivotParameter>Time</pivotParameter>
+    </PostProcessor>
+  </Models>
+
+  <OutStreams>
+    <Print name="samples_dump">
+      <type>csv</type>
+      <source>samples</source>
+    </Print>
+    <Print name="stats_out">
+      <type>csv</type>
+      <source>stats</source>
+      <what>input,output</what>
+    </Print>
+    <Plot name="samples_plot">
+      <plotSettings>
+        <plot>
+          <type>line</type>
+          <x>samples|Output|Time</x>
+          <y>samples|Output|Speed</y>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+      </plotSettings>
+      <actions>
+        <how>screen,png</how>
+      </actions>
+    </Plot>
+    <Plot name="stats_plot">
+      <plotSettings>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|mean_Speed</y>
+          <kwargs>
+            <label>mean</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|percentile_5_Speed</y>
+          <kwargs>
+            <label>5 pct</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+        <plot>
+          <type>line</type>
+          <x>stats|Output|Time</x>
+          <y>stats|Output|percentile_95_Speed</y>
+          <kwargs>
+            <label>95 pct</label>
+          </kwargs>
+          <interpPointsX>604800</interpPointsX>
+        </plot>
+        <xlabel>Time (s) (1 week)</xlabel>
+        <ylabel>Wind Speed</ylabel>
+        <legend>
+          <loc>best</loc>
+        </legend>
+      </plotSettings>
+      <actions>
+        <how>screen,png</how>
+      </actions>
+    </Plot>
+  </OutStreams>
+</Simulation>
