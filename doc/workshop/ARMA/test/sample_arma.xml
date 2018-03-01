@@ -1,9 +1,10 @@
 <Simulation verbosity="debug" color="true">
   <RunInfo>
     <WorkingDir>rundir</WorkingDir>
-    <Sequence>load,sample,output,stats,outstats</Sequence>
+    <Sequence>load,sample,output</Sequence>
+    <!--<Sequence>load,sample,output,stats,outstats</Sequence>
     <batchSize>12</batchSize>
-    <maxQueueSize>20</maxQueueSize>
+    <maxQueueSize>20</maxQueueSize>-->
   </RunInfo>
 
   <Steps>
@@ -61,7 +62,7 @@
   <Samplers>
     <MonteCarlo name="mc">
       <samplerInit>
-        <limit>50</limit>
+        <limit>3</limit>
         <initialSeed>31415</initialSeed>
       </samplerInit>
       <constant name='scaling'>1</constant>
