@@ -1484,7 +1484,7 @@ class DataSet(DataObject):
       self.raiseAWarning('Tried to read data from "{}", but the file is empty!'.format(fname+'.csv'))
       return
     else:
-      self.raiseADebug('Reading data from "{}.csv"'.format(fname))
+      self.raiseADebug('Reading data from "{}"'.format(fname))
     # check for NaN contents -> this isn't allowed in RAVEN currently, although we might need to change this for ND
     if (not nullOK) and (pd.isnull(df).values.sum() != 0):
       bad = pd.isnull(df).any(1).nonzero()[0][0]
