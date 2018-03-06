@@ -1,36 +1,15 @@
 <?xml version="1.0" ?>
 <Simulation verbosity="debug">
-  <TestInfo>
-    <name>framework/Optimizers.Stochastic</name>
-    <author>talbpaul</author>
-    <created>2017-06-14</created>
-    <classesTested>Optimizer.SPSA</classesTested>
-    <description>
-      This test runs the optimization on a inverse parabola with signal-to-noise ratio close to 1.0 using
-      multiple gradient evaluations to denoise the response space.  It tests stochastic optimization mechanics.
-      Also tests having other response variables in SolutionExport besides the objective variable.
-    </description>
-    <analytic>
-      This tests uses the inverse parabola as a basis for the noisy optimization. The inverse parabola is documented
-      in the analytic tests, and has an average optimal max point at $x=0$.
-    </analytic>
-    <revisions>
-      <revision author="talbpaul" date="2017-05-14">creation</revision>
-      <revision author="talbpaul" date="2017-07-11">changed model for simpler analytic checking</revision>
-      <revision author="talbpaul" date="2017-07-18">added additional model output for testing mechanics</revision>
-      <revision author="talbpaul" date="2018-01-04">siwtched from snapshot to writeSteps final</revision>
-    </revisions>
-  </TestInfo>
 
   <RunInfo>
-    <WorkingDir>Stochastic</WorkingDir>
+    <WorkingDir>OptimizerWorkingDirectory</WorkingDir>
     <Sequence>optimize,print</Sequence>
-    <batchSize>1</batchSize>
+    <batchSize>8</batchSize>
   </RunInfo>
 
   <Steps>
     <MultiRun name="optimize">
-      <Input class="DataObjects" type="PointSet">dummyIN</Input>
+      <Input class="DataObjects" type="PointSet">inputPlaceHolder</Input>
       <Model class="Models" type="ExternalModel">parabola</Model>
       <Optimizer class="Optimizers" type="SPSA">opter</Optimizer>
       <SolutionExport class="DataObjects" type="PointSet">opt_export</SolutionExport>
@@ -38,7 +17,9 @@
     </MultiRun>
     <IOStep name="print" pauseAtEnd="True">
       <Input class="DataObjects" type="HistorySet">opt_export</Input>
-      <Output class="OutStreams" type="Print">opt_export</Output>
+      <Output class="OutStreams" type="Print">opt_export_spsa</Output>
+      <Output class="OutStreams" type="Plot">optimization_history_input_space_spsa</Output>
+      <Output class="OutStreams" type="Plot">optimization_history_iterations_spsa</Output>
     </IOStep>
   </Steps>
 
@@ -48,53 +29,87 @@
         <limit>2000</limit>
         <initialSeed>42</initialSeed>
         <type>max</type>
-        <writeSteps>final</writeSteps>
+        <writeSteps>every</writeSteps>
       </initialization>
       <TargetEvaluation class="DataObjects" type="PointSet">optOut</TargetEvaluation>
       <convergence>
-        <gradientThreshold>1e-3</gradientThreshold>
+        <gradientThreshold>5e-3</gradientThreshold>
+        <relativeThreshold>1.e-3</relativeThreshold>
         <gainGrowthFactor>1.5</gainGrowthFactor>
         <gainShrinkFactor>1.25</gainShrinkFactor>
       </convergence>
       <variable name="x">
-        <upperBound>1</upperBound>
-        <lowerBound>-1</lowerBound>
-        <initial>-0.75</initial>
+          <upperBound>1</upperBound>
+          <lowerBound>-1</lowerBound>
+          <initial>-0.75</initial>
       </variable>
       <objectVar>ans</objectVar>
       <parameter>
-        <numGradAvgIterations>26</numGradAvgIterations>
+        <numGradAvgIterations>29</numGradAvgIterations>
       </parameter>
     </SPSA>
   </Optimizers>
 
   <Models>
-    <Dummy name="MyDummy" subType=""/>
     <ExternalModel ModuleToLoad="stoch_parabola" name="parabola" subType="">
-      <variables>x,ans,reg</variables>
+      <variables>x,ans</variables>
     </ExternalModel>
   </Models>
 
   <DataObjects>
-    <PointSet name="dummyIN">
+    <PointSet name="inputPlaceHolder">
       <Input>x</Input>
-      <Output>OutputPlaceHolder</Output>
     </PointSet>
     <PointSet name="optOut">
       <Input>x</Input>
-      <Output>ans,reg</Output>
+      <Output>ans</Output>
     </PointSet>
     <PointSet name="opt_export">
       <Input>trajID</Input>
-      <Output>x,ans,reg,varsUpdate</Output>
+      <Output>x,ans,varsUpdate</Output>
     </PointSet>
   </DataObjects>
 
   <OutStreams>
-    <Print name="opt_export">
+    <Print name="opt_export_spsa">
       <type>csv</type>
       <source>opt_export</source>
     </Print>
+    <Plot   name="optimization_history_input_space_spsa" overwrite="true" >
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>opt_export|Output|x</x>
+          <y>opt_export|Output|ans</y>
+        </plot>
+        <xlabel>x</xlabel>
+        <ylabel>ans</ylabel>
+      </plotSettings>
+      <actions>
+        <how>png</how>
+        <title>
+          <text> </text>
+        </title>
+      </actions>
+    </Plot>
+    <Plot   name="optimization_history_iterations_spsa" overwrite="true" >
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>opt_export|Output|varsUpdate</x>
+          <y>opt_export|Output|ans</y>
+        </plot>
+        <xlabel>iteration #</xlabel>
+        <ylabel>ans</ylabel>
+      </plotSettings>
+      <actions>
+        <how>png</how>
+        <title>
+          <text> </text>
+        </title>
+      </actions>
+    </Plot>
+    
   </OutStreams>
 
 </Simulation>

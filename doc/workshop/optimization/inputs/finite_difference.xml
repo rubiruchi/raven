@@ -1,39 +1,25 @@
 <?xml version="1.0" ?>
 <Simulation verbosity="debug">
-  <TestInfo>
-    <name>framework/Optimizers.BealeFiniteDifference</name>
-    <author>alfoa</author>
-    <created>2017-09-11</created>
-    <classesTested>Optimizer.FiniteDifferenceGradientOptimizer</classesTested>
-    <description>
-      This test runs the optimization (Finite difference forward) on Beale's function.  It tests analytic optimization values
-      as well as the mechanical operation of the Finite Difference optimizer.     </description>
-    <analytic>
-      This test uses Beale's function, which is documented in the analytic tests documentation under
-      the Optimizer functions section.
-    </analytic>
-    <revisions>
-      <revision author="talbpaul" date="2018-01-04">switch from snapshot to writeSteps final</revision>
-    </revisions>
-  </TestInfo>
 
   <RunInfo>
-    <WorkingDir>BealeFiniteDifference</WorkingDir>
+    <WorkingDir>OptimizerWorkingDirectory</WorkingDir>
     <Sequence>optimize,print</Sequence>
     <batchSize>1</batchSize>
   </RunInfo>
 
   <Steps>
     <MultiRun name="optimize">
-      <Input class="DataObjects" type="PointSet">dummyIN</Input>
-      <Model class="Models" type="ExternalModel">beale</Model>
-      <Optimizer class="Optimizers" type="FiniteDifferenceGradientOptimizer">opter</Optimizer>
+      <Input          class="DataObjects" type="PointSet">inputPlaceHolder</Input>
+      <Model          class="Models"      type="ExternalModel">beale</Model>
+      <Optimizer      class="Optimizers"  type="FiniteDifferenceGradientOptimizer">opter</Optimizer>
       <SolutionExport class="DataObjects" type="PointSet">opt_export</SolutionExport>
-      <Output class="DataObjects" type="PointSet">optOut</Output>
+      <Output         class="DataObjects" type="PointSet">optOut</Output>
     </MultiRun>
     <IOStep name="print" pauseAtEnd="True">
-      <Input class="DataObjects" type="PointSet">opt_export</Input>
-      <Output class="OutStreams" type="Print">opt_export</Output>
+      <Input class="DataObjects" type="HistorySet">opt_export</Input>
+      <Output class="OutStreams" type="Print">opt_export_fd</Output>
+      <Output class="OutStreams" type="Plot">optimization_history_input_space_fd</Output>
+      <Output class="OutStreams" type="Plot">optimization_history_iterations_fd</Output>
     </IOStep>
   </Steps>
 
@@ -41,25 +27,27 @@
     <FiniteDifferenceGradientOptimizer name="opter">
       <initialization>
         <limit>2000</limit>
+        <type>min</type>
         <initialSeed>42</initialSeed>
         <thresholdTrajRemoval>1e-5</thresholdTrajRemoval>
-        <writeSteps>final</writeSteps>
+        <writeSteps>every</writeSteps>
       </initialization>
       <TargetEvaluation class="DataObjects" type="PointSet">optOut</TargetEvaluation>
       <convergence>
         <gradientThreshold>1e-1</gradientThreshold>
+        <relativeThreshold>1e-7</relativeThreshold>
         <gainGrowthFactor>1.5</gainGrowthFactor>
         <gainShrinkFactor>1.25</gainShrinkFactor>
       </convergence>
       <variable name="x">
-        <upperBound>4.5</upperBound>
-        <lowerBound>-4.5</lowerBound>
-        <initial>3,0</initial>
+          <upperBound>4.5</upperBound>
+          <lowerBound>-4.5</lowerBound>
+          <initial>3.0</initial>
       </variable>
       <variable name="y">
-        <upperBound>4.5</upperBound>
-        <lowerBound>-4.5</lowerBound>
-        <initial>0,0</initial>
+          <upperBound>4.5</upperBound>
+          <lowerBound>-4.5</lowerBound>
+          <initial>0.1</initial>
       </variable>
       <objectVar>ans</objectVar>
     </FiniteDifferenceGradientOptimizer>
@@ -67,15 +55,14 @@
 
   <Models>
     <Dummy name="MyDummy" subType=""/>
-    <ExternalModel ModuleToLoad="../../../framework/AnalyticModels/optimizing/beale" name="beale" subType="">
+    <ExternalModel ModuleToLoad="beale" name="beale" subType="">
       <variables>x,y,ans</variables>
     </ExternalModel>
   </Models>
 
   <DataObjects>
-    <PointSet name="dummyIN">
+    <PointSet name="inputPlaceHolder">
       <Input>x,y</Input>
-      <Output>OutputPlaceHolder</Output>
     </PointSet>
     <PointSet name="optOut">
       <Input>x,y</Input>
@@ -88,10 +75,53 @@
   </DataObjects>
 
   <OutStreams>
-    <Print name="opt_export">
+    <Print name="opt_export_fd">
       <type>csv</type>
       <source>opt_export</source>
     </Print>
+    <Plot   name="optimization_history_input_space_fd" overwrite="true" >
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>opt_export|Output|x</x>
+          <y>opt_export|Output|y</y>
+          <z>opt_export|Output|ans</z>
+        </plot>
+        <xlabel>x</xlabel>
+        <ylabel>y</ylabel>
+        <zlabel>ans</zlabel>
+      </plotSettings>
+      <actions>
+        <how>png</how>
+        <title>
+          <text> </text>
+        </title>
+      </actions>
+    </Plot>
+    <Plot   name="optimization_history_iterations_fd" overwrite="true" >
+      <plotSettings>
+        <plot>
+          <type>scatter</type>
+          <x>opt_export|Output|varsUpdate</x>
+          <y>opt_export|Output|ans</y>
+        </plot>
+        <xlabel>iteration #</xlabel>
+        <ylabel>ans</ylabel>
+      </plotSettings>
+      <actions>
+        <how>png</how>
+        <title>
+          <text> </text>
+        </title>
+      </actions>
+    </Plot>
+    
   </OutStreams>
 
 </Simulation>
+
+
+
+
+
+
