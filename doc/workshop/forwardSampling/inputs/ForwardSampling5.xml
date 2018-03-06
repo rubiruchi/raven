@@ -44,7 +44,7 @@
   </DataObjects>
 
   <Models>
-    <ExternalModel ModuleToLoad="CrisForwSampl" name="PythonModule" subType="">
+    <ExternalModel ModuleToLoad="ForwardSamplerExampleModel" name="PythonModule" subType="">
       <variables>X1,X2,Y1,Y2</variables>
     </ExternalModel>
     <PostProcessor name="Stat" subType="BasicStatistics">
