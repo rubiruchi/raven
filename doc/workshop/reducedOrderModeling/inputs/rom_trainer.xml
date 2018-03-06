@@ -39,7 +39,7 @@
 	</Steps>
 	
 	<Databases>
-	    <HDF5 name="out_db" filename="out_db.h5" readMode='read' directory="./results/DatabaseStorage/"/>
+	    <HDF5 name="out_db" filename="out_db.h5" readMode='read' directory="./DatabaseStorage/"/>
 	</Databases>
 	
 	<DataObjects>

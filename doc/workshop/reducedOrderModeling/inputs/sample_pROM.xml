@@ -42,15 +42,15 @@
 	    <Grid name="Grid_ROM">
 	        <variable name="x1" >
 	            <distribution>normal_trunc</distribution>
-	            <grid type="value" lowerBound="0.0" construction="equal" steps="10">0.0 1.0</grid>
+	            <grid type="value" construction="equal" steps="10">0.0 1.0</grid>
 	        </variable>
 	        <variable name="x2" >
 	            <distribution>normal</distribution>
-	            <grid type="value" lowerBound="1.5" construction="equal" steps="10">1.5 2.5</grid>
+	            <grid type="value" construction="equal" steps="10">1.5 2.5</grid>
 	        </variable>
 	        <variable name="x3" >
 	            <distribution>uniform</distribution>
-	            <grid type="value" lowerBound="1.0" construction="equal" steps="10">1.0 4.0</grid>
+	            <grid type="value" construction="equal" steps="10">1.0 4.0</grid>
 	        </variable>
 	    </Grid>
 	</Samplers>
@@ -79,7 +79,7 @@
 	</Steps>
 	
 	<Databases>
-	    <HDF5 name="out_db" filename="out_db.h5" readMode="read" directory="./results/DatabaseStorage/"/>
+	    <HDF5 name="out_db" filename="out_db.h5" readMode="read" directory="./DatabaseStorage/"/>
 	</Databases>
 	
 	<DataObjects>
