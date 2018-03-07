@@ -54,7 +54,6 @@
   </Optimizers>
 
   <Models>
-    <Dummy name="MyDummy" subType=""/>
     <ExternalModel ModuleToLoad="beale" name="beale" subType="">
       <variables>x,y,ans</variables>
     </ExternalModel>
