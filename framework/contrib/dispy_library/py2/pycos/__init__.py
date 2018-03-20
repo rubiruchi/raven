@@ -27,6 +27,7 @@ import Queue as queue
 import atexit
 import collections
 import cPickle as pickle
+import cloudpickle
 import copy
 
 if platform.system() == 'Windows':
@@ -68,7 +69,7 @@ MsgTimeout = 10
 
 
 def serialize(obj):
-    return pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
+    return cloudpickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
 
 
 def deserialize(pkl):

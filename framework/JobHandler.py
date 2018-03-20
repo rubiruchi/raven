@@ -51,6 +51,8 @@ if sys.version_info.major == 2:
   import ppserver
 else:
   print("pp does not support python3")
+#import dispy
+from dispy_library import dispy
 # end internal parallel module
 #Internal Modules End-----------------------------------------------------------
 
@@ -193,6 +195,7 @@ class JobHandler(MessageHandler.MessageUser):
           self.ppserver = pp.Server(ncpus=0, ppservers=tuple(ppservers))
       else:
          ## We are using the parallel python system
+        #self.ppserver = dispy.JobCluster(figa)
         self.ppserver = pp.Server(ncpus=int(self.runInfoDict['totalNumCoresUsed']))
     else:
       ## We are just using threading

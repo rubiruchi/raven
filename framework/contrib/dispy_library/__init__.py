@@ -20,10 +20,13 @@ import sys
 import os
 root = os.path.abspath(os.path.dirname(__file__))
 if sys.version_info.major == 2:
-  sys.path.append(os.path.join((root,"py2/dispy")))
-  if os.path.join((root,"py3/dispy")) in os.path:
-    os.path.remove(os.path.join((root,"py3/dispy")))
+  sys.path.append(os.path.join(root,"py2"))
+  if os.path.join(root,"py3") in sys.path:
+    sys.path.remove(os.path.join(root,"py3"))
 else:
-  sys.path.append(os.path.join((root,"py3/dispy")))
-  if os.path.join((root,"py2/dispy")) in os.path:
-    os.path.remove(os.path.join((root,"py2/dispy")))
+  sys.path.append(os.path.join(root,"py3"))
+  if os.path.join(root,"py2") in sys.path:
+    sys.path.remove(os.path.join(root,"py2"))
+import dispy
+
+__all__ = ['dispy']
