@@ -78,6 +78,8 @@ __condaList = [("h5py"        ,__lookUpPreferredVersion("h5py"      )),
                ("pylint"      ,""),
                ("coverage"    ,""),
                ("lxml"        ,""),
+               ("pytest"      ,""),
+               ("pytest-xdist",""),
                ("nomkl"       ,""),
                ("numexpr"     ,"")
                ]
