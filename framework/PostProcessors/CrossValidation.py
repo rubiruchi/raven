@@ -58,7 +58,11 @@ class CrossValidation(PostProcessor):
     metricInput.addParam("class", InputData.StringType, True)
     metricInput.addParam("type", InputData.StringType, True)
     inputSpecification.addSub(metricInput)
-
+    functionInput = InputData.parameterInputFactory("Function", contentType=InputData.StringType)
+    functionInput.addParam("class", InputData.StringType, True)
+    functionInput.addParam("type", InputData.StringType, True)
+    inputSpecification.addSub(functionInput)
+    
     sciKitLearnInput = InputData.parameterInputFactory("SciKitLearn")
 
     sklTypeInput = InputData.parameterInputFactory("SKLtype", contentType=InputData.StringType)
@@ -97,6 +101,7 @@ class CrossValidation(PostProcessor):
     self.cvScore        = None
     # assembler objects to be requested
     self.addAssemblerObject('Metric', 'n', True)
+    self.addAssemblerObject('Function', '-1', True)
     # The list of cross validation engine that require the parameter 'n'
     # This will be removed if we updated the scikit-learn to version 0.20
     # We will rely on the code to decide the value for the parameter 'n'
@@ -121,7 +126,10 @@ class CrossValidation(PostProcessor):
     for metricIn in self.assemblerDict['Metric']:
       if metricIn[2] in self.metricsDict.keys():
         self.metricsDict[metricIn[2]] = metricIn[3]
-
+    self.function = None
+    if 'Function' in self.assemblerDict:
+      for metricIn in self.assemblerDict['Function']:
+        self.function = metricIn[3]
     if self.metricsDict.values().count(None) != 0:
       metricName = self.metricsDict.keys()[list(self.metricsDict.values()).index(None)]
       self.raiseAnError(IOError, "Missing definition for Metric: ", metricName)
@@ -165,6 +173,11 @@ class CrossValidation(PostProcessor):
         else:
           metricName = child.value.strip()
           self.metricsDict[metricName] = None
+      elif child.getName() == 'Function':
+        if 'type' not in child.parameterValues or 'class' not in child.parameterValues:
+          self.raiseAnError(IOError, 'Tag Function must have attributes "class" and "type"')
+        else:
+          self.function = child.value.strip()
       else:
         self.raiseAnError(IOError, "Unknown xml node ", child.getName(), " is provided for metric system")
 
@@ -222,6 +235,9 @@ class CrossValidation(PostProcessor):
 
     if type(currentInput) != dict:
       dictKeys = list(cvEstimator.initializationOptionDict['Features'].split(',')) + list(cvEstimator.initializationOptionDict['Target'].split(','))
+      if self.function is not None:
+        dictKeys += self.function.parameterNames()
+  
       newInput = dict.fromkeys(dictKeys, None)
       if not len(currentInput) == 0:
         dataSet = currentInput.asDataset()
@@ -250,8 +266,16 @@ class CrossValidation(PostProcessor):
       newInput = currentInput
 
     if any(x is None for x in newInput.values()):
-      varName = newInput.keys()[list(newInput.values()).index(None)]
-      self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)
+      if self.function is not None:
+        if  newInput.keys()[list(newInput.values()).index(None)] == self.function.name:
+          # evaluate the function
+          self.function.evaluate('residuumSign', newInput)           
+        else:
+          varName = newInput.keys()[list(newInput.values()).index(None)]
+          self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)          
+      else:
+        varName = newInput.keys()[list(newInput.values()).index(None)]
+        self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)
 
     newInputs = newInput, cvEstimator
     return newInputs
@@ -294,6 +318,7 @@ class CrossValidation(PostProcessor):
       @ Out, outputDict, dict, Dictionary containing the results
     """
     inputDict, cvEstimator = self.inputToInternal(inputIn, full = True)
+
     if cvEstimator.subType in self.invalidRom:
       self.raiseAnError(IOError, cvEstimator.subType, " can not be retrained, thus can not be used in Cross Validation post-processor ", self.name)
     if self.dynamic:

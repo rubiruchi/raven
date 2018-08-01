@@ -186,7 +186,7 @@ class Function(BaseType):
       @ In, myInput, object (dataObjects,dict), object from which the data need to be imported
       @ Out, response, object, the response of the action defined in what
     """
-    self.__importValues(myInput)
+    self.__importValues(myInput) 
     if what not in self.__actionDictionary:
       self.raiseAnError(IOError,'Method ' + what + ' not defined in ' + self.name)
     response = self.__actionDictionary[what](self)

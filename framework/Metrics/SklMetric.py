@@ -32,6 +32,10 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import median_absolute_error
 from sklearn.metrics import r2_score
+# classification scores
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import hamming_loss
 #External Modules End--------------------------------------------------------------------------------
 
 #Internal Modules------------------------------------------------------------------------------------
@@ -42,7 +46,10 @@ scores = {'explained_variance_score':explained_variance_score,
           'mean_absolute_error':mean_absolute_error,
           'r2_score':r2_score,
           'mean_squared_error':mean_squared_error,
-          'median_absolute_error':median_absolute_error}
+          'median_absolute_error':median_absolute_error,
+          'accuracy_score':accuracy_score,
+          'precision_score':precision_score,
+          'hamming_loss':hamming_loss}
 
 class SKL(Metric):
   """
