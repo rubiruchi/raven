@@ -62,7 +62,7 @@ class CrossValidation(PostProcessor):
     functionInput.addParam("class", InputData.StringType, True)
     functionInput.addParam("type", InputData.StringType, True)
     inputSpecification.addSub(functionInput)
-    
+
     sciKitLearnInput = InputData.parameterInputFactory("SciKitLearn")
 
     sklTypeInput = InputData.parameterInputFactory("SKLtype", contentType=InputData.StringType)
@@ -110,7 +110,8 @@ class CrossValidation(PostProcessor):
     # 'median_absolute_error' is removed, the reasons for that are:
     # 1. this metric can not accept multiple ouptuts
     # 2. we seldom use this metric.
-    self.validMetrics = ['mean_absolute_error', 'explained_variance_score', 'r2_score', 'mean_squared_error']
+    self.validMetrics = ['mean_absolute_error', 'explained_variance_score', 'r2_score', 'mean_squared_error',
+                         'accuracy_score', 'precision_score', 'hamming_loss']
     self.invalidRom = ['GaussPolynomialRom', 'HDMRRom']
     self.cvID = 'RAVEN_CV_ID'
 
@@ -237,7 +238,7 @@ class CrossValidation(PostProcessor):
       dictKeys = list(cvEstimator.initializationOptionDict['Features'].split(',')) + list(cvEstimator.initializationOptionDict['Target'].split(','))
       if self.function is not None:
         dictKeys += self.function.parameterNames()
-  
+
       newInput = dict.fromkeys(dictKeys, None)
       if not len(currentInput) == 0:
         dataSet = currentInput.asDataset()
@@ -269,10 +270,10 @@ class CrossValidation(PostProcessor):
       if self.function is not None:
         if  newInput.keys()[list(newInput.values()).index(None)] == self.function.name:
           # evaluate the function
-          self.function.evaluate('residuumSign', newInput)           
+          newInput[self.function.name] = self.function.evaluate('residuumSign', newInput)
         else:
           varName = newInput.keys()[list(newInput.values()).index(None)]
-          self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)          
+          self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)
       else:
         varName = newInput.keys()[list(newInput.values()).index(None)]
         self.raiseAnError(IOError, "The variable: ", varName, " is not exist in the input: ", currentInput.name, " which is required for model: ", cvEstimator.name)
