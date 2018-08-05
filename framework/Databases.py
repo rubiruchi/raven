@@ -64,8 +64,10 @@ class DateBase(BaseType):
     inputSpecification = super(DateBase, cls).getInputSpecification()
     inputSpecification.addParam("directory", InputData.StringType)
     inputSpecification.addParam("filename", InputData.StringType)
-    inputSpecification.addParam("readMode", InputData.makeEnumType("readMode","readModeType",["overwrite","read"]), True)
-    inputSpecification.addSub(InputData.parameterInputFactory("variables", contentType=InputData.StringListType))
+    inputSpecification.addParam("readMode", InputData.makeEnumType("readMode",
+                                                                   "readModeType",["overwrite","read"]), True)
+    inputSpecification.addSub(InputData.parameterInputFactory("variables",
+                                                              contentType=InputData.StringListType))
     return inputSpecification
 
   def _handleInput(self, paramInput):
@@ -103,13 +105,16 @@ class DateBase(BaseType):
         self.exist = True
       elif self.readMode == 'overwrite':
         self.exist = False
-      self.database = h5Data(self.name,self.databaseDir,self.messageHandler,self.filename,self.exist,self.variables)
+      self.database = h5Data(self.name,self.databaseDir,self.messageHandler,self.filename,
+                             self.exist,self.variables)
     else:
       #file does not exist in path
       if self.readMode == 'read':
-        self.raiseAnError(IOError, 'Requested to read from database, but it does not exist at:',fullpath,'; The path to the database must be either absolute or relative to <workingDir>!')
+        self.raiseAnError(IOError, 'Requested to read from database, but it does not exist at:',
+                          fullpath,'; The path to the database must be either absolute or relative to <workingDir>!')
       self.exist = False
-      self.database  = h5Data(self.name,self.databaseDir,self.messageHandler,self.filename,self.exist,self.variables)
+      self.database  = h5Data(self.name,self.databaseDir,self.messageHandler,self.filename,
+                              self.exist,self.variables)
     self.raiseAMessage('Database is located at:',fullpath)
 
 
@@ -279,7 +284,8 @@ class HDF5(DateBase):
     """
       Function to retrieve a history from the HDF5 database
       @ In, options, dict, options (metadata muste be appended to the root group)
-      @ Out, tupleVar, tuple, tuple in which the first position is a numpy aray and the second is a dictionary of the metadata
+      @ Out, tupleVar, tuple, tuple in which the first position is a numpy aray
+                              and the second is a dictionary of the metadata
       Note:
       # DET => a Branch from the tail (group name in attributes) to the head (dependent on the filter)
       # MC  => The History named ['group'] (one run)
@@ -313,13 +319,16 @@ class HDF5(DateBase):
     # matchDict not implemented for Databases
     assert (matchDict is None)
     if (not self.exist) and (not self.built):
-      self.raiseAnError(Exception,'Can not retrieve a realization from Database' + self.name + '.It has not been built yet!')
+      self.raiseAnError(Exception,'Can not retrieve a realization from Database' +
+                        self.name + '.It has not been built yet!')
     if type(index).__name__ == 'int':
       allRealizations = self.database.retrieveAllHistoryNames()
     if type(index).__name__ == 'int' and index > len(allRealizations):
       rlz = None
     else:
-      rlz,_ = self.database._getRealizationByName(allRealizations[index] if type(index).__name__ == 'int' else index ,{'reconstruct':True})
+      rlz,_ = self.database._getRealizationByName(allRealizations[index] if
+                                                  type(index).__name__ == 'int'
+                                                  else index ,{'reconstruct':True})
     return rlz
 
 __base                  = 'Database'

@@ -289,17 +289,24 @@ class hdf5Database(MessageHandler.MessageUser):
     # get size of each data variable (float)
     varKeysIntfloat = dataIntFloat.keys()
     if len(varKeysIntfloat) > 0:
-      varShapeIntfloat = [dataIntFloat[key].shape for key in varKeysIntfloat]
-      # get data names
+      # create a data set for each variable (faster (for loading) than
+      # creating a single array and reshaping it at the loading stage)
+      # we store the variables enumerating them since, if illegal names are present,
+      # HDF5 will truncate them. Consequentially we store the variables in the attribute
+      # "data_namesIntfloat"
+      for cnt, key in enumerate(varKeysIntfloat):
+        group.create_dataset(str(cnt), dtype="float", data=dataIntFloat[key] )
+      #varShapeIntfloat = [dataIntFloat[key].shape for key in varKeysIntfloat]
+      # add data names (since some variable names can be illegal (e.g. containing "/", etc.))
       group.attrs[b'data_namesIntfloat'] = cPickle.dumps(varKeysIntfloat)
       # get data shapes
-      group.attrs[b'data_shapesIntfloat'] = cPickle.dumps(varShapeIntfloat)
+      #group.attrs[b'data_shapesIntfloat'] = cPickle.dumps(varShapeIntfloat)
       # get data shapes
-      end   = np.cumsum(varShapeIntfloat)
-      begin = np.concatenate(([0],end[0:-1]))
-      group.attrs[b'data_begin_endIntfloat'] = cPickle.dumps((begin.tolist(),end.tolist()))
+      #end   = np.cumsum(varShapeIntfloat)
+      #begin = np.concatenate(([0],end[0:-1]))
+      #group.attrs[b'data_begin_endIntfloat'] = cPickle.dumps((begin.tolist(),end.tolist()))
       # get data names
-      group.create_dataset(name + "_dataIntFloat", dtype="float", data=(np.concatenate( dataIntFloat.values()).ravel()))
+      #group.create_dataset(name + "_dataIntFloat", dtype="float", data=(np.concatenate( dataIntFloat.values()).ravel()))
       group.attrs[b'hasIntfloat'] = True
     # get size of each data variable (other type)
     varKeysOther = dataOther.keys()
@@ -482,14 +489,20 @@ class hdf5Database(MessageHandler.MessageUser):
     hasIntfloat = group.attrs['hasIntfloat']
     hasOther    = group.attrs['hasOther']
     if hasIntfloat:
-      dataSetIntFloat = group[name + "_dataIntFloat"]
-      # Get some variables of interest
-      nVarsIntfloat      = group.attrs[b'nVarsIntfloat']
-      varShapeIntfloat   = cPickle.loads(group.attrs[b'data_shapesIntfloat'])
+      # get integer, float names
       varKeysIntfloat    = cPickle.loads(group.attrs[b'data_namesIntfloat'])
-      begin, end          = cPickle.loads(group.attrs[b'data_begin_endIntfloat'])
-      # Reconstruct the dataset
-      newData = {key : np.reshape(dataSetIntFloat[begin[cnt]:end[cnt]], varShapeIntfloat[cnt]) for cnt,key in enumerate(varKeysIntfloat)}
+      if name + "_dataIntFloat" in group:
+        # old format (keep till Oct 2018, issue #734)
+        dataSetIntFloat = group[name + "_dataIntFloat"]
+        # Get some variables of interest
+        varShapeIntfloat   = cPickle.loads(group.attrs[b'data_shapesIntfloat'])
+        begin, end         = cPickle.loads(group.attrs[b'data_begin_endIntfloat'])
+        newData = {key : np.reshape(dataSetIntFloat[begin[cnt]:end[cnt]], varShapeIntfloat[cnt])
+                   for cnt,key in enumerate(varKeysIntfloat)}
+      else:
+        # new format
+        newData = {key : group[str(cnt)].value for cnt,key in enumerate(varKeysIntfloat)}
+
     if hasOther:
       # get the "other" data
       datasetOther = cPickle.loads(group.attrs[name + "_dataOther"])
