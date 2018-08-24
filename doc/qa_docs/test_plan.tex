@@ -9,12 +9,12 @@
 \section{Test Scope}
 
 This document covers the various types of testing and reviews that are
-done on the RAVEN project. The two primary methods are the MOOSE
-regression testing system and the code reviews done on merge requests.
+done on the RAVEN project. The two primary methods are the 
+regression testing system and the code reviews done on pull requests.
 
 \subsection{Automatic Testing}
 
-The MOOSE testing system allows dynamic tests to be run on the code
+The  testing system allows dynamic tests to be run on the code
 that check that the expected behavior occurs.  This system is designed
 to be extendable, and RAVEN extends it with two types of tests.  The
 first test type simply runs a python program, and checks the exit code
@@ -27,7 +27,7 @@ code.
 
 \subsection{Procedure Based Testing}
 
-The gitlab system allows for merge requests to be created and then
+The GITHUB system allows for merge requests to be created and then
 commented on.  This allows for static testing to be done at that time.
 The system also shows the results of the regression tests and allows
 assessing the difference between the current version's source code and
@@ -36,7 +36,7 @@ the new versions.
 \section{Test Objectives}
 
 The automatic tests have a variety of objectives.  First of all since
-they are run before any merge requests are approved, they catch
+they are run before any pull requests are approved, they catch
 changes in the expected behavior of the code from unexpected failures
 from differences in the code answers.  Second of all, the dynamic
 tests detect many changes in the underlying libraries or environments.
@@ -55,19 +55,20 @@ that are not part of the dynamic code.
 
 \subsection{Code Reviews}
 
-Gitlab is the configuration management system used by RAVEN. In the
-gitlab system, merge requests can be created.  Git allows different
+GITHUB is the configuration management system used by RAVEN. In the
+GITHUB system, pull requests can be created.  Git allows different
 branches of configurations that include source code and associated
-files like the build system and regression tests.  A merge request is
+files like the build system and regression tests.  A pull request is
 where a developer proposes merging a branch of development onto the
 main development branch.
 
-When a developer makes the merge request, a second developer will then
-review the merge, by looking at the differences, running tests and
+When a developer makes the pull request, a second developer will then
+review the request, by looking at the differences, running tests and
 otherwise reviewing it.  There are mandatory reviews required that are
-documented in the review checklist that is on the wiki.  After the
-second developer reviews the merge request, they document the
-results of their review, and then either accept the merge request, or
+documented in the review checklist that is on the RAVEN GITHUB wiki page. 
+ After the
+second developer reviews the pull request, they document the
+results of their review, and then either accept the pull request, or
 explain why the merge request is not accepted.
 
 Sometimes during the review, the reviewer will fix things they find,
@@ -93,7 +94,7 @@ updated.
 
 \subsubsection{Development Merge Checklist}
 
-This and the other checklists are stored on \url{https://hpcgitlab.inl.gov/idaholab/raven/wikis/development-checklists}
+This and the other checklists are stored on  \url{https://github.com/idaholab/raven/wiki/development-checklists}
 
 
 \begin{enumerate}
@@ -112,9 +113,9 @@ This and the other checklists are stored on \url{https://hpcgitlab.inl.gov/idaho
 This checklist is for any merge requests to any stable branches.
 
 \begin{enumerate}
-\item  The regular merge checklist must pass on this merge request.
-\item  If this merge request changes input files, it must be discussed on the mailing list and agreed that this is needed on the stable branch.
-\item  If this merge request changes computer code not needed for fixing a defect, it must be discussed on the mailing list and agreed that this is needed on the stable branch.
+\item  The pull merge checklist must pass on this merge request.
+\item  If this pull request changes input files, it must be discussed on the mailing list and agreed that this is needed on the stable branch.
+\item  If this pull request changes computer code not needed for fixing a defect, it must be discussed on the mailing list and agreed that this is needed on the stable branch.
 \item  Has this been properly adapted to stable? (For example, does documentation changes remove mention of features not on the stable branch.)
 \item  Explain why this is being added to stable:
 \end{enumerate}
@@ -158,13 +159,13 @@ This is for anytime an issue is closed.
 %significant new functionality is created'' should be ``if
 %a new functionality is created''
 
-The MOOSE testing system allows tests to be run on the code that check
-that the expected behavior occurs.  RAVEN uses the MOOSE testing
+The  testing system allows tests to be run on the code that check
+that the expected behavior occurs.  RAVEN uses the  testing
 system to check for regressions.  As part of merge requests, if
 significant new functionality is created, the functionality needs to
 be tested by the regression test system.
 
-Besides the existing tests types available in the MOOSE testing
+Besides the existing tests types available in the  testing
 system, RAVEN does three other kinds.  These are the RavenFramework
 tests, RavenPython tests, and cluster tests.
 
@@ -411,11 +412,11 @@ list:
 \section{Test Automation}
 
 Tools will be used to automate as many of the dynamic tests as
-possible.  The MOOSE testing framework will be used for automating as
+possible.  The testing framework will be used for automating as
 many as practical.  BASH or Python scripts will be used for others.
-The scripts for automation will be stored in the RAVEN, Crow or MOOSE
+The scripts for automation will be stored in the RAVEN or
 source code repository.  The test parameters and expected output will
-be stored in the RAVEN or Crow source code repository. Some of the
+be stored in the RAVEN source code repository. Some of the
 scripts that only run other scripts (such as the scripts that compile
 RAVEN and then run the testing scripts) will be stored in CIVET on
 moosebuild.inl.gov.  CIVET stores the results of the passing or
