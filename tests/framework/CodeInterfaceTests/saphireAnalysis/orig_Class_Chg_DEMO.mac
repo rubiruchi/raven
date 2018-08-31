@@ -1,0 +1,242 @@
+<comment> Name Class Changes </comment>
+<comment> Desc  </comment>
+<initial prompt>no</initial prompt>
+<comment>
+TEST CASE NAME: Class Changes
+</comment>
+
+<setup>
+  <verbose>
+    <type>detail</type>
+    <file name>%D</file name>
+  </verbose>
+</setup>
+
+<scenario>
+  <start>
+    <name>%P-51B</name>
+    <description>Class Change Basic Events</description>
+    <test>TEST-51B</test>
+  </start>
+</scenario>
+
+<change set>
+  <unmark></unmark>
+  <delete>
+    <name>CKV-CC-EVENTS</name>
+  </delete>
+  <add>
+    <name>CKV-CC-EVENTS</name>
+    <description>Class change subset CKV-CC</description>
+    <class>
+      <event name>?-CKV-CC-?</event name>
+      <calc type>1</calc type>
+      <probability>1.0E-04</probability>
+    </class>
+  </add>
+  <mark name>CKV-CC-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>MOV-1-EVENTS</name>
+  </delete>
+  <add>
+    <name>MOV-1-EVENTS</name>
+    <description>Class change subset MOV-CC-1</description>
+    <class>
+      <event name>?-MOV-CC-1</event name>
+      <calc type>1</calc type>
+      <probability>2.0E-04</probability>
+    </class>
+  </add>
+    <mark name>MOV-1-EVENTS</mark name>
+    <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>MOV-CC-EVENTS</name>
+  </delete>
+  <add>
+    <name>MOV-CC-EVENTS</name>
+    <description>Class change subset MOV-CC-A/B</description>
+    <class>
+      <event name>?-MOV-CC-?</event name>
+      <calc type>1</calc type>
+      <probability>1.0E-03</probability>
+    </class>
+  </add>
+    <mark name>MOV-CC-EVENTS</mark name>
+    <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>PMP-FS-EVENTS</name>
+  </delete>
+  <add>
+    <name>PMP-FS-EVENTS</name>
+    <description>Class change set PMP-FS</description>
+    <class>
+      <event name>?-PMP-FS-?</event name>
+      <calc type>1</calc type>
+      <probability>1.2E-3</probability>
+    </class>
+  </add>
+  <mark name>PMP-FS-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>DGN-FS-EVENTs</name>
+  </delete>
+  <add>
+    <name>DGN-FS-EVENTs</name>
+    <description>Class change subset DGN-FS</description>
+    <class>
+      <event name>?-DGN-FS-?</event name>
+      <calc type>1</calc type>
+      <probability>4.0E-3</probability>
+    </class>
+  </add>
+  <mark name>DGN-FS-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>CKV-1-EVENTS</name>
+  </delete>
+  <add>
+    <name>CKV-1-EVENTS</name>
+    <description>singe change set ZA-CKV-2-ALPHA-1-OF-2</description>
+    <single>
+      <event name>ZA-CKV-2-ALPHA-1-OF-2</event name>
+      <calc type>1</calc type>
+      <probability>9.74E-01</probability>
+    </single>
+  </add>
+  <mark name>CKV-1-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>CKV-2-EVENTS</name>
+  </delete>
+  <add>
+    <name>CKV-2-EVENTS</name>
+    <description>single change set ZA-CKV-2-ALPHA-2-OF-2</description>
+    <single>
+      <event name>ZA-CKV-2-ALPHA-2-OF-2</event name>
+      <calc type>1</calc type>
+      <probability>2.05E-02</probability>
+    </single>
+  </add>
+  <mark name>CKV-2-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>PMP-FR-EVENTS</name>
+  </delete>
+  <add>
+    <name>PMP-FR-EVENTS</name>
+    <description>Class change set PMP-FR</description>
+    <class>
+      <event name>?-PMP-FR-?</event name>
+      <calc type>3</calc type>
+      <lambda>2.1E-05</lambda>
+      <mission time>2.4E1</mission time>
+    </class>
+  </add>
+  <mark name>PMP-FR-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<change set>
+  <delete>
+    <name>DGN-FR-EVENTs</name>
+  </delete>
+  <add>
+    <name>DGN-FR-EVENTs</name>
+    <description>Class change subset DGN-FR</description>
+    <class>
+      <event name>?-DGN-FR-?</event name>
+      <calc type>3</calc type>
+      <lambda>8.9E-4</lambda>
+      <mission time>2.4E1</mission time>
+    </class>
+  </add>
+  <mark name>DGN-FR-EVENTS</mark name>
+  <generate></generate>
+</change set>
+
+<sequence>
+  <unmark></unmark>
+  <include>
+    <mark event tree mask>LOSP</mark event tree mask>
+
+    <mark logic fault tree>*</mark logic fault tree>
+  </include>
+
+  <solve>
+    <truncation>1.0E-15</truncation>
+  </solve>
+  
+  <uncertainty>
+     <sample>5000</sample>
+     <seed>4321</seed>
+     <method>lhs</method>
+     <intermediate>csv</intermediate>
+     <file name>etuq_im.csv</file name>
+  </uncertainty>
+  
+  <importance>
+    <group>yes</group>
+    <seed>4321</seed>
+    <sort order>name</sort order>
+    <file name>imp-all.csv</file name>
+    <report format>csv</report format>
+  </importance>
+
+</sequence>
+
+<fault tree>
+  <mark name>CCS</mark name>
+  <mark name>ECs</mark name> 
+  <uncertainty>
+     <sample>5000</sample>
+     <seed>1234</seed>
+     <method>lhs</method>
+     <intermediate>csv</intermediate>
+     <file name>ftuq_im.csv</file name>
+  </uncertainty>
+  
+  <report>
+    <type>use title</type>
+    <title>Uncertainty</title>
+    <file name>ft_uq.csv</file name>
+    <report format>csv</report format>
+  </report>
+</fault tree>
+
+<event tree>
+
+  <mark mask>*</mark mask>
+  
+  <report>
+     <type>use title</type>
+     <title>Uncertainty</title>
+     <file name>et_uq.csv</file name>
+     <report format>csv</report format>
+  </report>
+</event tree>
+
+<scenario><end></end></scenario>
+
+<program exit></program exit>

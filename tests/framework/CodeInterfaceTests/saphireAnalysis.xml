@@ -1,0 +1,228 @@
+<?xml version="1.0" ?>
+<Simulation verbosity="debug">
+  <TestInfo>
+    <name>saphire</name>
+    <author>wangc</author>
+    <created>2018-08-31</created>
+    <classesTested>CodeInterface</classesTested>
+    <description>
+       This test is for Sept Milestone
+    </description>
+  </TestInfo>
+  <RunInfo>
+    <JobName>saphire</JobName>
+    <Sequence>sample</Sequence>
+    <WorkingDir>saphireAnalysis</WorkingDir>
+    <batchSize>1</batchSize>
+  </RunInfo>
+
+  <Files>
+    <Input name="macro" type="">Class_Chg_DEMO.mac</Input>
+    <Input name="demo" type="">demo.zip</Input>
+  </Files>
+
+  <Models>
+    <Code name="saphire" subType="Saphire">
+      <executable>"C:\Saphire 8\tools\SAPHIRE.exe"</executable>
+      <clargs arg="macro" extension=".mac" type="input" delimiter="="/>
+      <clargs arg="project" extension=".zip" type="input" delimiter="="/>
+      <outputFile>fixed_output.csv</outputFile>
+      <codeOutput type="uncertainty">et_uq.csv</codeOutput>
+      <codeOutput type="uncertainty">ft_uq.csv</codeOutput>
+    </Code>
+  </Models>
+
+  <Distributions>
+    <Uniform name="CKV-CC-EVENTS">
+	<lowerBound>1.0E-5</lowerBound>
+	<upperBound>1.0E-3</upperBound>
+    </Uniform>
+    <Uniform name="MOV-1-EVENTS">
+	<lowerBound>2.0E-5</lowerBound>
+	<upperBound>2.0E-3</upperBound>
+    </Uniform>
+    <Uniform name="MOV-CC-EVENTS">
+	<lowerBound>1.0E-4</lowerBound>
+	<upperBound>1.0E-2</upperBound>
+    </Uniform>
+    <Uniform name="PMP-FS-EVENTS">
+	<lowerBound>1.2E-4</lowerBound>
+	<upperBound>1.2E-2</upperBound>
+    </Uniform>
+    <Uniform name="DGN-FS-EVENTS">
+	<lowerBound>4.0E-4</lowerBound>
+	<upperBound>4.0E-2</upperBound>
+    </Uniform>
+    <Uniform name="CKV-1-EVENTS">
+	<lowerBound>9.74E-2</lowerBound>
+	<upperBound>1.0</upperBound>
+    </Uniform>
+    <Uniform name="CKV-2-EVENTS">
+	<lowerBound>2.05E-3</lowerBound>
+	<upperBound>2.05E-1</upperBound>
+    </Uniform>
+    <Uniform name="PMP-FR-EVENTS-lambda">
+	<lowerBound>2.1E-6</lowerBound>
+	<upperBound>2.1E-4</upperBound>
+    </Uniform>
+    <Uniform name="PMP-FR-EVENTS-Tm">
+	<lowerBound>1.2E1</lowerBound>
+	<upperBound>3.6E1</upperBound>
+    </Uniform>
+    <Uniform name="DGN-FR-EVENTS-lambda">
+	<lowerBound>8.9E-5</lowerBound>
+	<upperBound>8.9E-3</upperBound>
+    </Uniform>
+    <Uniform name="DGN-FR-EVENTS-Tm">
+	<lowerBound>1.2E1</lowerBound>
+	<upperBound>3.6E1</upperBound>
+    </Uniform>
+    <!--
+    <Normal name="CKV-CC-EVENTS">
+        <mean>1.0E-04</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="MOV-1-EVENTS">
+        <mean>2.0E-04</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="MOV-CC-EVENTS">
+        <mean>1.0E-03</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="PMP-FS-EVENTS">
+        <mean>1.2E-3</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="DGN-FS-EVENTS">
+        <mean>4.0E-3</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="CKV-1-EVENTS">
+        <mean>9.74E-01</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="CKV-2-EVENTs">
+        <mean>2.05E-02</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="PMP-FR-EVENTS-lambda">
+        <mean>2.1E-05</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="PMP-FR-EVENTS-Tm">
+        <mean>2.4E01</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="DGN-FR-EVENTS-lambda">
+        <mean>8.9E-04</mean>
+        <sigma></sigma>
+    </Normal>
+    <Normal name="DGN-FR-EVENTS-Tm">
+        <mean>2.4E1</mean>
+        <sigma></sigma>
+    </Normal>
+    -->
+  </Distributions>
+
+  <Samplers>
+    <MonteCarlo name="mcSaphire">
+        <samplerInit>
+            <limit>2</limit>
+        </samplerInit>
+        <variable name="CKV-CC">
+            <distribution>CKV-CC-EVENTS</distribution>
+        </variable>
+        <variable name="MOV-CC-1">
+            <distribution>MOV-1-EVENTS</distribution>
+        </variable>
+        <variable name="MOV-CC">
+            <distribution>MOV-CC-EVENTS</distribution>
+        </variable>
+        <variable name="PMP-FS">
+            <distribution>PMP-FS-EVENTS</distribution>
+        </variable>
+        <variable name="DGN-FS">
+            <distribution>DGN-FS-EVENTS</distribution>
+        </variable>
+        <variable name="CKV-1">
+            <distribution>CKV-1-EVENTS</distribution>
+        </variable>
+        <variable name="CKV-2">
+            <distribution>CKV-2-EVENTS</distribution>
+        </variable>
+        <variable name="PMP-FR-lambda">
+            <distribution>PMP-FR-EVENTS-lambda</distribution>
+        </variable>
+        <variable name="PMP-FR-Tm">
+            <distribution>PMP-FR-EVENTS-Tm</distribution>
+        </variable>
+        <variable name="DGN-FR-lambda">
+            <distribution>DGN-FR-EVENTS-lambda</distribution>
+        </variable>
+        <variable name="DGN-FR-Tm">
+            <distribution>DGN-FR-EVENTS-Tm</distribution>
+        </variable>
+    </MonteCarlo>
+
+  </Samplers>
+
+  <Steps>
+    <MultiRun name="sample">
+      <Input class="Files" type="">macro</Input>
+      <Input class="Files" type="">demo</Input>
+      <Model class="Models" type="Code">saphire</Model>
+      <Sampler class="Samplers" type="MonteCarlo">mcSaphire</Sampler>
+      <Output class="DataObjects" type="PointSet">saphireDump</Output>
+      <Output class="OutStreams" type="Print">saphirePrint</Output>
+    </MultiRun>
+  </Steps>
+
+  <DataObjects>
+    <PointSet name="saphireDump">
+      <Input>
+	      DGN-FR-Tm,DGN-FR-lambda,PMP-FR-Tm,PMP-FR-lambda,
+	      DGN-FS,PMP-FS,MOV-CC,MOV-CC-1,CKV-CC,CKV-1,CKV-2
+      </Input>
+      <Output>
+	      LOSP:3_Mean,
+	      LOSP:3_5th,
+	      LOSP:3_Median,
+	      LOSP:3_95th,
+	      LOSP:3_Standard~Dev.,
+	      LOSP:3_Skewness,
+	      LOSP:3_Kurtosis,
+	      LOSP:2_Mean,
+	      LOSP:2_5th,
+	      LOSP:2_Median,
+	      LOSP:2_95th,
+	      LOSP:2_Standard~Dev.,
+	      LOSP:2_Skewness,
+	      LOSP:2_Kurtosis,
+	      CCS_Mean,
+	      CCS_Standard~Dev.,
+	      CCS_Skewness,
+	      CCS_Kurtosis, 
+	      CCS_5th, 
+	      CCS_95th,
+	      CCS_Median, 
+	      ECS_Mean, 
+	      ECS_Standard~Dev.,
+	      ECS_Skewness,
+	      ECS_Kurtosis, 
+	      ECS_5th, 
+	      ECS_95th,
+	      ECS_Median
+      </Output>
+    </PointSet>
+  </DataObjects>
+
+  <OutStreams>
+    <Print name="saphirePrint">
+      <type>csv</type>
+      <source>saphireDump</source>
+      <what>input,output</what>
+    </Print>
+  </OutStreams>
+
+</Simulation>
