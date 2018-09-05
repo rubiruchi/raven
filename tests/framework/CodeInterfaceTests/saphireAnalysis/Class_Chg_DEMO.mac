@@ -151,7 +151,7 @@ TEST CASE NAME: Class Changes
       <event name>?-PMP-FR-?</event name>
       <calc type>5</calc type>
       <lambda>$RAVEN-PMP-FR-lambda$</lambda>
-      <mission time>$RAVEN-PMP-FR-Tm$</mission time>
+      <mission time>2.4E01</mission time>
     </class>
   </add>
   <mark name>PMP-FR-EVENTS</mark name>
@@ -169,7 +169,7 @@ TEST CASE NAME: Class Changes
       <event name>?-DGN-FR-?</event name>
       <calc type>5</calc type>
       <lambda>$RAVEN-DGN-FR-lambda$</lambda>
-      <mission time>$RAVEN-DGN-FR-Tm$</mission time>
+      <mission time>2.4E01</mission time>
     </class>
   </add>
   <mark name>DGN-FR-EVENTS</mark name>

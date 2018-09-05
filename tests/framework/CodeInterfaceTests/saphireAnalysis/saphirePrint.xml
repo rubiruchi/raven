@@ -1,0 +1,10 @@
+<DataObjectMetadata name="saphireDump">
+  <DataSet type="Static">
+    <general>
+      <inputs>time,DGN-FR-lambda,PMP-FR-lambda,DGN-FS,PMP-FS,MOV-CC,MOV-CC-1,CKV-CC,CKV-1,CKV-2</inputs>
+      <outputs>LOSP:3_Mean,LOSP:3_5th,LOSP:3_Median,LOSP:3_95th,LOSP:3_Standard~Dev.,LOSP:3_Skewness,LOSP:3_Kurtosis,LOSP:2_Mean,LOSP:2_5th,LOSP:2_Median,LOSP:2_95th,LOSP:2_Standard~Dev.,LOSP:2_Skewness,LOSP:2_Kurtosis,CCS_Mean,CCS_Standard~Dev.,CCS_Skewness,CCS_Kurtosis,CCS_5th,CCS_95th,CCS_Median,ECS_Mean,ECS_Standard~Dev.,ECS_Skewness,ECS_Kurtosis,ECS_5th,ECS_95th,ECS_Median</outputs>
+      <sampleTag>RAVEN_sample_ID</sampleTag>
+    </general>
+  </DataSet>
+  
+</DataObjectMetadata>

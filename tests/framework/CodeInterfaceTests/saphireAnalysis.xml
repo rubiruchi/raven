@@ -11,7 +11,7 @@
   </TestInfo>
   <RunInfo>
     <JobName>saphire</JobName>
-    <Sequence>sample</Sequence>
+    <Sequence>sample,plot</Sequence>
     <WorkingDir>saphireAnalysis</WorkingDir>
     <batchSize>1</batchSize>
   </RunInfo>
@@ -33,99 +33,133 @@
   </Models>
 
   <Distributions>
-    <Uniform name="CKV-CC-EVENTS">
-	<lowerBound>1.0E-5</lowerBound>
-	<upperBound>1.0E-3</upperBound>
-    </Uniform>
-    <Uniform name="MOV-1-EVENTS">
-	<lowerBound>2.0E-5</lowerBound>
-	<upperBound>2.0E-3</upperBound>
-    </Uniform>
-    <Uniform name="MOV-CC-EVENTS">
-	<lowerBound>1.0E-4</lowerBound>
-	<upperBound>1.0E-2</upperBound>
-    </Uniform>
-    <Uniform name="PMP-FS-EVENTS">
-	<lowerBound>1.2E-4</lowerBound>
-	<upperBound>1.2E-2</upperBound>
-    </Uniform>
-    <Uniform name="DGN-FS-EVENTS">
-	<lowerBound>4.0E-4</lowerBound>
-	<upperBound>4.0E-2</upperBound>
-    </Uniform>
-    <Uniform name="CKV-1-EVENTS">
-	<lowerBound>9.74E-2</lowerBound>
-	<upperBound>1.0</upperBound>
-    </Uniform>
-    <Uniform name="CKV-2-EVENTS">
-	<lowerBound>2.05E-3</lowerBound>
-	<upperBound>2.05E-1</upperBound>
-    </Uniform>
-    <Uniform name="PMP-FR-EVENTS-lambda">
-	<lowerBound>2.1E-6</lowerBound>
-	<upperBound>2.1E-4</upperBound>
-    </Uniform>
-    <Uniform name="PMP-FR-EVENTS-Tm">
-	<lowerBound>1.2E1</lowerBound>
-	<upperBound>3.6E1</upperBound>
-    </Uniform>
-    <Uniform name="DGN-FR-EVENTS-lambda">
-	<lowerBound>8.9E-5</lowerBound>
-	<upperBound>8.9E-3</upperBound>
-    </Uniform>
-    <Uniform name="DGN-FR-EVENTS-Tm">
-	<lowerBound>1.2E1</lowerBound>
-	<upperBound>3.6E1</upperBound>
+
+    <Uniform name='time-dist'>
+	<lowerBound>0.0</lowerBound>
+	<upperBound>20.0</upperBound>
     </Uniform>
     <!--
-    <Normal name="CKV-CC-EVENTS">
-        <mean>1.0E-04</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="MOV-1-EVENTS">
-        <mean>2.0E-04</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="MOV-CC-EVENTS">
-        <mean>1.0E-03</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="PMP-FS-EVENTS">
-        <mean>1.2E-3</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="DGN-FS-EVENTS">
-        <mean>4.0E-3</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="CKV-1-EVENTS">
-        <mean>9.74E-01</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="CKV-2-EVENTs">
-        <mean>2.05E-02</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="PMP-FR-EVENTS-lambda">
-        <mean>2.1E-05</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="PMP-FR-EVENTS-Tm">
-        <mean>2.4E01</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="DGN-FR-EVENTS-lambda">
-        <mean>8.9E-04</mean>
-        <sigma></sigma>
-    </Normal>
-    <Normal name="DGN-FR-EVENTS-Tm">
-        <mean>2.4E1</mean>
-        <sigma></sigma>
-    </Normal>
+    <Beta name="CKV-CC-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>4999.5</beta>
+    </Beta>
+    <Beta name="MOV-1-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>2499.5</beta>
+    </Beta>
+    <Beta name="MOV-CC-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>499.5</beta>
+    </Beta>
+    <Beta name="PMP-FS-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>416.167</beta>
+    </Beta>
+    <Beta name="DGN-FS-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>124.5</beta>
+    </Beta>
+    <Beta name="CKV-1-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>0.013347</beta>
+    </Beta>
+    <Beta name="CKV-2-EVENTS">
+	<low>0</low>
+	<high>1</high>
+	<alpha>0.5</alpha>
+	<beta>23.89</beta>
+    </Beta>
+
+    <Gamma name="PMP-FR-EVENTS-lambda">
+	<alpha>0.5</alpha>
+	<beta>23809.5</beta>
+	<low>0</low>
+    </Gamma>
+    <Gamma name="DGN-FR-EVENTS-lambda">
+	<alpha>0.5</alpha>
+	<beta>561.8</beta>
+	<low>0</low>
+    </Gamma>
     -->
   </Distributions>
 
+  <Functions>
+    <External name='ckv_cc' file='ckv_cc.py'>
+        <variable>time</variable>
+    </External>
+    <External name='mov_cc_1' file='mov_cc_1.py'>
+        <variable>time</variable>
+    </External>
+    <External name='mov_cc' file='mov_cc.py'>
+        <variable>time</variable>
+    </External>
+    <External name='pmp_fs' file='pmp_fs.py'>
+        <variable>time</variable>
+    </External>
+    <External name='dgn_fs' file='dgn_fs.py'>
+        <variable>time</variable>
+    </External>
+    <External name='ckv_1' file='ckv_1.py'>
+        <variable>time</variable>
+    </External>
+    <External name='ckv_2' file='ckv_2.py'>
+        <variable>time</variable>
+    </External>
+    <External name='pmp_fr' file='pmp_fr.py'>
+        <variable>time</variable>
+    </External>
+    <External name='dgn_fr' file='dgn_fr.py'>
+        <variable>time</variable>
+    </External>
+  </Functions>
+
   <Samplers>
+    <Grid name='gridSaphire'>
+	<variable name='time'>
+	  <distribution>time-dist</distribution>
+	  <grid construction='equal' steps='40' type='value'>0.0 20.0</grid>
+  	</variable>
+	<variable name='CKV-CC'>
+	  <function>ckv_cc</function>
+	</variable>
+	<variable name='MOV-CC-1'>
+	  <function>mov_cc_1</function>
+	</variable>
+	<variable name='MOV-CC'>
+	  <function>mov_cc</function>
+	</variable>
+	<variable name='PMP-FS'>
+	  <function>pmp_fs</function>
+	</variable>
+	<variable name='DGN-FS'>
+	  <function>dgn_fs</function>
+	</variable>
+	<variable name='CKV-1'>
+	  <function>ckv_1</function>
+	</variable>
+	<variable name='CKV-2'>
+	  <function>ckv_2</function>
+	</variable>
+	<variable name='PMP-FR-lambda'>
+	  <function>pmp_fr</function>
+	</variable>
+	<variable name='DGN-FR-lambda'>
+	  <function>dgn_fr</function>
+	</variable>
+    </Grid>
+    <!--
     <MonteCarlo name="mcSaphire">
         <samplerInit>
             <limit>2</limit>
@@ -154,16 +188,11 @@
         <variable name="PMP-FR-lambda">
             <distribution>PMP-FR-EVENTS-lambda</distribution>
         </variable>
-        <variable name="PMP-FR-Tm">
-            <distribution>PMP-FR-EVENTS-Tm</distribution>
-        </variable>
         <variable name="DGN-FR-lambda">
             <distribution>DGN-FR-EVENTS-lambda</distribution>
         </variable>
-        <variable name="DGN-FR-Tm">
-            <distribution>DGN-FR-EVENTS-Tm</distribution>
-        </variable>
     </MonteCarlo>
+    -->
 
   </Samplers>
 
@@ -172,16 +201,23 @@
       <Input class="Files" type="">macro</Input>
       <Input class="Files" type="">demo</Input>
       <Model class="Models" type="Code">saphire</Model>
-      <Sampler class="Samplers" type="MonteCarlo">mcSaphire</Sampler>
+      <Sampler class="Samplers" type="MonteCarlo">gridSaphire</Sampler>
       <Output class="DataObjects" type="PointSet">saphireDump</Output>
       <Output class="OutStreams" type="Print">saphirePrint</Output>
     </MultiRun>
+    <IOStep name='plot' pauseAtEnd='True'>
+      <Input class='DataObjects' type='PointSet'>saphireDump</Input>
+      <Output class='OutStreams' type='Plot'>Large-Release</Output>
+      <Output class='OutStreams' type='Plot'>Small-Release</Output>
+      <Output class='OutStreams' type='Plot'>Containment-Cooling-System</Output>
+      <Output class='OutStreams' type='Plot'>Emergency-Cooling-System</Output>
+    </IOStep>
   </Steps>
 
   <DataObjects>
     <PointSet name="saphireDump">
       <Input>
-	      DGN-FR-Tm,DGN-FR-lambda,PMP-FR-Tm,PMP-FR-lambda,
+	      time,DGN-FR-lambda,PMP-FR-lambda,
 	      DGN-FS,PMP-FS,MOV-CC,MOV-CC-1,CKV-CC,CKV-1,CKV-2
       </Input>
       <Output>
@@ -223,6 +259,170 @@
       <source>saphireDump</source>
       <what>input,output</what>
     </Print>
+    <Plot name='Large-Release'>
+      <plotSettings>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:3_5th</y>
+	  <marker>^</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>5th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:3_95th</y>
+	  <marker>v</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>95th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:3_Mean</y>
+	  <marker>.</marker>
+	  <kwargs>
+		  <label>Mean</label>
+	  </kwargs>
+	</plot>
+	<xlabel>time</xlabel>
+	<ylabel>Large-Release Probability</ylabel>
+	<legend>
+	  <loc>best</loc>
+	</legend>
+      </plotSettings>
+      <actions>
+	      <how>png,screen</how>
+      </actions>
+    </Plot>
+    <Plot name='Small-Release'>
+      <plotSettings>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:2_5th</y>
+	  <marker>^</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>5th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:2_95th</y>
+	  <marker>v</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>95th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|LOSP:2_Mean</y>
+	  <marker>.</marker>
+	  <kwargs>
+		  <label>Mean</label>
+	  </kwargs>
+	</plot>
+	<xlabel>time</xlabel>
+	<ylabel>Small-Release Probability</ylabel>
+	<legend>
+	  <loc>best</loc>
+	</legend>
+      </plotSettings>
+      <actions>
+	      <how>png,screen</how>
+      </actions>
+    </Plot>
+    <Plot name='Containment-Cooling-System'>
+      <plotSettings>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|CCS_5th</y>
+	  <marker>^</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>5th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|CCS_95th</y>
+	  <marker>v</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>95th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|CCS_Mean</y>
+	  <marker>.</marker>
+	  <kwargs>
+		  <label>Mean</label>
+	  </kwargs>
+	</plot>
+	<xlabel>time</xlabel>
+	<ylabel>Containment Cooling System Failed Probability</ylabel>
+	<legend>
+	  <loc>best</loc>
+	</legend>
+      </plotSettings>
+      <actions>
+	      <how>png,screen</how>
+      </actions>
+    </Plot>
+    <Plot name='Emergency-Cooling-System'>
+      <plotSettings>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|ECS_5th</y>
+	  <marker>^</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>5th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|ECS_95th</y>
+	  <marker>v</marker>
+	  <c>r</c>
+	  <kwargs>
+		  <label>95th Percentile</label>
+	  </kwargs>
+	</plot>
+	<plot>
+	  <type>scatter</type>
+	  <x>saphireDump|Input|time</x>
+	  <y>saphireDump|Output|ECS_Mean</y>
+	  <marker>.</marker>
+	  <kwargs>
+		  <label>Mean</label>
+	  </kwargs>
+	</plot>
+	<xlabel>time</xlabel>
+	<ylabel>Emergency Cooling System Failed Probability</ylabel>
+	<legend>
+	  <loc>best</loc>
+	</legend>
+      </plotSettings>
+      <actions>
+	      <how>png,screen</how>
+      </actions>
+    </Plot>
   </OutStreams>
 
 </Simulation>
