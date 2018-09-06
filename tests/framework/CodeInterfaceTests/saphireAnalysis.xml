@@ -298,7 +298,7 @@
 		  <label>Mean</label>
 	  </kwargs>
 	</plot>
-	<xlabel>time</xlabel>
+	<xlabel>time (years)</xlabel>
 	<ylabel>Large-Release Probability</ylabel>
 	<legend>
 	  <loc>best</loc>
@@ -340,7 +340,7 @@
 		  <label>Mean</label>
 	  </kwargs>
 	</plot>
-	<xlabel>time</xlabel>
+	<xlabel>time (years)</xlabel>
 	<ylabel>Small-Release Probability</ylabel>
 	<legend>
 	  <loc>best</loc>
@@ -382,7 +382,7 @@
 		  <label>Mean</label>
 	  </kwargs>
 	</plot>
-	<xlabel>time</xlabel>
+	<xlabel>time (years)</xlabel>
 	<ylabel>Containment Cooling System Failed Probability</ylabel>
 	<legend>
 	  <loc>best</loc>
@@ -424,7 +424,7 @@
 		  <label>Mean</label>
 	  </kwargs>
 	</plot>
-	<xlabel>time</xlabel>
+	<xlabel>time (years)</xlabel>
 	<ylabel>Emergency Cooling System Failed Probability</ylabel>
 	<legend>
 	  <loc>best</loc>
