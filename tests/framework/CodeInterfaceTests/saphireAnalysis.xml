@@ -11,7 +11,10 @@
   </TestInfo>
   <RunInfo>
     <JobName>saphire</JobName>
+    <Sequence>load,plot</Sequence>
+    <!--
     <Sequence>sample,plot</Sequence>
+    -->
     <WorkingDir>saphireAnalysis</WorkingDir>
     <batchSize>1</batchSize>
   </RunInfo>
@@ -19,6 +22,7 @@
   <Files>
     <Input name="macro" type="">Class_Chg_DEMO.mac</Input>
     <Input name="demo" type="">demo.zip</Input>
+    <Input name='saphireCSV' type=''>saphirePrint.csv</Input>
   </Files>
 
   <Models>
@@ -212,6 +216,10 @@
       <Output class='OutStreams' type='Plot'>Containment-Cooling-System</Output>
       <Output class='OutStreams' type='Plot'>Emergency-Cooling-System</Output>
     </IOStep>
+    <IOStep name="load">
+       <Input class='Files' type=''>saphireCSV</Input>
+       <Output class='DataObjects' type='PointSet'>saphireDump</Output>
+    </IOStep>
   </Steps>
 
   <DataObjects>
@@ -298,6 +306,7 @@
       </plotSettings>
       <actions>
 	      <how>png,screen</how>
+	      <scale><yscale>log</yscale></scale>
       </actions>
     </Plot>
     <Plot name='Small-Release'>
@@ -339,6 +348,7 @@
       </plotSettings>
       <actions>
 	      <how>png,screen</how>
+	      <scale><yscale>log</yscale></scale>
       </actions>
     </Plot>
     <Plot name='Containment-Cooling-System'>
@@ -380,6 +390,7 @@
       </plotSettings>
       <actions>
 	      <how>png,screen</how>
+	      <scale><yscale>log</yscale></scale>
       </actions>
     </Plot>
     <Plot name='Emergency-Cooling-System'>
@@ -421,6 +432,7 @@
       </plotSettings>
       <actions>
 	      <how>png,screen</how>
+	      <scale><yscale>log</yscale></scale>
       </actions>
     </Plot>
   </OutStreams>
