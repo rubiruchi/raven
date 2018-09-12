@@ -3,7 +3,7 @@
   <RunInfo>
       <WorkingDir>MFW</WorkingDir>
       <Sequence>MultiRun,print,statPP</Sequence>
-      <batchSize>6</batchSize>
+      <batchSize>10</batchSize>
   </RunInfo>
 
   <Steps>
@@ -69,21 +69,29 @@
         <lowerBound>7.0</lowerBound>
         <upperBound>21.0</upperBound>
       </Uniform>
+      <!--
+        Based on 300MW per hour, 11.4 cents per KWH (based on average price of US during
+        1998 ~ 2017). Variation of prices is 0.8 cents per KWH
+           -->
       <Uniform name='P1P2_costPerDaySD_dist'>
-        <lowerBound>0.8</lowerBound>
-        <upperBound>1.2</upperBound>
+        <lowerBound>7.92E5</lowerBound>
+        <upperBound>8.50E5</upperBound>
       </Uniform>
       <Uniform name='P1P2_numberDaysPred_dist'>
         <lowerBound>2.0</lowerBound>
         <upperBound>7.0</upperBound>
       </Uniform>
+      <!--
+        Based on 300MW per hour, 11.4 cents per KWH (based on average price of US during
+        1998 ~ 2017). Variation of prices is 0.8 cents per KWH. Power reduce to 70%
+           -->
       <Uniform name='P1P2_costPerDayPred_dist'>
-        <lowerBound>0.24</lowerBound>
-        <upperBound>0.36</upperBound>
+        <lowerBound>2.376E5</lowerBound>
+        <upperBound>2.550E5</upperBound>
       </Uniform>
       <Uniform name='P1P2_costPerDayReg_dist'>
-        <lowerBound>0.2</lowerBound>
-        <upperBound>0.3</upperBound>
+        <lowerBound>2000</lowerBound>
+        <upperBound>3000</upperBound>
       </Uniform>
       <!-- Distributions for Cost Model: cost_SG.py-->     
       <Uniform name='SG_numberDaysSD_dist'>
@@ -91,8 +99,8 @@
         <upperBound>60.0</upperBound>
       </Uniform>
       <Uniform name='SG_costPerDaySD_dist'>
-        <lowerBound>0.8</lowerBound>
-        <upperBound>1.2</upperBound>
+        <lowerBound>7.92E5</lowerBound>
+        <upperBound>8.50E5</upperBound>
       </Uniform>
       <!-- Distributions for Cost Model: cost_V1.py-->     
       <Uniform name='V1_numberDaysSD_dist'>
@@ -100,8 +108,8 @@
         <upperBound>30.0</upperBound>
       </Uniform>
       <Uniform name='V1_costPerDaySD_dist'>
-        <lowerBound>0.8</lowerBound>
-        <upperBound>1.2</upperBound>
+        <lowerBound>7.92E5</lowerBound>
+        <upperBound>8.50E5</upperBound>
       </Uniform>
       <!-- Distributions for Cost Model: cost_V2.py-->     
       <Uniform name='V2_numberDaysSD_dist'>
@@ -109,15 +117,15 @@
         <upperBound>30.0</upperBound>
       </Uniform>
       <Uniform name='V2_costPerDaySD_dist'>
-        <lowerBound>0.8</lowerBound>
-        <upperBound>1.2</upperBound>
+        <lowerBound>7.92E5</lowerBound>
+        <upperBound>8.50E5</upperBound>
       </Uniform>
   </Distributions>
 
   <Samplers>
     <MonteCarlo name="MC_main">
       <samplerInit>
-        <limit>100</limit>
+        <limit>10</limit>
         <initialSeed>2561978</initialSeed>
       </samplerInit>
 
@@ -605,50 +613,55 @@
     <Plot name='plot_V1' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_outcome_V1</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_outcome_V1</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_outcome_V1</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_outcome_V1</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_outcome_V1</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -656,6 +669,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>Failure Probability V1</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -664,50 +680,55 @@
     <Plot name='plot_cost_V1' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_cost_V1</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_cost_V1</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_cost_V1</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_cost_V1</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_cost_V1</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -715,6 +736,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>cost V1</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -723,50 +747,55 @@
     <Plot name='plot_V2' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_outcome_V2</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_outcome_V2</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_outcome_V2</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_outcome_V2</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_outcome_V2</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -774,6 +803,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>Failure Probability V2</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -782,50 +814,55 @@
     <Plot name='plot_cost_V2' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_cost_V2</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_cost_V2</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_cost_V2</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_cost_V2</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_cost_V2</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -833,6 +870,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>cost V2</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -841,50 +881,55 @@
     <Plot name='plot_SG' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_outcome_SG</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_outcome_SG</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_outcome_SG</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_outcome_SG</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_outcome_SG</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -892,6 +937,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>Failure Probability SG</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -900,50 +948,55 @@
     <Plot name='plot_cost_SG' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_cost_SG</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_cost_SG</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_cost_SG</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_cost_SG</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_cost_SG</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -951,6 +1004,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>cost SG</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -959,50 +1015,55 @@
     <Plot name='plot_P1P2_1' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_outcome_P1P2_1</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_outcome_P1P2_1</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_outcome_P1P2_1</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_outcome_P1P2_1</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_outcome_P1P2_1</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -1010,6 +1071,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>Failure Probability P1</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -1018,50 +1082,55 @@
     <Plot name='plot_cost_P1P2_1' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_cost_P1P2_1</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_cost_P1P2_1</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_cost_P1P2_1</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_cost_P1P2_1</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_cost_P1P2_1</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -1069,6 +1138,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>cost P1</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -1077,50 +1149,55 @@
     <Plot name='plot_P1P2_2' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_outcome_P1P2_2</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_outcome_P1P2_2</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_outcome_P1P2_2</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_outcome_P1P2_2</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_outcome_P1P2_2</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -1128,6 +1205,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>Failure Probability P1 and P2</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
@@ -1136,50 +1216,55 @@
     <Plot name='plot_cost_P1P2_2' overwrite='false' verbosity='debug'>
       <plotSettings>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|mean_cost_P1P2_2</y>
-          <marker>.</marker>
           <c>k</c>
           <kwargs>
               <label>mean</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_5_cost_P1P2_2</y>
-          <marker>^</marker>
-          <c>r</c>
+          <c>m</c>
           <kwargs>
               <label>5th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_25_cost_P1P2_2</y>
-          <marker>^</marker>
-          <c>m</c>
+          <c>c</c>
           <kwargs>
               <label>25th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_75_cost_P1P2_2</y>
-          <marker>v</marker>
-          <c>m</c>
+          <c>b</c>
           <kwargs>
               <label>75th Percentile</label>
           </kwargs>
         </plot>
         <plot>
-          <type>scatter</type>
+          <type>line</type>
+          <interpolationType>linear</interpolationType>
+          <interpPointsX>1000</interpPointsX>
           <x>stat_HS|Output|time</x>
           <y>stat_HS|Output|percentile_95_cost_P1P2_2</y>
-          <marker>v</marker>
           <c>r</c>
           <kwargs>
               <label>95th Percentile</label>
@@ -1187,6 +1272,9 @@
         </plot>
         <xlabel>time [days]</xlabel>
         <ylabel>cost P1 and P2</ylabel>
+        <legend>
+            <loc>best</loc>
+        </legend>
       </plotSettings>
       <actions>
         <how>png</how>
