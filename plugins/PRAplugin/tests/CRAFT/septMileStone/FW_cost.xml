@@ -2,9 +2,13 @@
 
   <RunInfo>
       <WorkingDir>MFW</WorkingDir>
-      <Sequence>MultiRun,print,statPP</Sequence>
+      <Sequence>MultiRun,statPP</Sequence>
       <batchSize>12</batchSize>
   </RunInfo>
+
+  <Databases>
+      <HDF5 name='outDB' readMode='overwrite'/>
+  </Databases>
 
   <Steps>
       <MultiRun  name='MultiRun'>
@@ -13,6 +17,7 @@
         <Sampler class='Samplers'    type='MonteCarlo'    >MC_main</Sampler>
         <Output  class='DataObjects' type='DataSet'       >main</Output>
         <Output  class='DataObjects' type='HistorySet'     >outHS</Output>
+        <Output  class='Databases'   type='HDF5'          >outDB</Output>
       </MultiRun>
       <IOStep name='print'>
         <Input   class="DataObjects" type="DataSet"       >main</Input>
@@ -22,6 +27,7 @@
         <Input class="DataObjects" type="HistorySet">outHS</Input>
         <Model class="Models" type="PostProcessor">statAnalysis</Model>
         <Output class="DataObjects" type="HistorySet">stat_HS</Output>
+        <Output class="OutStreams" type="Print">Print_basicStats</Output>
         <Output class="OutStreams" type="Plot">plot_V1</Output>
         <Output class="OutStreams" type="Plot">plot_V2</Output>
         <Output class="OutStreams" type="Plot">plot_SG</Output>
@@ -37,16 +43,14 @@
 
   <Distributions>
       <Normal name='b_V1_dist'>
-        <mean>5.E-8</mean>
-        <sigma>4.E-8</sigma>
-        <lowerBound>-4.1E-8</lowerBound>
-        <upperBound>3.25E-7</upperBound>
+        <mean>2.5E-9</mean>
+        <sigma>2.E-9</sigma>
+        <lowerBound>-2.0E-9</lowerBound>
+        <upperBound>5.E-8</upperBound>
       </Normal>
       <Normal name='b_V2_dist'>
         <mean>3.75E-5</mean>
         <sigma>1.E-4</sigma>
-        <lowerBound>-5.4E-4</lowerBound>
-        <upperBound>4.375E-4</upperBound>
       </Normal>
       <Uniform name='alpha_P1_dist'>
         <lowerBound>2.0</lowerBound>
@@ -129,16 +133,16 @@
   <Samplers>
     <MonteCarlo name="MC_main">
       <samplerInit>
-        <limit>1000</limit>
+        <limit>100</limit>
         <initialSeed>2561978</initialSeed>
       </samplerInit>
 
-      <constant name='a_V1'>3.E-4</constant>
+      <constant name='a_V1'>1.5E-5</constant>
       <variable name='b_V1'>
         <distribution>b_V1_dist</distribution>
       </variable>
 
-      <constant name='a_V2'>-4</constant>
+      <constant name='a_V2'>-5.</constant>
       <variable name='b_V2'>
         <distribution>b_V2_dist</distribution>
       </variable>
@@ -611,6 +615,12 @@
     <Print name="Print_sim_PS">
       <type>csv</type>
       <source>main</source>
+      <what>input,output</what>
+    </Print>
+
+    <Print name="Print_basicStats">
+      <type>csv</type>
+      <source>stat_HS</source>
       <what>input,output</what>
     </Print>
 
