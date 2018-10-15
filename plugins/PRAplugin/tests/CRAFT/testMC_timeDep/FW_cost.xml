@@ -53,7 +53,7 @@
   <Samplers>
     <MonteCarlo name="MC_main">
       <samplerInit>
-        <limit>1</limit>
+        <limit>1000</limit>
         <initialSeed>2561978</initialSeed>
       </samplerInit>
 
