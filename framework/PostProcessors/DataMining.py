@@ -326,8 +326,7 @@ class DataMining(PostProcessor):
     if self.PreProcessor.interface.returnFormat('output') not in ['PointSet']:
       self.raiseAnError(IOError, 'DataMining PP: this PP is employing a pre-processor PP which does not generates a PointSet.')
 
-    tempData = self.PreProcessor.interface.inputToInternal([currentInput])
-    preProcessedData = self.PreProcessor.interface.run(tempData)
+    preProcessedData = self.PreProcessor.interface.run([currentInput])
 
     if self.initializationOptionDict['KDD']['Features'] == 'input':
       featureList = currentInput.getVars('input')

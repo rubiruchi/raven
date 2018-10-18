@@ -125,13 +125,17 @@ class HS2PS(PostProcessorInterfaceBase):
       return outputDic
 
   def _inverse(self,inputDic):
-
+    """
+    This method performs the inverse transformation, i.e., from Point Set to History set  
+      @ In, inputDic, dict, dictionary containing the Point Set
+      @ Out, data, dict, dictionary containing the corresponding History Set
+    """
     data = {}
+    print(inputDic)
     for hist in inputDic.keys():
       data[hist]= {}
       tempData = inputDic[hist].reshape((len(self.transformationSettings['vars']),self.transformationSettings['timeLength']))
       for index,var in enumerate(self.transformationSettings['vars']):
         data[hist][var] = tempData[index,:]
       data[hist][self.pivotParameter] = self.transformationSettings['timeAxis']
-
     return data

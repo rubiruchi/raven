@@ -139,6 +139,7 @@ class InterfacedPostProcessor(PostProcessor):
         self.raiseAnError(IOError,'InterfacedPostProcessor Post-Processor named "'+ self.name +
                               '" : The input object "'+ inp.name +'" provided is of the wrong type. Got "'+
                               inp.type + '" but expected "'+self.returnFormat("input") + '"!')
+    
     inputDic= self.inputToInternal(inputIn)
     self.raiseADebug('InterfacedPostProcessor Post-Processor '+ self.name +' : start to run')
     outputDic = self.postProcessor.run(inputDic)
