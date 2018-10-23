@@ -47,10 +47,10 @@ import DataObjects
 
 class unSupervisedLearning(utils.metaclass_insert(abc.ABCMeta), MessageHandler.MessageUser):
   """
-    This is the general interface to any unSuperisedLearning learning method.
+    This is the general interface to any unSupervisedLearning learning method.
     Essentially it contains a train, and evaluate methods
   """
-  returnType = ''         ## this describe the type of information generated the
+  returnType = ''         ## this describes the type of information generated the
                           ## possibility are 'boolean', 'integer', 'float'
 
   modelType = ''          ## the broad class of the interpolator
@@ -86,7 +86,7 @@ class unSupervisedLearning(utils.metaclass_insert(abc.ABCMeta), MessageHandler.M
 
   def __init__(self, messageHandler, **kwargs):
     """
-      constructor for unSupervisedLearning class.
+      Constructor for unSupervisedLearning class.
       @ In, messageHandler, object, Message handler object
       @ In, kwargs, dict, arguments for the unsupervised learning algorithm
     """

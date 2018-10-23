@@ -25,6 +25,7 @@ import os
 import copy
 import itertools
 import numpy as np
+from collections import OrderedDict 
 #External Modules End--------------------------------------------------------------------------------
 
 from PostProcessorInterfaceBaseClass import PostProcessorInterfaceBase
@@ -69,7 +70,6 @@ class HS2PS(PostProcessorInterfaceBase):
         self.features = child.text.split(',')
       elif child.tag !='method':
         self.raiseAnError(IOError, 'HS2PS Interfaced Post-Processor ' + str(self.name) + ' : XML node ' + str(child) + ' is not recognized')
-
     if self.pivotParameter == None:
       self.raiseAnError(IOError, 'HS2PS Interfaced Post-Processor ' + str(self.name) + ' : pivotParameter is not specified')
 
@@ -83,7 +83,8 @@ class HS2PS(PostProcessorInterfaceBase):
       self.raiseAnError(IOError, 'HS2PS Interfaced Post-Processor ' + str(self.name) + ' accepts only one dataObject')
     else:
       inputDict = inputDic[0]
-      outputDic = {'data': {}}
+      outputDic = {}
+      outputDic['data'] = {}
       outputDic['dims'] = {}
       numSamples = inputDict['numberRealizations']
 
@@ -113,15 +114,15 @@ class HS2PS(PostProcessorInterfaceBase):
         outputDic['data'][str(key)] = np.empty(0)
         outputDic['data'][str(key)] = matrix[:,key]
         outputDic['dims'][str(key)] = []
-
+      
+      self.transformationSettings['dimID'] = outputDic['data'].keys()
       outputDic['data']['ProbabilityWeight'] = inputDict['data']['ProbabilityWeight']
       outputDic['data']['prefix'] = inputDict['data']['prefix']
 
       self.transformationSettings['vars'] = copy.deepcopy(self.features)
       self.transformationSettings['timeLength'] = historyLength
       self.transformationSettings['timeAxis'] = inputDict['data'][self.pivotParameter][0]
-      self.transformationSettings['dimID'] = outputDic['data'].keys()
-
+      
       return outputDic
 
   def _inverse(self,inputDic):
@@ -131,7 +132,6 @@ class HS2PS(PostProcessorInterfaceBase):
       @ Out, data, dict, dictionary containing the corresponding History Set
     """
     data = {}
-    print(inputDic)
     for hist in inputDic.keys():
       data[hist]= {}
       tempData = inputDic[hist].reshape((len(self.transformationSettings['vars']),self.transformationSettings['timeLength']))
